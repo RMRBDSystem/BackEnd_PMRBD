@@ -10,8 +10,4 @@
     <ProjectReference Include="..\BussinessObject\BussinessObject.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTO\" />
-  </ItemGroup>
-
 </Project>
