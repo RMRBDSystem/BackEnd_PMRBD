@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.DAO
+namespace DataAccess
 {
     public class EBookDAO : SingletonBase<EBookDAO>
     {
