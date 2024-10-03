@@ -10,49 +10,14 @@ namespace DataAccess
 {
     public class CommentDAO : SingletonBase<CommentDAO>
     {
-        public async Task<IEnumerable<Comment>> GetAllCommentsByRootCommentId(int id)
+        public async Task<IEnumerable<Comment>> GetAllComments()
         {
             try
             {
-                return await _context.Comments.Where(x => x.RootCommentId == id).ToListAsync();
+                return await _context.Comments.ToListAsync();
             }catch (Exception ex)
             {
-                throw new Exception("Failed to retrieve comments by root comment id", ex);
-            }
-        }
-
-        public async Task<IEnumerable<Comment>> GetAllCommentByBookId(int id)
-        {
-            try
-            {
-                return await _context.Comments.Where(x => x.BookId == id).ToListAsync();
-            }catch (Exception ex)
-            {
-                throw new Exception("Failed to retrieve comments by book id", ex);
-            }
-        }
-
-        public async Task<IEnumerable<Comment>> GetCommentByEBookId(int id)
-        {
-            try
-            {
-                return await _context.Comments.Where(x => x.EbookId == id).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to retrieve comments by ebook id", ex);
-            }
-        }
-
-        public async Task<IEnumerable<Comment>> GetCommentByRecipeId(int id)
-        {
-            try
-            {
-                return await _context.Comments.Where(x => x.RecipeId == id).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to retrieve comments by recipe id", ex);
+                throw new Exception("Failed to retrieve comments", ex);
             }
         }
 

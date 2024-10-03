@@ -34,7 +34,7 @@ namespace DataAccess
             }
         }
 
-        public async Task SaveBook(Book book)
+        public async Task AddBook(Book book)
         {
             try
             {

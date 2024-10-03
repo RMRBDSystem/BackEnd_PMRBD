@@ -10,7 +10,7 @@ namespace DataAccess
 {
     public class BookShelfDAO : SingletonBase<BookShelfDAO>
     {
-        public async Task<IEnumerable<BookShelf>> GetAllBookShelfByCustomerId(int id)
+        public async Task<IEnumerable<BookShelf>> GetAllBookShelvesByCustomerId(int id)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace DataAccess
             }
         }
 
-        public async Task SaveBookShelf(BookShelf bookshelf)
+        public async Task AddBookShelf(BookShelf bookshelf)
         {
             try
             {

@@ -34,7 +34,7 @@ namespace DataAccess
             }
         }
 
-        public async Task SaveEbook(Ebook ebook)
+        public async Task AddEbook(Ebook ebook)
         {
             try
             {

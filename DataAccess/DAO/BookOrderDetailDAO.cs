@@ -22,7 +22,7 @@ namespace DataAccess
             }
         }
 
-        public async Task SaveBookOrderDetail(BookOrderDetail bookorderdetail)
+        public async Task AddBookOrderDetail(BookOrderDetail bookorderdetail)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace DataAccess
             }
         }
 
-        public async Task UpdateBook(BookOrderDetail bookorderdetail)
+        public async Task UpdateBookOrderDetail(BookOrderDetail bookorderdetail)
         {
             try
             {
@@ -51,12 +51,12 @@ namespace DataAccess
             }
         }
 
-        public async Task DeleteBookOrderDetail(BookOrderDetail bookOrderDetail)
+        public async Task DeleteBookOrderDetail(int OrderId, int BookId)
         {
             try
             {
                 var bookOrderDetailToDelete = await _context.BookOrderDetails
-                    .FirstOrDefaultAsync(x => x.BookId == bookOrderDetail.BookId && x.OrderId == bookOrderDetail.OrderId);
+                    .FirstOrDefaultAsync(x => x.BookId == BookId && x.OrderId == OrderId);
 
                 if (bookOrderDetailToDelete != null)
                 {
