@@ -10,7 +10,7 @@ namespace DataAccess
 {
     public class BookRateDAO : SingletonBase<BookRateDAO>
     {
-        public async Task<IEnumerable<BookRate?>> GetAllBookRateByBookId(int id)
+        public async Task<IEnumerable<BookRate>> GetAllBookRatesByBookId(int id)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace DataAccess
             }
         }
 
-        public async Task SaveBookRate(BookRate bookrate)
+        public async Task AddBookRate(BookRate bookrate)
         {
             try
             {

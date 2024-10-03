@@ -34,7 +34,7 @@ namespace DataAccess
             }
         }
 
-        public async Task SaveCustomer(Customer customer)
+        public async Task AddCustomer(Customer customer)
         {
             try
             {

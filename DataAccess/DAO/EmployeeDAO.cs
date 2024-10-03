@@ -34,7 +34,7 @@ namespace DataAccess
             }
         }
 
-        public async Task SaveEmployee(Employee employee)
+        public async Task AddEmployee(Employee employee)
         {
             try
             {

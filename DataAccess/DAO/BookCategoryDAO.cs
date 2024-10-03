@@ -34,7 +34,7 @@ namespace DataAccess
             }
         }
 
-        public async Task SaveBookCategory(BookCategory bookCategory)
+        public async Task AddBookCategory(BookCategory bookCategory)
         {
             try
             {
