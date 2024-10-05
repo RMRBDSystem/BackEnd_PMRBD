@@ -9,6 +9,7 @@ namespace Repository.IRepository
 {
     public interface IBookRateRepository
     {
+        Task<IEnumerable<BookRate>> GetAllBookRates();
         Task<IEnumerable<BookRate>> GetAllBookRatesByBookId(int bookId);
         Task<BookRate> GetBookRateByCustomerIdAndBookId(int bookId, int userId);
         Task AddBookRate(BookRate bookRate);

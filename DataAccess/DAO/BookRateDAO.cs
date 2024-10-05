@@ -10,6 +10,18 @@ namespace DataAccess
 {
     public class BookRateDAO : SingletonBase<BookRateDAO>
     {
+        public async Task<IEnumerable<BookRate>> GetAllBookRates()
+        {
+            try
+            {
+                return await _context.BookRates.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve book rates", ex);
+            }
+        }
+
         public async Task<IEnumerable<BookRate>> GetAllBookRatesByBookId(int id)
         {
             try

@@ -18,7 +18,26 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to retrieve book order detail by id", ex);
+                throw new Exception("Failed to retrieve book order detail by Orderid", ex);
+            }
+        }
+
+        public async Task<BookOrderDetail> GetBookOrderDetailByOrderIdAndBookId(int OrderId, int BookId)
+        {
+            if (!await _context.BookOrderDetails.AnyAsync(x => x.BookId == BookId && x.OrderId == OrderId))
+            {
+                return null;
+            }
+
+            try
+            {
+                return await _context.BookOrderDetails
+                    .Where(x => x.BookId == BookId && x.OrderId == OrderId)
+                    .SingleOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve book order detail by OrderId and BookId", ex);
             }
         }
 

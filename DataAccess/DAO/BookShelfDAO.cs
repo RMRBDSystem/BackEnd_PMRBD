@@ -10,6 +10,17 @@ namespace DataAccess
 {
     public class BookShelfDAO : SingletonBase<BookShelfDAO>
     {
+        public async Task<IEnumerable<BookShelf>> GetAllBookShelves()
+        {
+            try
+            {
+                return await _context.BookShelves.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve bookshelfs", ex);
+            }
+        }
         public async Task<IEnumerable<BookShelf>> GetAllBookShelvesByCustomerId(int id)
         {
             try
@@ -18,7 +29,7 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to retrieve bookshelfs", ex);
+                throw new Exception("Failed to retrieve bookshelfs by customer id", ex);
             }
         }
 

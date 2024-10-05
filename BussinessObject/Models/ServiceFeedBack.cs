@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusinessObject.Models;
 
 public partial class ServiceFeedBack
 {
+    [Key]
     public int FeedBackId { get; set; }
 
     public string Title { get; set; } = null!;

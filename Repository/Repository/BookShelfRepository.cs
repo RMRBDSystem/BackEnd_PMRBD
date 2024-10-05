@@ -11,6 +11,7 @@ namespace Repository.Repository
 {
     public class BookShelfRepository : IBookShelfRepository
     {
+        public async Task<IEnumerable<BookShelf>> GetAllBookShelves() => await BookShelfDAO.Instance.GetAllBookShelves();
         public async Task<IEnumerable<BookShelf>> GetAllBookShelvesByCustomerId(int id) => await BookShelfDAO.Instance.GetAllBookShelvesByCustomerId(id);
         public async Task<BookShelf> GetBookShelfByEBookIdAndCustomerId(int EBookId, int Customerid) => await BookShelfDAO.Instance.GetBookShelfByEBookIdAndCustomerId(EBookId, Customerid);
         public async Task AddBookShelf(BookShelf bookShelf) => await BookShelfDAO.Instance.AddBookShelf(bookShelf);
