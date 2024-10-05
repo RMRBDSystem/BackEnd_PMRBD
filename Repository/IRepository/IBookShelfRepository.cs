@@ -9,6 +9,7 @@ namespace Repository.IRepository
 {
     public interface IBookShelfRepository
     {
+        Task<IEnumerable<BookShelf>> GetAllBookShelves();
         Task<IEnumerable<BookShelf>> GetAllBookShelvesByCustomerId(int id);
         Task<BookShelf> GetBookShelfByEBookIdAndCustomerId(int EbookId, int Customerid);
         Task AddBookShelf(BookShelf bookShelf);

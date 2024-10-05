@@ -11,6 +11,7 @@ namespace Repository.Repository
 {
     public class BookRateRepository : IBookRateRepository
     {
+        public async Task<IEnumerable<BookRate>> GetAllBookRates() => await BookRateDAO.Instance.GetAllBookRates();
         public async Task<IEnumerable<BookRate>> GetAllBookRatesByBookId(int bookId) => await BookRateDAO.Instance.GetAllBookRatesByBookId(bookId);
         public async Task<BookRate> GetBookRateByCustomerIdAndBookId(int BookId, int CustomerId) => await BookRateDAO.Instance.GetBookRateByCustomerIdAndBookId(BookId, CustomerId);
         public async Task AddBookRate(BookRate bookRate) => await BookRateDAO.Instance.AddBookRate(bookRate);
