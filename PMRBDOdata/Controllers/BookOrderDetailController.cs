@@ -20,6 +20,14 @@ namespace PMRBDOdata.Controllers
         }
 
         [EnableQuery]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<BookOrderDetail>>> GetAllBookOrderDetails()
+        {
+            var list = await bookOrderDetailRepository.GetAllBookOrderDetails();
+            return Ok(list);
+        }
+
+        [EnableQuery]
         [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<BookOrderDetail>>> GetBookOrderDetailsByOrderId([FromODataUri] int id)
         {

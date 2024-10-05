@@ -10,6 +10,16 @@ namespace DataAccess
 {
     public class BookOrderDetailDAO : SingletonBase<BookOrderDetailDAO>
     {
+        public async Task<IEnumerable<BookOrderDetail>> GetAllBookOrderDetails()
+        {
+            try
+            {
+                return await _context.BookOrderDetails.ToListAsync();
+            }catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve book order detail", ex);
+            }
+        }
         public async Task<IEnumerable<BookOrderDetail>> GetBookOrderDetailByOrderId(int id)
         {
             try
