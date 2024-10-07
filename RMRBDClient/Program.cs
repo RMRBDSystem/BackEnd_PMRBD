@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using RMRBD_Client.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +7,27 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiUrl
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession(options =>
+{
+
+});
+
+builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+.AddCookie()
+.AddGoogle(options =>
+{
+    IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication");
+    options.ClientId = googleAuthNSection["Google:ClientId"];
+    options.ClientSecret = googleAuthNSection["Google:ClientSecret"];
+    options.Scope.Add("https://www.googleapis.com/auth/userinfo.email");
+    options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+});
 
 var app = builder.Build();
 
@@ -19,7 +42,11 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseSession();
+
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -9,6 +9,8 @@ public partial class Customer
 
     public string Email { get; set; } = null!;
 
+    public string GoogleId { get; set; } = null!;
+
     public string UserName { get; set; } = null!;
 
     public string? PhoneNumber { get; set; }
@@ -31,7 +33,7 @@ public partial class Customer
 
     public DateTime? DateOfBirth { get; set; }
 
-    public int? SellerStatus { get; set; }
+    public int SellerStatus { get; set; }
 
     public int? CensorId { get; set; }
 

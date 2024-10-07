@@ -9,7 +9,7 @@ using Repository.Repository;
 
 namespace PMRBDOdata.Controllers
 {
-    [Route("OData/Employee")]
+    [Route("odata/Employee")]
     [ApiController]
     public class EmployeeController : ODataController
     {
@@ -19,8 +19,9 @@ namespace PMRBDOdata.Controllers
             employeeRepository = new EmployeeRepository();
         }
 
-        [EnableQuery]
+        
         [HttpGet]
+        [EnableQuery]
         public async Task<ActionResult<IEnumerable<Employee>>> GetAllEmployees()
         {
             var list = await employeeRepository.GetAllEmployees();
