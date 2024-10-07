@@ -23,7 +23,12 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/LoginPages/LoginGoogle">Đăng nhập</a>
-                            </li>
+                            </li>                          
+                            
+                        }
+                        else if (ViewData["CustomerId"] != null)
+                        {
+                            <image src=@ViewData["Avatar"] class="rounded-circle" width="30" height="30" />                       
                         }
                     </ul>
                 </div>

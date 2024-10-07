@@ -17,7 +17,7 @@ public partial class Customer
 
     public string? Avatar { get; set; }
 
-    public int? Coin { get; set; }
+    public int Coin { get; set; } = 0;
 
     public int? AccountStatus { get; set; }
 
@@ -33,33 +33,33 @@ public partial class Customer
 
     public DateTime? DateOfBirth { get; set; }
 
-    public int SellerStatus { get; set; }
+    public int SellerStatus { get; set; } = 0;
 
     public int? CensorId { get; set; }
 
-    public virtual ICollection<BookOrder> BookOrders { get; set; } = new List<BookOrder>();
+    public virtual ICollection<BookOrder>? BookOrders { get; set; } = new List<BookOrder>();
 
-    public virtual ICollection<BookRate> BookRates { get; set; } = new List<BookRate>();
+    public virtual ICollection<BookRate>? BookRates { get; set; } = new List<BookRate>();
 
-    public virtual ICollection<BookShelf> BookShelves { get; set; } = new List<BookShelf>();
+    public virtual ICollection<BookShelf>? BookShelves { get; set; } = new List<BookShelf>();
 
-    public virtual ICollection<Book> Books { get; set; } = new List<Book>();
+    public virtual ICollection<Book>? Books { get; set; } = new List<Book>();
 
     public virtual Employee? Censor { get; set; }
 
-    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    public virtual ICollection<Comment>? Comments { get; set; } = new List<Comment>();
 
-    public virtual ICollection<Ebook> Ebooks { get; set; } = new List<Ebook>();
+    public virtual ICollection<Ebook>? Ebooks { get; set; } = new List<Ebook>();
 
-    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+    public virtual ICollection<Notification>? Notifications { get; set; } = new List<Notification>();
 
-    public virtual ICollection<PersonalRecipe> PersonalRecipes { get; set; } = new List<PersonalRecipe>();
+    public virtual ICollection<PersonalRecipe>? PersonalRecipes { get; set; } = new List<PersonalRecipe>();
 
-    public virtual ICollection<RecipeRate> RecipeRates { get; set; } = new List<RecipeRate>();
+    public virtual ICollection<RecipeRate>? RecipeRates { get; set; } = new List<RecipeRate>();
 
-    public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
+    public virtual ICollection<Recipe>? Recipes { get; set; } = new List<Recipe>();
 
-    public virtual ICollection<ServiceFeedBack> ServiceFeedBacks { get; set; } = new List<ServiceFeedBack>();
+    public virtual ICollection<ServiceFeedBack>? ServiceFeedBacks { get; set; } = new List<ServiceFeedBack>();
 
-    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<Transaction>? Transactions { get; set; } = new List<Transaction>();
 }
