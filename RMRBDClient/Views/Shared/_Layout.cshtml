@@ -23,15 +23,17 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" href="/LoginPages/LoginGoogle">Đăng nhập</a>
-                            </li>                          
+                            </li>
                             
                         }
                         else if (ViewData["CustomerId"] != null)
                         {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/LoginPages/Logout">Đăng xuất</a>
+                            </li>
+
                             <image src=@ViewData["Avatar"] class="rounded-circle" width="30" height="30" />   
-                            <p>@ViewData["UserName"]</p>
-
-
+                            <p>@ViewData["UserName"]</p>                          
                         }
                     </ul>
                 </div>

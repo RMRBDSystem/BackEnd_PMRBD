@@ -19,7 +19,6 @@ namespace RMRBDClient.Controllers
                 ViewData["UserName"] = HttpContext.Session.GetString("UserName");
                 ViewData["Coin"] = HttpContext.Session.GetString("Coin");
                 ViewData["Avatar"] = HttpContext.Session.GetString("Avatar");
-
             }
             HttpResponseMessage response = await _httpClient.GetAsync($"{RecipeUrl}?$filter=Status eq 1");
             response.EnsureSuccessStatusCode();

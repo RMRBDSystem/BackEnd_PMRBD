@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.Extensions.FileProviders;
 using RMRBD_Client.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +42,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//                 Path.Combine(Directory.GetCurrentDirectory(), "Image")),
+//    RequestPath = "/Image"
+//});
 app.UseSession();
 
 app.UseRouting();

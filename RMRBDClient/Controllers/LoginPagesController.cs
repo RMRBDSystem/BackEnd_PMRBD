@@ -9,6 +9,7 @@ using System.Net;
 using Newtonsoft.Json.Linq;
 using Azure;
 using System.Linq;
+using System;
 
 namespace RMRBDClient.Controllers
 {
@@ -40,11 +41,12 @@ namespace RMRBDClient.Controllers
 
                     if (customer == null)
                     {
+                        // Đăng ký Customer => đăng nhập
                         Customer newCustomer = new Customer();
                         newCustomer.Email = User.FindFirst(ClaimTypes.Email)?.Value;
                         newCustomer.GoogleId = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
                         newCustomer.UserName = User.FindFirst(ClaimTypes.GivenName)?.Value + " " + User.FindFirst(ClaimTypes.Surname)?.Value;
-                        newCustomer.Avatar = "/wwwroot/Image/Avatar/NullAvatar.jpg";
+                        newCustomer.Avatar = "/Image/Avatar/NullAvatar.jpg";
 
                         var model = new
                         {
@@ -56,10 +58,34 @@ namespace RMRBDClient.Controllers
 
                         var json = JsonConvert.SerializeObject(model);
                         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                        try
+                        {
+                            response = await _httpClient.PostAsync($"{CustomerUrl}", content);
+                            response.EnsureSuccessStatusCode();
 
-                        response = await _httpClient.PostAsync($"{CustomerUrl}", content);
-                        response.EnsureSuccessStatusCode();
-                        return Redirect("https://youtube.com");
+                            response = await _httpClient.GetAsync($"{CustomerUrl}?$filter=GoogleId eq '{GoogleID}'");
+                            response.EnsureSuccessStatusCode();
+                            var customerIn = JsonConvert.DeserializeObject<List<Customer>>(await response.Content.ReadAsStringAsync()).FirstOrDefault();
+
+                            HttpContext.Session.SetInt32("CustomerId", customerIn.CustomerId);
+                            HttpContext.Session.SetString("UserName", customerIn.UserName);
+                            HttpContext.Session.SetInt32("Coin", customerIn.Coin);
+                            HttpContext.Session.SetString("Avatar", customerIn.Avatar);
+                            HttpContext.Session.SetInt32("SellerStatus", customerIn.SellerStatus);
+
+                            ViewData["CustomerId"] = customerIn.CustomerId;
+                            ViewData["UserName"] = customerIn.UserName;
+                            ViewData["Coin"] = customerIn.Coin;
+                            ViewData["Avatar"] = customerIn.Avatar;
+                            ViewData["SellerStatus"] = customerIn.SellerStatus;
+
+                            return RedirectToAction("HomePage", "Home");
+                        }catch(Exception ex)
+                        {
+                            Console.WriteLine($"An error occurred: {ex.Message}");
+                        }
+
+                        
                     }
                     else if (customer != null && customer.AccountStatus == 1)
                     {
@@ -136,7 +162,7 @@ namespace RMRBDClient.Controllers
             HttpContext.Session.Remove("EmployeeType");
 
             // Redirect to home page or any other page
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("LandingPage", "Home");
         }
     }
 }
