@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RMRBDClient</title>
+    <title>@ViewData["Title"] - RMRBD</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RMRBDClient.styles.css" asp-append-version="true" />
@@ -22,13 +22,16 @@
                         @if (ViewData["CustomerId"] == null && ViewData["EmployeeId"] == null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/LoginPages/LoginGoogle">Đăng nhập</a>
+                                <a class="nav-link text-dark" href="/LoginPages/LoginGoogle">Đăng nhập</a>
                             </li>                          
                             
                         }
                         else if (ViewData["CustomerId"] != null)
                         {
-                            <image src=@ViewData["Avatar"] class="rounded-circle" width="30" height="30" />                       
+                            <image src=@ViewData["Avatar"] class="rounded-circle" width="30" height="30" />   
+                            <p>@ViewData["UserName"]</p>
+
+
                         }
                     </ul>
                 </div>

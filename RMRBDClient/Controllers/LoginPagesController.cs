@@ -16,7 +16,11 @@ namespace RMRBDClient.Controllers
     {
         public LoginPagesController(IConfiguration configuration) : base(configuration) { }
 
+        // Đăng nhập với Google
+
         public IActionResult LoginGoogle() => Challenge(new AuthenticationProperties { RedirectUri = Url.Action("Login", "LoginPages") }, "Google");
+
+        // Sử lý đăng nhập
 
         [Authorize]
         public async Task<IActionResult> Login()
@@ -24,7 +28,7 @@ namespace RMRBDClient.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 string GoogleID = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
-                HttpResponseMessage response = await _httpClient.GetAsync($"{EmployeeUrl}?$filter=GoogleId eq '{GoogleID}'");
+                HttpResponseMessage response = await _httpClient.GetAsync($"{EmployeeUrl}?$filter=GoogleId eq '{GoogleID}' and Status eq 1");
                 response.EnsureSuccessStatusCode(); 
                 var employee = JsonConvert.DeserializeObject<List<Employee>>(await response.Content.ReadAsStringAsync()).FirstOrDefault();
 
@@ -59,35 +63,64 @@ namespace RMRBDClient.Controllers
                     }
                     else if (customer != null && customer.AccountStatus == 1)
                     {
+
+                        // Đăng nhập Customer thành công
+
                         HttpContext.Session.SetInt32("CustomerId", customer.CustomerId);
                         HttpContext.Session.SetString("UserName", customer.UserName);
                         HttpContext.Session.SetInt32("Coin", customer.Coin);
                         HttpContext.Session.SetString("Avatar", customer.Avatar);
+                        HttpContext.Session.SetInt32("SellerStatus", customer.SellerStatus);
 
                         ViewData["CustomerId"] = customer.CustomerId;
+                        ViewData["UserName"] = customer.UserName;
+                        ViewData["Coin"] = customer.Coin;
                         ViewData["Avatar"] = customer.Avatar;
-                        return RedirectToAction("Index", "Home");
+                        ViewData["SellerStatus"] = customer.SellerStatus;
+
+                        return RedirectToAction("HomePage", "Home");
                     }
                     else if (customer != null && customer.AccountStatus == 0)
                     {
+
+                        // Tài khoản customer bị khóa
+
                         return RedirectToAction("Logout", "LoginPages");
                     }
 
                 }
-                else if (employee != null && employee.Status == 1)
+                else if (employee != null && employee.EmployeeTypeId == 1)
                 {
+                    // Kiểm duyệt viên
+
                     HttpContext.Session.SetInt32("EmployeeId", employee.EmployeeId);
                     HttpContext.Session.SetString("EmployeeName", employee.Name);
                     HttpContext.Session.SetInt32("EmployeeType", employee.EmployeeTypeId);
                     return Redirect("https://youtube.com");
                 }
-                else if (employee != null && employee.Status == 0)
+                else if (employee != null && employee.EmployeeTypeId == 2)
                 {
-                    return RedirectToAction("Logout", "LoginPages");
+                    // Quản lý đơn hàng
+
+                    HttpContext.Session.SetInt32("EmployeeId", employee.EmployeeId);
+                    HttpContext.Session.SetString("EmployeeName", employee.Name);
+                    HttpContext.Session.SetInt32("EmployeeType", employee.EmployeeTypeId);
+                    return Redirect("https://youtube.com");
+                }else if (employee != null && employee.EmployeeTypeId == 3)
+                {
+                    // Admin
+
+                    HttpContext.Session.SetInt32("EmployeeId", employee.EmployeeId);
+                    HttpContext.Session.SetString("EmployeeName", employee.Name);
+                    HttpContext.Session.SetInt32("EmployeeType", employee.EmployeeTypeId);
+                    return Redirect("https://youtube.com");
                 }
+                else { }
             }
             return RedirectToAction("Logout", "LoginPages");
         }
+
+        // Đăng xuất
 
         public async Task<IActionResult> Logout()
         {

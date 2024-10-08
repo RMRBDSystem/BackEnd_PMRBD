@@ -1,20 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessObject.Models;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RMRBDClient.Models;
 using System.Diagnostics;
 
 namespace RMRBDClient.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
+        public HomeController(IConfiguration configuration) : base(configuration) { }
 
-        public HomeController(ILogger<HomeController> logger)
+        
+        public async Task<IActionResult> HomePage()
         {
-            _logger = logger;
+            if(HttpContext.Session.GetString("CustomerId") != null)
+            {
+                ViewData["CustomerId"] = HttpContext.Session.GetString("CustomerId");
+                ViewData["UserName"] = HttpContext.Session.GetString("UserName");
+                ViewData["Coin"] = HttpContext.Session.GetString("Coin");
+                ViewData["Avatar"] = HttpContext.Session.GetString("Avatar");
+
+            }
+            HttpResponseMessage response = await _httpClient.GetAsync($"{RecipeUrl}?$filter=Status eq 1");
+            response.EnsureSuccessStatusCode();
+            List<Recipe> recipes = JsonConvert.DeserializeObject<List<Recipe>>(response.Content.ReadAsStringAsync().Result);
+            return View(recipes);
         }
 
-        public IActionResult Index()
+        public IActionResult LandingPage()
         {
+
             return View();
         }
 
