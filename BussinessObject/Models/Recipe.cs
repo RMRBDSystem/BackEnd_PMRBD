@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BussinessObject.Models;
+using System;
 using System.Collections.Generic;
 
 namespace BusinessObject.Models;
@@ -47,7 +48,7 @@ public partial class Recipe
 
     public virtual ICollection<RecipeRate> RecipeRates { get; set; } = new List<RecipeRate>();
 
-    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<RecipeTransaction> RecipeTransactions { get; set; } = new List<RecipeTransaction>();
 
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 }

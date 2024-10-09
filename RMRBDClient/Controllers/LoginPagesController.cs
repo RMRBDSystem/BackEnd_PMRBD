@@ -28,6 +28,9 @@ namespace RMRBDClient.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+
+                // Đăng nhập nhân viên
+
                 string GoogleID = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
                 HttpResponseMessage response = await _httpClient.GetAsync($"{EmployeeUrl}?$filter=GoogleId eq '{GoogleID}' and Status eq 1");
                 response.EnsureSuccessStatusCode(); 
@@ -35,13 +38,18 @@ namespace RMRBDClient.Controllers
 
                 if (employee == null)
                 {
+
+                    // Đăng nhập Customer
+
                     response = await _httpClient.GetAsync($"{CustomerUrl}?$filter=GoogleId eq '{GoogleID}'");
                     response.EnsureSuccessStatusCode();
                     var customer = JsonConvert.DeserializeObject<List<Customer>>(await response.Content.ReadAsStringAsync()).FirstOrDefault();
 
                     if (customer == null)
                     {
+
                         // Đăng ký Customer => đăng nhập
+
                         Customer newCustomer = new Customer();
                         newCustomer.Email = User.FindFirst(ClaimTypes.Email)?.Value;
                         newCustomer.GoogleId = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
@@ -83,9 +91,7 @@ namespace RMRBDClient.Controllers
                         }catch(Exception ex)
                         {
                             Console.WriteLine($"An error occurred: {ex.Message}");
-                        }
-
-                        
+                        }                       
                     }
                     else if (customer != null && customer.AccountStatus == 1)
                     {
@@ -161,7 +167,6 @@ namespace RMRBDClient.Controllers
             HttpContext.Session.Remove("EmployeeName");
             HttpContext.Session.Remove("EmployeeType");
 
-            // Redirect to home page or any other page
             return RedirectToAction("LandingPage", "Home");
         }
     }

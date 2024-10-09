@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BussinessObject.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 namespace BusinessObject.Models;
@@ -61,5 +63,9 @@ public partial class Customer
 
     public virtual ICollection<ServiceFeedBack>? ServiceFeedBacks { get; set; } = new List<ServiceFeedBack>();
 
-    public virtual ICollection<Transaction>? Transactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<RecipeTransaction>? RecipeTransactions { get; set; } = new List<RecipeTransaction>();
+
+    public virtual ICollection<EbookTransaction>? EbookTransactions { get; set; } = new List<EbookTransaction>();
+    public virtual ICollection<BookTransaction>? BookTransactions { get; set; } = new List<BookTransaction>();
+
 }
