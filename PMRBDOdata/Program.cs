@@ -1,4 +1,5 @@
 using BusinessObject.Models;
+using BussinessObject.Models;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OData.ModelBuilder;
@@ -21,6 +22,12 @@ modelbuilder.EntitySet<Image>("Images");
 modelbuilder.EntitySet<Notification>("Notifications");
 modelbuilder.EntitySet<Recipe>("Recipes");
 modelbuilder.EntitySet<Tag>("Tags");
+modelbuilder.EntitySet<CoinTransaction>("CoinTransactions");
+modelbuilder.EntitySet<RecipeTransaction>("RecipeTransactions");
+modelbuilder.EntitySet<BookTransaction>("BookTransactions");
+modelbuilder.EntitySet<EbookTransaction>("EbookTransactions");
+modelbuilder.EntitySet<BookOrderStatus>("BookOrderStatuses");
+
 modelbuilder.EntityType<BookCategory>();
 modelbuilder.EntityType<BookOrder>();
 modelbuilder.EntityType<BookRate>().HasKey(x => new { x.BookId, x.CustomerId });

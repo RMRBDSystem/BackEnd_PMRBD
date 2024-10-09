@@ -71,7 +71,7 @@ namespace PMRBDOdata.Controllers
             }
             comment.CommentId = commentToUpdate.CommentId;
             await commentRepository.UpdateComment(comment);
-            return Created(comment);
+            return Updated(comment);
         }
     }
 }

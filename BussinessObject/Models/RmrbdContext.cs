@@ -58,7 +58,7 @@ public partial class RmrbdContext : DbContext
 
     public virtual DbSet<BookTransaction> BookTransactions { get; set; }
     
-    public virtual DbSet<BookOrderStatus> BookOrderStatus { get; set; }
+    public virtual DbSet<BookOrderStatus> BookOrderStatuses { get; set; }
 
     public virtual DbSet<CoinTransaction> CoinTransactions { get; set; }
 
