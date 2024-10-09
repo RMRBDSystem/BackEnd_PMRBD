@@ -60,6 +60,8 @@ public partial class RmrbdContext : DbContext
     
     public virtual DbSet<BookOrderStatus> BookOrderStatus { get; set; }
 
+    public virtual DbSet<CoinTransaction> CoinTransactions { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -541,6 +543,17 @@ public partial class RmrbdContext : DbContext
 
             entity.HasOne(d => d.BookOrder).WithMany(p => p.BookOrderStatuses)
             .HasForeignKey(d => d.BookOrderStatusId);
+        });
+
+        modelBuilder.Entity<CoinTransaction>(entity =>
+        {
+            entity.HasKey(e => e.CoinTransactionId);
+            entity.ToTable("CoinTransaction");
+
+            entity.Property(e => e.CoinTransactionId).HasColumnName("CoinTransactionID");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.CoinTransactions).
+                HasForeignKey(d => d.CustomerId);
         });
 
 

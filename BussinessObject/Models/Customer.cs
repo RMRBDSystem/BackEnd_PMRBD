@@ -68,4 +68,6 @@ public partial class Customer
     public virtual ICollection<EbookTransaction>? EbookTransactions { get; set; } = new List<EbookTransaction>();
     public virtual ICollection<BookTransaction>? BookTransactions { get; set; } = new List<BookTransaction>();
 
+    public virtual ICollection<CoinTransaction>? CoinTransactions { get; set; } = new List<CoinTransaction>();
+
 }
