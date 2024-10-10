@@ -19,8 +19,9 @@ namespace PMRBDOdata.Controllers
             bookcategoryRepository = new BookCategoryRepository();
         }
 
-        [EnableQuery]
+        
         [HttpGet]
+        [EnableQuery]
         public async Task<ActionResult<IEnumerable<BookCategory>>> GetAllBookCategories()
         {
             var list = await bookcategoryRepository.GetAllBookCategories();

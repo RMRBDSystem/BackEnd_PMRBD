@@ -19,8 +19,9 @@ namespace PMRBDOdata.Controllers
             bookRepository = new BookRepository();
         }
 
-        [EnableQuery]
+        
         [HttpGet]
+        [EnableQuery]
         public async Task<ActionResult<IEnumerable<Book>>> GetAllBooks()
         {
             var list = await bookRepository.GetAllBooks();

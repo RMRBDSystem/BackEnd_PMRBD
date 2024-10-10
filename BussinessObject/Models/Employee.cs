@@ -9,6 +9,8 @@ public partial class Employee
 
     public string? Email { get; set; }
 
+    public string GoogleId { get; set; }
+
     public string Name { get; set; } = null!;
 
     public string? FrontIdcard { get; set; }
@@ -27,7 +29,7 @@ public partial class Employee
 
     public int? Status { get; set; }
 
-    public int? EmployeeTypeId { get; set; }
+    public int EmployeeTypeId { get; set; }
 
     public virtual ICollection<Book> Books { get; set; } = new List<Book>();
 

@@ -9,7 +9,7 @@ using Repository.Repository;
 
 namespace PMRBDOdata.Controllers
 {
-    [Route("Odata/Ebook")]
+    [Route("odata/Ebook")]
     [ApiController]
     public class EbookController : ODataController
     {

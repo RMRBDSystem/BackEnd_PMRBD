@@ -31,6 +31,9 @@ namespace BussinessObject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookId"));
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("BookName")
                         .HasColumnType("nvarchar(max)");
 
@@ -52,6 +55,9 @@ namespace BussinessObject.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("District_code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool?>("Isbn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -63,10 +69,31 @@ namespace BussinessObject.Migrations
                         .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
 
+                    b.Property<string>("Province_code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Required_note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.Property<int?>("UnitInStock")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Ward_code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("height")
+                        .HasColumnType("int");
+
+                    b.Property<int>("length")
+                        .HasColumnType("int");
+
+                    b.Property<int>("weight")
+                        .HasColumnType("int");
+
+                    b.Property<int>("width")
                         .HasColumnType("int");
 
                     b.HasKey("BookId");
@@ -111,17 +138,29 @@ namespace BussinessObject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("BookId")
+                        .HasColumnType("int")
+                        .HasColumnName("BookID");
 
-                    b.Property<int?>("CustomerId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int")
                         .HasColumnName("CustomerID");
 
+                    b.Property<string>("District_Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PaymentType")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasMaxLength(11)
                         .IsUnicode(false)
                         .HasColumnType("varchar(11)");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18, 0)");
 
                     b.Property<DateTime?>("PurchaseDate")
                         .HasColumnType("datetime");
@@ -129,40 +168,29 @@ namespace BussinessObject.Migrations
                     b.Property<int?>("PurchaseMethod")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Status")
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("ShipFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18, 0)");
 
+                    b.Property<string>("Ward_code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("OrderId");
+
+                    b.HasIndex("BookId");
 
                     b.HasIndex("CustomerId");
 
                     b.ToTable("BookOrder", (string)null);
-                });
-
-            modelBuilder.Entity("BusinessObject.Models.BookOrderDetail", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int")
-                        .HasColumnName("OrderID");
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int")
-                        .HasColumnName("BookID");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18, 0)");
-
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderId", "BookId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("BookOrderDetail", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObject.Models.BookRate", b =>
@@ -212,6 +240,40 @@ namespace BussinessObject.Migrations
                     b.HasIndex("EbookId");
 
                     b.ToTable("BookShelf", (string)null);
+                });
+
+            modelBuilder.Entity("BusinessObject.Models.CoinTransaction", b =>
+                {
+                    b.Property<int>("CoinTransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("CoinTransactionID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CoinTransactionId"));
+
+                    b.Property<int?>("CoinFluctuations")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("MoneyFluctuations")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("CoinTransactionId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CoinTransaction", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Comment", b =>
@@ -295,7 +357,7 @@ namespace BussinessObject.Migrations
                         .HasColumnType("int")
                         .HasColumnName("CensorID");
 
-                    b.Property<int?>("Coin")
+                    b.Property<int>("Coin")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
@@ -312,6 +374,11 @@ namespace BussinessObject.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("FrontIDCard");
 
+                    b.Property<string>("GoogleId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("IdcardNumber")
                         .HasMaxLength(12)
                         .IsUnicode(false)
@@ -326,7 +393,7 @@ namespace BussinessObject.Migrations
                     b.Property<string>("Portrait")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SellerStatus")
+                    b.Property<int>("SellerStatus")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
@@ -339,7 +406,10 @@ namespace BussinessObject.Migrations
 
                     b.HasIndex("CensorId");
 
-                    b.HasIndex(new[] { "Email" }, "UQ__Customer__A9D10534F0D4AE3A")
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("GoogleId")
                         .IsUnique();
 
                     b.ToTable("Customer", (string)null);
@@ -424,13 +494,17 @@ namespace BussinessObject.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("EmployeeTypeId")
+                    b.Property<int>("EmployeeTypeId")
                         .HasColumnType("int")
                         .HasColumnName("EmployeeTypeID");
 
                     b.Property<string>("FrontIdcard")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("FrontIDCard");
+
+                    b.Property<string>("GoogleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdcardNumBer")
                         .HasMaxLength(12)
@@ -753,17 +827,42 @@ namespace BussinessObject.Migrations
                     b.ToTable("Tag", (string)null);
                 });
 
-            modelBuilder.Entity("BusinessObject.Models.Transaction", b =>
+            modelBuilder.Entity("BussinessObject.Models.BookOrderStatus", b =>
                 {
-                    b.Property<int>("TransactionId")
+                    b.Property<int>("BookOrderStatusId")
+                        .HasColumnType("int")
+                        .HasColumnName("BookOrderStatusID");
+
+                    b.Property<int>("BookOrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StatusDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("BookOrderStatusId");
+
+                    b.ToTable("BookOrderStatus", (string)null);
+                });
+
+            modelBuilder.Entity("BussinessObject.Models.BookTransaction", b =>
+                {
+                    b.Property<int>("BookTransactionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("TransactionID");
+                        .HasColumnName("BookTransactionID");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookTransactionId"));
 
-                    b.Property<decimal?>("CoinFluctuations")
-                        .HasColumnType("decimal(18, 0)");
+                    b.Property<int?>("BookOrderId")
+                        .HasColumnType("int")
+                        .HasColumnName("BookOrderID");
+
+                    b.Property<int?>("CoinFluctuations")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int")
@@ -775,35 +874,95 @@ namespace BussinessObject.Migrations
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EbookId")
-                        .HasColumnType("int")
-                        .HasColumnName("EBookID");
-
                     b.Property<decimal?>("MoneyFluctuations")
                         .HasColumnType("decimal(18, 0)");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int")
-                        .HasColumnName("OrderID");
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("RecipeId")
+                    b.HasKey("BookTransactionId");
+
+                    b.HasIndex("BookOrderId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("BookTransaction", (string)null);
+                });
+
+            modelBuilder.Entity("BussinessObject.Models.EbookTransaction", b =>
+                {
+                    b.Property<int>("EbookTransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("EbookTransactionID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EbookTransactionId"));
+
+                    b.Property<int>("CoinFluctuations")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int")
+                        .HasColumnName("CustomerID");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EbookId")
+                        .HasColumnType("int")
+                        .HasColumnName("EBookID");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("EbookTransactionId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("EbookId");
+
+                    b.ToTable("EbookTransaction", (string)null);
+                });
+
+            modelBuilder.Entity("BussinessObject.Models.RecipeTransaction", b =>
+                {
+                    b.Property<int>("RecipeTransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("RecipeTransactionID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecipeTransactionId"));
+
+                    b.Property<int>("CoinFluctuations")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int")
+                        .HasColumnName("CustomerID");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RecipeId")
                         .HasColumnType("int")
                         .HasColumnName("RecipeID");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("TransactionId");
+                    b.HasKey("RecipeTransactionId");
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("EbookId");
-
-                    b.HasIndex("OrderId");
-
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("Transaction", (string)null);
+                    b.ToTable("RecipeTransaction", (string)null);
                 });
 
             modelBuilder.Entity("RecipeTag", b =>
@@ -849,31 +1008,22 @@ namespace BussinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.BookOrder", b =>
                 {
-                    b.HasOne("BusinessObject.Models.Customer", "Customer")
-                        .WithMany("BookOrders")
-                        .HasForeignKey("CustomerId")
-                        .HasConstraintName("FK__BookOrder__Custo__0B91BA14");
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("BusinessObject.Models.BookOrderDetail", b =>
-                {
                     b.HasOne("BusinessObject.Models.Book", "Book")
-                        .WithMany("BookOrderDetails")
+                        .WithMany("BookOrder")
                         .HasForeignKey("BookId")
                         .IsRequired()
                         .HasConstraintName("FK__BookOrder__BookI__0F624AF8");
 
-                    b.HasOne("BusinessObject.Models.BookOrder", "Order")
-                        .WithMany("BookOrderDetails")
-                        .HasForeignKey("OrderId")
+                    b.HasOne("BusinessObject.Models.Customer", "Customer")
+                        .WithMany("BookOrders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK__BookOrder__Order__0E6E26BF");
+                        .HasConstraintName("FK__BookOrder__Custo__0B91BA14");
 
                     b.Navigation("Book");
 
-                    b.Navigation("Order");
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.BookRate", b =>
@@ -912,6 +1062,15 @@ namespace BussinessObject.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Ebook");
+                });
+
+            modelBuilder.Entity("BusinessObject.Models.CoinTransaction", b =>
+                {
+                    b.HasOne("BusinessObject.Models.Customer", "Customer")
+                        .WithMany("CoinTransactions")
+                        .HasForeignKey("CustomerId");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Comment", b =>
@@ -991,6 +1150,8 @@ namespace BussinessObject.Migrations
                     b.HasOne("BusinessObject.Models.EmployeeType", "EmployeeType")
                         .WithMany("Employees")
                         .HasForeignKey("EmployeeTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("FK__Employee__Employ__5165187F");
 
                     b.Navigation("EmployeeType");
@@ -1102,33 +1263,66 @@ namespace BussinessObject.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("BusinessObject.Models.Transaction", b =>
+            modelBuilder.Entity("BussinessObject.Models.BookOrderStatus", b =>
+                {
+                    b.HasOne("BusinessObject.Models.BookOrder", "BookOrder")
+                        .WithMany("BookOrderStatuses")
+                        .HasForeignKey("BookOrderStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BookOrder");
+                });
+
+            modelBuilder.Entity("BussinessObject.Models.BookTransaction", b =>
+                {
+                    b.HasOne("BusinessObject.Models.BookOrder", "BookOrder")
+                        .WithMany("BookTransactions")
+                        .HasForeignKey("BookOrderId");
+
+                    b.HasOne("BusinessObject.Models.Customer", "Customer")
+                        .WithMany("BookTransactions")
+                        .HasForeignKey("CustomerId");
+
+                    b.Navigation("BookOrder");
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("BussinessObject.Models.EbookTransaction", b =>
                 {
                     b.HasOne("BusinessObject.Models.Customer", "Customer")
-                        .WithMany("Transactions")
+                        .WithMany("EbookTransactions")
                         .HasForeignKey("CustomerId")
-                        .HasConstraintName("FK__Transacti__Custo__1CBC4616");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BusinessObject.Models.Ebook", "Ebook")
-                        .WithMany("Transactions")
+                        .WithMany("EbookTransactions")
                         .HasForeignKey("EbookId")
-                        .HasConstraintName("FK__Transacti__EBook__1F98B2C1");
-
-                    b.HasOne("BusinessObject.Models.BookOrder", "Order")
-                        .WithMany("Transactions")
-                        .HasForeignKey("OrderId")
-                        .HasConstraintName("FK__Transacti__Order__1EA48E88");
-
-                    b.HasOne("BusinessObject.Models.Recipe", "Recipe")
-                        .WithMany("Transactions")
-                        .HasForeignKey("RecipeId")
-                        .HasConstraintName("FK__Transacti__Recip__1DB06A4F");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Customer");
 
                     b.Navigation("Ebook");
+                });
 
-                    b.Navigation("Order");
+            modelBuilder.Entity("BussinessObject.Models.RecipeTransaction", b =>
+                {
+                    b.HasOne("BusinessObject.Models.Customer", "Customer")
+                        .WithMany("RecipeTransactions")
+                        .HasForeignKey("CustomerId")
+                        .HasConstraintName("FK__Transacti__Custo__1CBC4616");
+
+                    b.HasOne("BusinessObject.Models.Recipe", "Recipe")
+                        .WithMany("RecipeTransactions")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK__Transacti__Recip__1DB06A4F");
+
+                    b.Navigation("Customer");
 
                     b.Navigation("Recipe");
                 });
@@ -1150,7 +1344,7 @@ namespace BussinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Book", b =>
                 {
-                    b.Navigation("BookOrderDetails");
+                    b.Navigation("BookOrder");
 
                     b.Navigation("BookRates");
 
@@ -1168,9 +1362,9 @@ namespace BussinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.BookOrder", b =>
                 {
-                    b.Navigation("BookOrderDetails");
+                    b.Navigation("BookOrderStatuses");
 
-                    b.Navigation("Transactions");
+                    b.Navigation("BookTransactions");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Comment", b =>
@@ -1186,9 +1380,15 @@ namespace BussinessObject.Migrations
 
                     b.Navigation("BookShelves");
 
+                    b.Navigation("BookTransactions");
+
                     b.Navigation("Books");
 
+                    b.Navigation("CoinTransactions");
+
                     b.Navigation("Comments");
+
+                    b.Navigation("EbookTransactions");
 
                     b.Navigation("Ebooks");
 
@@ -1198,11 +1398,11 @@ namespace BussinessObject.Migrations
 
                     b.Navigation("RecipeRates");
 
+                    b.Navigation("RecipeTransactions");
+
                     b.Navigation("Recipes");
 
                     b.Navigation("ServiceFeedBacks");
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Ebook", b =>
@@ -1211,7 +1411,7 @@ namespace BussinessObject.Migrations
 
                     b.Navigation("Comments");
 
-                    b.Navigation("Transactions");
+                    b.Navigation("EbookTransactions");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Employee", b =>
@@ -1244,7 +1444,7 @@ namespace BussinessObject.Migrations
 
                     b.Navigation("RecipeRates");
 
-                    b.Navigation("Transactions");
+                    b.Navigation("RecipeTransactions");
                 });
 #pragma warning restore 612, 618
         }
