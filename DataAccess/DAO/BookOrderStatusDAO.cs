@@ -26,7 +26,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.BookOrderStatuses.Where(x => x.BookOrderId == id).ToListAsync();
+                return await _context.BookOrderStatuses.Where(x => x.OrderId == id).ToListAsync();
             }catch (Exception ex)
             {
                 throw new Exception("Failed to retrieve book order statuses by book order id", ex);

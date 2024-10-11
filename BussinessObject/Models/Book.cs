@@ -13,25 +13,17 @@ public partial class Book
 
     public int? Price { get; set; }
 
-    public int weight { get; set; }
+    public int Weight { get; set; }
 
-    public int length { get; set; }
+    public int Length { get; set; }
 
-    public int width { get; set; }
+    public int Width { get; set; }
 
-    public int height { get; set; }
+    public int Height { get; set; }
 
     public string? Required_note { get; set; }
 
-    public string? Address { get; set; }
-
     public int? UnitInStock { get; set; }
-
-    public string? Ward_code { get; set; }
-
-    public string? District_code { get; set; }
-
-    public string? Province_code { get; set; }
 
     public int? Status { get; set; }
 
@@ -43,7 +35,7 @@ public partial class Book
 
     public int? CategoryId { get; set; }
 
-    public bool? Isbn { get; set; }
+    public string? Isbn { get; set; }
 
     public virtual ICollection<BookOrder> BookOrder { get; set; } = new List<BookOrder>();
 

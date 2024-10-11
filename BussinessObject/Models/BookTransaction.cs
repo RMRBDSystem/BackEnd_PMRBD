@@ -13,7 +13,7 @@ namespace BussinessObject.Models
 
         public int? CustomerId { get; set; }
 
-        public int? BookOrderId { get; set; }
+        public int? OrderId { get; set; }
 
         public decimal? MoneyFluctuations { get; set; }
 
