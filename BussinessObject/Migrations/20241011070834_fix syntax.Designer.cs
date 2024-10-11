@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BussinessObject.Migrations
 {
     [DbContext(typeof(RmrbdContext))]
-    [Migration("20241009065028_add Transacton tables, delete BookOrderDetail, Edit BookOrder")]
-    partial class addTransactontablesdeleteBookOrderDetailEditBookOrder
+    [Migration("20241011070834_fix syntax")]
+    partial class fixsyntax
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,9 +33,6 @@ namespace BussinessObject.Migrations
                         .HasColumnName("BookID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookId"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BookName")
                         .HasColumnType("nvarchar(max)");
@@ -58,22 +55,21 @@ namespace BussinessObject.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("District_code")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
 
-                    b.Property<bool?>("Isbn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasColumnName("ISBN")
-                        .HasDefaultValueSql("((0))");
+                    b.Property<string>("Isbn")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("ISBN");
+
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
 
                     b.Property<int?>("Price")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
-
-                    b.Property<string>("Province_code")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Required_note")
                         .HasColumnType("nvarchar(max)");
@@ -84,19 +80,10 @@ namespace BussinessObject.Migrations
                     b.Property<int?>("UnitInStock")
                         .HasColumnType("int");
 
-                    b.Property<string>("Ward_code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("height")
+                    b.Property<int>("Weight")
                         .HasColumnType("int");
 
-                    b.Property<int>("length")
-                        .HasColumnType("int");
-
-                    b.Property<int>("weight")
-                        .HasColumnType("int");
-
-                    b.Property<int>("width")
+                    b.Property<int>("Width")
                         .HasColumnType("int");
 
                     b.HasKey("BookId");
@@ -245,6 +232,40 @@ namespace BussinessObject.Migrations
                     b.ToTable("BookShelf", (string)null);
                 });
 
+            modelBuilder.Entity("BusinessObject.Models.CoinTransaction", b =>
+                {
+                    b.Property<int>("CoinTransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("CoinTransactionID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CoinTransactionId"));
+
+                    b.Property<int?>("CoinFluctuations")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("MoneyFluctuations")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("CoinTransactionId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CoinTransaction", (string)null);
+                });
+
             modelBuilder.Entity("BusinessObject.Models.Comment", b =>
                 {
                     b.Property<int>("CommentId")
@@ -312,9 +333,6 @@ namespace BussinessObject.Migrations
                         .HasColumnType("int")
                         .HasDefaultValueSql("((1))");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
@@ -333,6 +351,10 @@ namespace BussinessObject.Migrations
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("date");
+
+                    b.Property<string>("District_code")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -362,14 +384,26 @@ namespace BussinessObject.Migrations
                     b.Property<string>("Portrait")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Province_code")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<int>("SellerStatus")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
 
+                    b.Property<string>("ShopAddress")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ward_code")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("CustomerId");
 
@@ -473,7 +507,7 @@ namespace BussinessObject.Migrations
 
                     b.Property<string>("GoogleId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("IdcardNumBer")
                         .HasMaxLength(12)
@@ -500,7 +534,14 @@ namespace BussinessObject.Migrations
 
                     b.HasKey("EmployeeId");
 
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
+
                     b.HasIndex("EmployeeTypeId");
+
+                    b.HasIndex("GoogleId")
+                        .IsUnique();
 
                     b.HasIndex(new[] { "Email" }, "UQ__Employee__A9D10534EB410196")
                         .IsUnique()
@@ -610,7 +651,10 @@ namespace BussinessObject.Migrations
                         .HasColumnType("int")
                         .HasColumnName("CustomerID");
 
-                    b.Property<int?>("NumberofService")
+                    b.Property<string>("Ingredient")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NumberOfService")
                         .HasColumnType("int");
 
                     b.Property<string>("Nutrition")
@@ -661,7 +705,7 @@ namespace BussinessObject.Migrations
                     b.Property<string>("Ingredient")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NumberofService")
+                    b.Property<int?>("NumberOfService")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValueSql("((1))");
@@ -799,10 +843,13 @@ namespace BussinessObject.Migrations
             modelBuilder.Entity("BussinessObject.Models.BookOrderStatus", b =>
                 {
                     b.Property<int>("BookOrderStatusId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("BookOrderStatusID");
 
-                    b.Property<int>("BookOrderId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookOrderStatusId"));
+
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -813,6 +860,8 @@ namespace BussinessObject.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("BookOrderStatusId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("BookOrderStatus", (string)null);
                 });
@@ -825,10 +874,6 @@ namespace BussinessObject.Migrations
                         .HasColumnName("BookTransactionID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookTransactionId"));
-
-                    b.Property<int?>("BookOrderId")
-                        .HasColumnType("int")
-                        .HasColumnName("BookOrderID");
 
                     b.Property<int?>("CoinFluctuations")
                         .HasColumnType("int");
@@ -846,14 +891,18 @@ namespace BussinessObject.Migrations
                     b.Property<decimal?>("MoneyFluctuations")
                         .HasColumnType("decimal(18, 0)");
 
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int")
+                        .HasColumnName("BookOrderID");
+
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("BookTransactionId");
 
-                    b.HasIndex("BookOrderId");
-
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("BookTransaction", (string)null);
                 });
@@ -896,6 +945,21 @@ namespace BussinessObject.Migrations
                     b.ToTable("EbookTransaction", (string)null);
                 });
 
+            modelBuilder.Entity("BussinessObject.Models.RecipeTag", b =>
+                {
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecipeId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("RecipeTag", (string)null);
+                });
+
             modelBuilder.Entity("BussinessObject.Models.RecipeTransaction", b =>
                 {
                     b.Property<int>("RecipeTransactionId")
@@ -932,23 +996,6 @@ namespace BussinessObject.Migrations
                     b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeTransaction", (string)null);
-                });
-
-            modelBuilder.Entity("RecipeTag", b =>
-                {
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int")
-                        .HasColumnName("RecipeID");
-
-                    b.Property<int>("TagId")
-                        .HasColumnType("int")
-                        .HasColumnName("TagID");
-
-                    b.HasKey("RecipeId", "TagId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("RecipeTag", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Book", b =>
@@ -1031,6 +1078,15 @@ namespace BussinessObject.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Ebook");
+                });
+
+            modelBuilder.Entity("BusinessObject.Models.CoinTransaction", b =>
+                {
+                    b.HasOne("BusinessObject.Models.Customer", "Customer")
+                        .WithMany("CoinTransactions")
+                        .HasForeignKey("CustomerId");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Comment", b =>
@@ -1227,7 +1283,7 @@ namespace BussinessObject.Migrations
                 {
                     b.HasOne("BusinessObject.Models.BookOrder", "BookOrder")
                         .WithMany("BookOrderStatuses")
-                        .HasForeignKey("BookOrderStatusId")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1236,13 +1292,13 @@ namespace BussinessObject.Migrations
 
             modelBuilder.Entity("BussinessObject.Models.BookTransaction", b =>
                 {
-                    b.HasOne("BusinessObject.Models.BookOrder", "BookOrder")
-                        .WithMany("BookTransactions")
-                        .HasForeignKey("BookOrderId");
-
                     b.HasOne("BusinessObject.Models.Customer", "Customer")
                         .WithMany("BookTransactions")
                         .HasForeignKey("CustomerId");
+
+                    b.HasOne("BusinessObject.Models.BookOrder", "BookOrder")
+                        .WithMany("BookTransactions")
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("BookOrder");
 
@@ -1268,6 +1324,25 @@ namespace BussinessObject.Migrations
                     b.Navigation("Ebook");
                 });
 
+            modelBuilder.Entity("BussinessObject.Models.RecipeTag", b =>
+                {
+                    b.HasOne("BusinessObject.Models.Recipe", "Recipe")
+                        .WithMany("RecipeTags")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BusinessObject.Models.Tag", "Tag")
+                        .WithMany("RecipeTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("BussinessObject.Models.RecipeTransaction", b =>
                 {
                     b.HasOne("BusinessObject.Models.Customer", "Customer")
@@ -1285,21 +1360,6 @@ namespace BussinessObject.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Recipe");
-                });
-
-            modelBuilder.Entity("RecipeTag", b =>
-                {
-                    b.HasOne("BusinessObject.Models.Recipe", null)
-                        .WithMany()
-                        .HasForeignKey("RecipeId")
-                        .IsRequired()
-                        .HasConstraintName("FK__RecipeTag__Recip__66603565");
-
-                    b.HasOne("BusinessObject.Models.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagId")
-                        .IsRequired()
-                        .HasConstraintName("FK__RecipeTag__TagID__6754599E");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Book", b =>
@@ -1343,6 +1403,8 @@ namespace BussinessObject.Migrations
                     b.Navigation("BookTransactions");
 
                     b.Navigation("Books");
+
+                    b.Navigation("CoinTransactions");
 
                     b.Navigation("Comments");
 
@@ -1402,7 +1464,14 @@ namespace BussinessObject.Migrations
 
                     b.Navigation("RecipeRates");
 
+                    b.Navigation("RecipeTags");
+
                     b.Navigation("RecipeTransactions");
+                });
+
+            modelBuilder.Entity("BusinessObject.Models.Tag", b =>
+                {
+                    b.Navigation("RecipeTags");
                 });
 #pragma warning restore 612, 618
         }

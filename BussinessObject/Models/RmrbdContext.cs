@@ -92,7 +92,7 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.CreateById).HasColumnName("CreateByID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Isbn)
-                .HasDefaultValueSql("((0))")
+                .HasMaxLength(50)
                 .HasColumnName("ISBN");
             entity.Property(e => e.Price).HasDefaultValueSql("((0))");
 
@@ -239,6 +239,10 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.DateOfBirth).HasColumnType("date");
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.GoogleId).HasMaxLength(100);
+            entity.Property(e => e.ShopAddress).HasMaxLength(200);
+            entity.Property(e => e.Ward_code).HasMaxLength(10);
+            entity.Property(e => e.District_code).HasMaxLength(10);
+            entity.Property(e => e.Province_code).HasMaxLength(10);
             entity.Property(e => e.FrontIdcard).HasColumnName("FrontIDCard");
             entity.Property(e => e.IdcardNumber)
                 .HasMaxLength(12)

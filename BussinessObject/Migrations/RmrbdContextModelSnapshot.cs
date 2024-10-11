@@ -56,10 +56,9 @@ namespace BussinessObject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Isbn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ISBN")
-                        .HasDefaultValueSql("((0))");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("ISBN");
 
                     b.Property<int>("Length")
                         .HasColumnType("int");
@@ -351,7 +350,8 @@ namespace BussinessObject.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("District_code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -382,7 +382,8 @@ namespace BussinessObject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Province_code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("SellerStatus")
                         .ValueGeneratedOnAdd()
@@ -390,14 +391,16 @@ namespace BussinessObject.Migrations
                         .HasDefaultValueSql("((0))");
 
                     b.Property<string>("ShopAddress")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Ward_code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("CustomerId");
 
