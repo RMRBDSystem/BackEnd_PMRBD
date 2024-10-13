@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BussinessObject.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 namespace BusinessObject.Models;
@@ -9,13 +11,15 @@ public partial class Customer
 
     public string Email { get; set; } = null!;
 
+    public string GoogleId { get; set; } = null!;
+
     public string UserName { get; set; } = null!;
 
     public string? PhoneNumber { get; set; }
 
     public string? Avatar { get; set; }
 
-    public int? Coin { get; set; }
+    public int Coin { get; set; } = 0;
 
     public int? AccountStatus { get; set; }
 
@@ -27,37 +31,50 @@ public partial class Customer
 
     public string? IdcardNumber { get; set; }
 
-    public string? Address { get; set; }
+    public string? ShopAddress { get; set; }
+
+    public string? Ward_code { get; set; }
+
+    public string? District_code { get; set; }
+
+    public string? Province_code { get; set; }
 
     public DateTime? DateOfBirth { get; set; }
 
-    public int? SellerStatus { get; set; }
+    public int SellerStatus { get; set; } = 0;
 
     public int? CensorId { get; set; }
 
-    public virtual ICollection<BookOrder> BookOrders { get; set; } = new List<BookOrder>();
+    public virtual ICollection<BookOrder>? BookOrders { get; set; } = new List<BookOrder>();
 
-    public virtual ICollection<BookRate> BookRates { get; set; } = new List<BookRate>();
+    public virtual ICollection<BookRate>? BookRates { get; set; } = new List<BookRate>();
 
-    public virtual ICollection<BookShelf> BookShelves { get; set; } = new List<BookShelf>();
+    public virtual ICollection<BookShelf>? BookShelves { get; set; } = new List<BookShelf>();
 
-    public virtual ICollection<Book> Books { get; set; } = new List<Book>();
+    public virtual ICollection<Book>? Books { get; set; } = new List<Book>();
 
     public virtual Employee? Censor { get; set; }
 
-    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    public virtual ICollection<Comment>? Comments { get; set; } = new List<Comment>();
 
-    public virtual ICollection<Ebook> Ebooks { get; set; } = new List<Ebook>();
+    public virtual ICollection<Ebook>? Ebooks { get; set; } = new List<Ebook>();
 
-    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+    public virtual ICollection<Notification>? Notifications { get; set; } = new List<Notification>();
 
-    public virtual ICollection<PersonalRecipe> PersonalRecipes { get; set; } = new List<PersonalRecipe>();
+    public virtual ICollection<PersonalRecipe>? PersonalRecipes { get; set; } = new List<PersonalRecipe>();
 
-    public virtual ICollection<RecipeRate> RecipeRates { get; set; } = new List<RecipeRate>();
+    public virtual ICollection<RecipeRate>? RecipeRates { get; set; } = new List<RecipeRate>();
 
-    public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
+    public virtual ICollection<Recipe>? Recipes { get; set; } = new List<Recipe>();
 
-    public virtual ICollection<ServiceFeedBack> ServiceFeedBacks { get; set; } = new List<ServiceFeedBack>();
+    public virtual ICollection<ServiceFeedBack>? ServiceFeedBacks { get; set; } = new List<ServiceFeedBack>();
 
-    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<RecipeTransaction>? RecipeTransactions { get; set; } = new List<RecipeTransaction>();
+
+    public virtual ICollection<EbookTransaction>? EbookTransactions { get; set; } = new List<EbookTransaction>();
+
+    public virtual ICollection<BookTransaction>? BookTransactions { get; set; } = new List<BookTransaction>();
+
+    public virtual ICollection<CoinTransaction>? CoinTransactions { get; set; } = new List<CoinTransaction>();
+
 }

@@ -13,6 +13,16 @@ public partial class Book
 
     public int? Price { get; set; }
 
+    public int Weight { get; set; }
+
+    public int Length { get; set; }
+
+    public int Width { get; set; }
+
+    public int Height { get; set; }
+
+    public string? Required_note { get; set; }
+
     public int? UnitInStock { get; set; }
 
     public int? Status { get; set; }
@@ -25,9 +35,9 @@ public partial class Book
 
     public int? CategoryId { get; set; }
 
-    public bool? Isbn { get; set; }
+    public string? Isbn { get; set; }
 
-    public virtual ICollection<BookOrderDetail> BookOrderDetails { get; set; } = new List<BookOrderDetail>();
+    public virtual ICollection<BookOrder> BookOrder { get; set; } = new List<BookOrder>();
 
     public virtual ICollection<BookRate> BookRates { get; set; } = new List<BookRate>();
 

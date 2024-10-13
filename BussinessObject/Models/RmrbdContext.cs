@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BussinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -22,8 +23,6 @@ public partial class RmrbdContext : DbContext
     public virtual DbSet<BookCategory> BookCategories { get; set; }
 
     public virtual DbSet<BookOrder> BookOrders { get; set; }
-
-    public virtual DbSet<BookOrderDetail> BookOrderDetails { get; set; }
 
     public virtual DbSet<BookRate> BookRates { get; set; }
 
@@ -53,7 +52,18 @@ public partial class RmrbdContext : DbContext
 
     public virtual DbSet<Tag> Tags { get; set; }
 
-    public virtual DbSet<Transaction> Transactions { get; set; }
+    public virtual DbSet<RecipeTransaction> RecipeTransactions { get; set; }
+
+    public virtual DbSet<EbookTransaction> EbookTransactions { get; set; }
+
+    public virtual DbSet<BookTransaction> BookTransactions { get; set; }
+    
+    public virtual DbSet<BookOrderStatus> BookOrderStatuses { get; set; }
+
+    public virtual DbSet<CoinTransaction> CoinTransactions { get; set; }
+
+    public virtual DbSet<RecipeTag> RecipeTags { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -82,7 +92,7 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.CreateById).HasColumnName("CreateByID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Isbn)
-                .HasDefaultValueSql("((0))")
+                .HasMaxLength(50)
                 .HasColumnName("ISBN");
             entity.Property(e => e.Price).HasDefaultValueSql("((0))");
 
@@ -115,6 +125,15 @@ public partial class RmrbdContext : DbContext
             entity.ToTable("BookOrder");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.BookId).HasColumnName("BookID");
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
+
+            entity.HasOne(d => d.Book).WithMany(p => p.BookOrder)
+                .HasForeignKey(d => d.BookId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__BookOrder__BookI__0F624AF8");
+
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(11)
@@ -125,27 +144,6 @@ public partial class RmrbdContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.BookOrders)
                 .HasForeignKey(d => d.CustomerId)
                 .HasConstraintName("FK__BookOrder__Custo__0B91BA14");
-        });
-
-        modelBuilder.Entity<BookOrderDetail>(entity =>
-        {
-            entity.HasKey(e => new { e.OrderId, e.BookId });
-
-            entity.ToTable("BookOrderDetail");
-
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.BookId).HasColumnName("BookID");
-            entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
-
-            entity.HasOne(d => d.Book).WithMany(p => p.BookOrderDetails)
-                .HasForeignKey(d => d.BookId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BookOrder__BookI__0F624AF8");
-
-            entity.HasOne(d => d.Order).WithMany(p => p.BookOrderDetails)
-                .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BookOrder__Order__0E6E26BF");
         });
 
         modelBuilder.Entity<BookRate>(entity =>
@@ -230,7 +228,8 @@ public partial class RmrbdContext : DbContext
 
             entity.ToTable("Customer");
 
-            entity.HasIndex(e => e.Email, "UQ__Customer__A9D10534F0D4AE3A").IsUnique();
+            entity.HasIndex(e => e.Email).IsUnique();
+            entity.HasIndex(e => e.GoogleId).IsUnique();
 
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.AccountStatus).HasDefaultValueSql("((1))");
@@ -239,6 +238,11 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.Coin).HasDefaultValueSql("((0))");
             entity.Property(e => e.DateOfBirth).HasColumnType("date");
             entity.Property(e => e.Email).HasMaxLength(100);
+            entity.Property(e => e.GoogleId).HasMaxLength(100);
+            entity.Property(e => e.ShopAddress).HasMaxLength(200);
+            entity.Property(e => e.Ward_code).HasMaxLength(10);
+            entity.Property(e => e.District_code).HasMaxLength(10);
+            entity.Property(e => e.Province_code).HasMaxLength(10);
             entity.Property(e => e.FrontIdcard).HasColumnName("FrontIDCard");
             entity.Property(e => e.IdcardNumber)
                 .HasMaxLength(12)
@@ -287,6 +291,9 @@ public partial class RmrbdContext : DbContext
             entity.HasKey(e => e.EmployeeId);
 
             entity.ToTable("Employee");
+
+            entity.HasIndex(e => e.Email).IsUnique();
+            entity.HasIndex(e => e.GoogleId).IsUnique();
 
             entity.HasIndex(e => e.Email, "UQ__Employee__A9D10534EB410196").IsUnique();
 
@@ -391,7 +398,7 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.CensorId).HasColumnName("CensorID");
             entity.Property(e => e.CreateById).HasColumnName("CreateByID");
             entity.Property(e => e.CreateDate).HasColumnType("date");
-            entity.Property(e => e.NumberofService).HasDefaultValueSql("((1))");
+            entity.Property(e => e.NumberOfService).HasDefaultValueSql("((1))");
             entity.Property(e => e.Price).HasDefaultValueSql("((0))");
             entity.Property(e => e.Status).HasDefaultValueSql("((-1))");
             entity.Property(e => e.UpdateDate).HasColumnType("date");
@@ -404,24 +411,7 @@ public partial class RmrbdContext : DbContext
                 .HasForeignKey(d => d.CreateById)
                 .HasConstraintName("FK__Recipe__CreateBy__60A75C0F");
 
-            entity.HasMany(d => d.Tags).WithMany(p => p.Recipes)
-                .UsingEntity<Dictionary<string, object>>(
-                    "RecipeTag",
-                    r => r.HasOne<Tag>().WithMany()
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__RecipeTag__TagID__6754599E"),
-                    l => l.HasOne<Recipe>().WithMany()
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__RecipeTag__Recip__66603565"),
-                    j =>
-                    {
-                        j.HasKey("RecipeId", "TagId");
-                        j.ToTable("RecipeTag");
-                        j.IndexerProperty<int>("RecipeId").HasColumnName("RecipeID");
-                        j.IndexerProperty<int>("TagId").HasColumnName("TagID");
-                    });
+            
         });
 
         modelBuilder.Entity<RecipeRate>(entity =>
@@ -476,37 +466,99 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.Status).HasDefaultValueSql("((1))");
         });
 
-        modelBuilder.Entity<Transaction>(entity =>
+        modelBuilder.Entity<RecipeTransaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId);
+            entity.HasKey(e => e.RecipeTransactionId);
 
-            entity.ToTable("Transaction");
+            entity.ToTable("RecipeTransaction");
 
-            entity.Property(e => e.TransactionId).HasColumnName("TransactionID");
-            entity.Property(e => e.CoinFluctuations).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.RecipeTransactionId).HasColumnName("RecipeTransactionID");
+            entity.Property(e => e.CoinFluctuations).HasColumnType("int");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.Date).HasColumnType("datetime");
-            entity.Property(e => e.EbookId).HasColumnName("EBookID");
-            entity.Property(e => e.MoneyFluctuations).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.RecipeId).HasColumnName("RecipeID");
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Transactions)
+            entity.HasOne(d => d.Customer).WithMany(p => p.RecipeTransactions)
                 .HasForeignKey(d => d.CustomerId)
                 .HasConstraintName("FK__Transacti__Custo__1CBC4616");
 
-            entity.HasOne(d => d.Ebook).WithMany(p => p.Transactions)
-                .HasForeignKey(d => d.EbookId)
-                .HasConstraintName("FK__Transacti__EBook__1F98B2C1");
-
-            entity.HasOne(d => d.Order).WithMany(p => p.Transactions)
-                .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__Transacti__Order__1EA48E88");
-
-            entity.HasOne(d => d.Recipe).WithMany(p => p.Transactions)
+            entity.HasOne(d => d.Recipe).WithMany(p => p.RecipeTransactions)
                 .HasForeignKey(d => d.RecipeId)
                 .HasConstraintName("FK__Transacti__Recip__1DB06A4F");
         });
+
+        modelBuilder.Entity<EbookTransaction>(entity =>
+        {
+            entity.HasKey(e => e.EbookTransactionId);
+
+            entity.ToTable("EbookTransaction");
+
+            entity.Property(e => e.EbookTransactionId).HasColumnName("EbookTransactionID");
+            entity.Property(e => e.CoinFluctuations).HasColumnType("int");
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.Date).HasColumnType("datetime");
+            entity.Property(e => e.EbookId).HasColumnName("EBookID");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.EbookTransactions)
+                .HasForeignKey(d => d.CustomerId);
+
+            entity.HasOne(d => d.Ebook).WithMany(p => p.EbookTransactions)
+                .HasForeignKey(d => d.EbookId);
+        });
+
+        modelBuilder.Entity<BookTransaction>(entity =>
+        {
+            entity.HasKey(e => e.BookTransactionId);
+
+            entity.ToTable("BookTransaction");
+
+            entity.Property(e => e.BookTransactionId).HasColumnName("BookTransactionID");
+            entity.Property(e => e.MoneyFluctuations).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.CoinFluctuations).HasColumnType("int");
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.Date).HasColumnType("datetime");
+            entity.Property(e => e.OrderId).HasColumnName("BookOrderID");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.BookTransactions)
+                .HasForeignKey(d => d.CustomerId);
+
+            entity.HasOne(d => d.BookOrder).WithMany(p => p.BookTransactions)
+                .HasForeignKey(d => d.OrderId);
+        });
+
+        modelBuilder.Entity<BookOrderStatus>(entity =>
+        {
+            entity.HasKey(e => e.BookOrderStatusId);
+            entity.ToTable("BookOrderStatus");
+
+            entity.Property(e => e.BookOrderStatusId).HasColumnName("BookOrderStatusID");
+
+            entity.HasOne(d => d.BookOrder).WithMany(p => p.BookOrderStatuses)
+            .HasForeignKey(d => d.OrderId);
+        });
+
+        modelBuilder.Entity<CoinTransaction>(entity =>
+        {
+            entity.HasKey(e => e.CoinTransactionId);
+            entity.ToTable("CoinTransaction");
+
+            entity.Property(e => e.CoinTransactionId).HasColumnName("CoinTransactionID");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.CoinTransactions).
+                HasForeignKey(d => d.CustomerId);
+        });
+
+        modelBuilder.Entity<RecipeTag>(entity =>
+        {
+            entity.HasKey(e => new { e.RecipeId, e.TagId });
+
+            entity.ToTable("RecipeTag");
+
+            entity.HasOne(d => d.Recipe).WithMany(p => p.RecipeTags).HasForeignKey(d => d.RecipeId);
+
+            entity.HasOne(d => d.Tag).WithMany(p => p.RecipeTags).HasForeignKey(d => d.TagId);
+        });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

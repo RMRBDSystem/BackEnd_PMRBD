@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BussinessObject.Models;
+using System;
 using System.Collections.Generic;
 
 namespace BusinessObject.Models;
@@ -37,5 +38,5 @@ public partial class Ebook
 
     public virtual Customer? CreateBy { get; set; }
 
-    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<EbookTransaction> EbookTransactions { get; set; } = new List<EbookTransaction>();
 }
