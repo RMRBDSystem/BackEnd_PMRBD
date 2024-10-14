@@ -18,8 +18,4 @@
     <ProjectReference Include="..\BussinessObject\BussinessObject.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Customer\" />
-  </ItemGroup>
-
 </Project>
