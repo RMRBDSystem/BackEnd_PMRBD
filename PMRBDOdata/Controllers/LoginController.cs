@@ -41,6 +41,7 @@ namespace PMRBDOdata.Controllers
                         Email = request.Email,
                         UserName = request.UserName,
                         Coin = 0,
+                        Avatar = "/Image/Avatar/NullAvatar.jpg",
                         SellerStatus = 0,
                         AccountStatus = 1
                     };
