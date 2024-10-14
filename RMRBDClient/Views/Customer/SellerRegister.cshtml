@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "PersonalProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>PersonalProfile</h1>
+<select id="provinceSelect">
+    @foreach (var item in ViewBag.provinces)
+    {
+        <option value="@item.ProvinceID">@item.ProvinceName</option>
+    }
+</select>
+
+<select id="districtSelect">
+</select>
+
+<select id="wardSelect">
+</select>
+
+<button id="submitButton">Submit</button>
+
+<div id="container"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#provinceSelect').change(function () {
+            var selectedProvinceID = $(this).val();
+
+            $.ajax({
+                url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district',
+                method: 'GET',
+                headers: {
+                    'token': '4520b255-7ffa-11ef-8e53-0a00184fe694'
+                },
+                data: {
+                    province_id: selectedProvinceID
+                },
+                success: function (response) {
+                    $('#districtSelect').empty();
+                    $.each(response.data, function (index, item) {
+                        var option = $('<option>').val(item.DistrictID).text(item.DistrictName);
+                        $('#districtSelect').append(option);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 401) {
+                        console.log('Unauthorized');
+                    } else {
+                        console.log('Error: ' + error);
+                    }
+                }
+            });
+        });
+
+        $('#districtSelect').change(function () {
+            var selectedDistrictID = $(this).val();
+
+            $.ajax({
+                url: 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward',
+                method: 'GET',
+                headers: {
+                    'token': '4520b255-7ffa-11ef-8e53-0a00184fe694'
+                },
+                data: {
+                    district_id: selectedDistrictID
+                },
+                success: function (response) {
+                    $('#wardSelect').empty();
+                    $.each(response.data, function (index, item) {
+                        var option = $('<option>').val(item.WardCode).text(item.WardName);
+                        $('#wardSelect').append(option);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 401) {
+                        console.log('Unauthorized');
+                    } else {
+                        console.log('Error: ' + error);
+                    }
+                }
+            });
+        });
+
+        $('#submitButton').click(function () {
+            // Add your submit logic here
+            // You can access the selected values using $('#provinceSelect').val(), $('#districtSelect').val(), and $('#wardSelect').val()
+        });
+    });
+</script>
+

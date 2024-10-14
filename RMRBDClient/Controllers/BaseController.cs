@@ -26,6 +26,9 @@ namespace RMRBDClient.Controllers
         protected readonly string ServiceFeedBackUrl;
         protected readonly string TagUrl;
         protected readonly string TransactionUrl;
+        protected readonly string RecipeTagUrl;
+        protected readonly string GHNUrl;
+        protected readonly string GHNToken;
 
         public BaseController(IConfiguration configuration)
         {
@@ -55,6 +58,9 @@ namespace RMRBDClient.Controllers
             ServiceFeedBackUrl = apiSettings.ServiceFeedBackUrl;
             TagUrl = apiSettings.TagUrl;
             TransactionUrl = apiSettings.TransactionUrl;
+            RecipeTagUrl = apiSettings.RecipeTagUrl;
+            GHNUrl = apiSettings.GHNUrl;
+            GHNToken = apiSettings.GHNToken;
         }
     }
 }

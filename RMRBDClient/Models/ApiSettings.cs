@@ -21,6 +21,8 @@
         public string ServiceFeedBackUrl { get; set; }
         public string TagUrl { get; set; }
         public string TransactionUrl { get; set; }
-        
+        public string RecipeTagUrl { get; set; }
+        public string GHNUrl { get; set; }      
+        public string GHNToken { get; set; }
     }
 }
