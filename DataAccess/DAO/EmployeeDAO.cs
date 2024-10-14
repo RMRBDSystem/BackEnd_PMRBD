@@ -62,5 +62,18 @@ namespace DataAccess
                 throw new Exception("Failed to update employee", ex);
             }
         }
+
+        public async Task<Employee?> GetEmployeeByGoogleId(string googleId)
+        {
+            try
+            {
+                return await _context.Employees.FirstOrDefaultAsync(e => e.GoogleId == googleId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve employee by GoogleId", ex);
+            }
+        }
+
     }
 }

@@ -62,5 +62,18 @@ namespace DataAccess
                 throw new Exception("Failed to update customer", ex);
             }
         }
+
+        public async Task<Customer?> GetCustomerByGoogleId(string googleId)
+        {
+            try
+            {
+                return await _context.Customers.FirstOrDefaultAsync(c => c.GoogleId == googleId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve customer", ex);
+            }
+        }
+
     }
 }

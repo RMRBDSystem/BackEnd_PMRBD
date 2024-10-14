@@ -13,5 +13,6 @@ namespace Repository.IRepository
         Task<Employee> GetEmployeeById(int id);
         Task AddEmployee(Employee employee);
         Task UpdateEmployee(Employee employee);
+        Task<Employee> GetEmployeeByGoogleId(string googleId);
     }
 }

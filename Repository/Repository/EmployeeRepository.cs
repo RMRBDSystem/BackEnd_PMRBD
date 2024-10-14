@@ -15,5 +15,6 @@ namespace Repository.Repository
         public async Task<Employee> GetEmployeeById(int id) => await EmployeeDAO.Instance.GetEmployeeById(id);
         public async Task AddEmployee(Employee employee) => await EmployeeDAO.Instance.AddEmployee(employee);
         public async Task UpdateEmployee(Employee employee) => await EmployeeDAO.Instance.UpdateEmployee(employee);
+        public async Task<Employee> GetEmployeeByGoogleId(string googleId) => await EmployeeDAO.Instance.GetEmployeeByGoogleId(googleId);
     }
 }
