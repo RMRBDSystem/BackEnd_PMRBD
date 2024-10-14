@@ -13,5 +13,6 @@ namespace Repository.IRepository
         Task<Customer> GetCustomerById(int id);
         Task AddCustomer(Customer customer);
         Task UpdateCustomer(Customer customer);
+        Task<Customer> GetCustomerByGoogleId(string googleId);
     }
 }

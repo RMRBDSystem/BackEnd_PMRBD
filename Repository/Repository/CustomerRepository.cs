@@ -15,5 +15,6 @@ namespace Repository.Repository
         public async Task<IEnumerable<Customer>> GetAllCustomers() => await CustomerDAO.Instance.GetAllCustomers();
         public async Task AddCustomer(Customer customer) => await CustomerDAO.Instance.AddCustomer(customer);
         public async Task UpdateCustomer(Customer customer) => await CustomerDAO.Instance.UpdateCustomer(customer);
+        public async Task<Customer> GetCustomerByGoogleId(string googleId) => await CustomerDAO.Instance.GetCustomerByGoogleId(googleId);
     }
 }
