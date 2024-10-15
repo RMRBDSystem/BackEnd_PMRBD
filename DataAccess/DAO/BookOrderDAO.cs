@@ -54,8 +54,12 @@ namespace DataAccess
         {
             try
             {
-                _context.Entry(bookorder).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetBookOrderById(bookorder.OrderId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(bookorder);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {

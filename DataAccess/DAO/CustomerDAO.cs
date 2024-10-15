@@ -22,11 +22,12 @@ namespace DataAccess
             }
         }
 
+
         public async Task<Customer?> GetCustomerById(int id)
         {
             try
             {
-                return await _context.Customers.FindAsync(id);
+                return await _context.Customers.Where(x => x.CustomerId == id).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -54,14 +55,19 @@ namespace DataAccess
         {
             try
             {
-                _context.Entry(customer).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetCustomerById(customer.CustomerId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(customer);
+                    await _context.SaveChangesAsync();
+                }             
             }
             catch (Exception ex)
             {
                 throw new Exception("Failed to update customer", ex);
             }
         }
+
 
         public async Task<Customer?> GetCustomerByGoogleId(string googleId)
         {

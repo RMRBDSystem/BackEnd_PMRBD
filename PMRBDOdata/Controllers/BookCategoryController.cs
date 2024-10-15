@@ -40,22 +40,25 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BookCategory>> AddBook([FromBody] BookCategory bookcategory)
+        public async Task AddBook([FromBody] BookCategory bookcategory)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    BadRequest(ModelState);
                 }
                 await bookcategoryRepository.AddBookCategory(bookcategory);
-                return Created(bookcategory);
+                //return Created(bookcategory);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                BadRequest(ex);
             }
         }
+
+
+        
 
         [HttpPut("{id}")]
         public async Task<ActionResult<BookCategory>> UpdateBookCategory([FromODataUri] int id, [FromBody] BookCategory bookcategory)

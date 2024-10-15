@@ -54,8 +54,12 @@ namespace DataAccess
         {
             try
             {
-                _context.Entry(employee).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetEmployeeById(employee.EmployeeId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(employee);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {

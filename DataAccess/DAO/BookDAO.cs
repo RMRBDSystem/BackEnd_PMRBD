@@ -50,12 +50,18 @@ namespace DataAccess
             }
         }
 
+        
+
         public async Task UpdateBook(Book book)
         {
             try
             {
-                _context.Entry(book).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetBookById(book.BookId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(book);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {

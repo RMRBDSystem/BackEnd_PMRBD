@@ -54,8 +54,12 @@ namespace DataAccess
         {
             try
             {
-                _context.Entry(ebook).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetEbookById(ebook.EbookId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(ebook);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {
