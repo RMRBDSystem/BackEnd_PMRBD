@@ -14,9 +14,7 @@ public partial class RmrbdContext : DbContext
 
 
     public RmrbdContext(DbContextOptions<RmrbdContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public virtual DbSet<Book> Books { get; set; }
 
@@ -62,6 +60,8 @@ public partial class RmrbdContext : DbContext
 
     public virtual DbSet<CoinTransaction> CoinTransactions { get; set; }
 
+    public virtual DbSet<RecipeTag> RecipeTags { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -71,7 +71,8 @@ public partial class RmrbdContext : DbContext
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
             IConfigurationRoot configuration = builder.Build();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                .EnableSensitiveDataLogging();
         }
     }
 
@@ -90,7 +91,7 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.CreateById).HasColumnName("CreateByID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Isbn)
-                .HasDefaultValueSql("((0))")
+                .HasMaxLength(50)
                 .HasColumnName("ISBN");
             entity.Property(e => e.Price).HasDefaultValueSql("((0))");
 
@@ -237,6 +238,10 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.DateOfBirth).HasColumnType("date");
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.GoogleId).HasMaxLength(100);
+            entity.Property(e => e.ShopAddress).HasMaxLength(200);
+            entity.Property(e => e.Ward_code).HasMaxLength(10);
+            entity.Property(e => e.District_code).HasMaxLength(10);
+            entity.Property(e => e.Province_code).HasMaxLength(10);
             entity.Property(e => e.FrontIdcard).HasColumnName("FrontIDCard");
             entity.Property(e => e.IdcardNumber)
                 .HasMaxLength(12)
@@ -285,6 +290,9 @@ public partial class RmrbdContext : DbContext
             entity.HasKey(e => e.EmployeeId);
 
             entity.ToTable("Employee");
+
+            entity.HasIndex(e => e.Email).IsUnique();
+            entity.HasIndex(e => e.GoogleId).IsUnique();
 
             entity.HasIndex(e => e.Email, "UQ__Employee__A9D10534EB410196").IsUnique();
 
@@ -389,7 +397,7 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.CensorId).HasColumnName("CensorID");
             entity.Property(e => e.CreateById).HasColumnName("CreateByID");
             entity.Property(e => e.CreateDate).HasColumnType("date");
-            entity.Property(e => e.NumberofService).HasDefaultValueSql("((1))");
+            entity.Property(e => e.NumberOfService).HasDefaultValueSql("((1))");
             entity.Property(e => e.Price).HasDefaultValueSql("((0))");
             entity.Property(e => e.Status).HasDefaultValueSql("((-1))");
             entity.Property(e => e.UpdateDate).HasColumnType("date");
@@ -402,24 +410,7 @@ public partial class RmrbdContext : DbContext
                 .HasForeignKey(d => d.CreateById)
                 .HasConstraintName("FK__Recipe__CreateBy__60A75C0F");
 
-            entity.HasMany(d => d.Tags).WithMany(p => p.Recipes)
-                .UsingEntity<Dictionary<string, object>>(
-                    "RecipeTag",
-                    r => r.HasOne<Tag>().WithMany()
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__RecipeTag__TagID__6754599E"),
-                    l => l.HasOne<Recipe>().WithMany()
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__RecipeTag__Recip__66603565"),
-                    j =>
-                    {
-                        j.HasKey("RecipeId", "TagId");
-                        j.ToTable("RecipeTag");
-                        j.IndexerProperty<int>("RecipeId").HasColumnName("RecipeID");
-                        j.IndexerProperty<int>("TagId").HasColumnName("TagID");
-                    });
+            
         });
 
         modelBuilder.Entity<RecipeRate>(entity =>
@@ -525,13 +516,13 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.CoinFluctuations).HasColumnType("int");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.Date).HasColumnType("datetime");
-            entity.Property(e => e.BookOrderId).HasColumnName("BookOrderID");
+            entity.Property(e => e.OrderId).HasColumnName("BookOrderID");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.BookTransactions)
                 .HasForeignKey(d => d.CustomerId);
 
             entity.HasOne(d => d.BookOrder).WithMany(p => p.BookTransactions)
-                .HasForeignKey(d => d.BookOrderId);
+                .HasForeignKey(d => d.OrderId);
         });
 
         modelBuilder.Entity<BookOrderStatus>(entity =>
@@ -542,7 +533,7 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.BookOrderStatusId).HasColumnName("BookOrderStatusID");
 
             entity.HasOne(d => d.BookOrder).WithMany(p => p.BookOrderStatuses)
-            .HasForeignKey(d => d.BookOrderStatusId);
+            .HasForeignKey(d => d.OrderId);
         });
 
         modelBuilder.Entity<CoinTransaction>(entity =>
@@ -554,6 +545,17 @@ public partial class RmrbdContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.CoinTransactions).
                 HasForeignKey(d => d.CustomerId);
+        });
+
+        modelBuilder.Entity<RecipeTag>(entity =>
+        {
+            entity.HasKey(e => new { e.RecipeId, e.TagId });
+
+            entity.ToTable("RecipeTag");
+
+            entity.HasOne(d => d.Recipe).WithMany(p => p.RecipeTags).HasForeignKey(d => d.RecipeId);
+
+            entity.HasOne(d => d.Tag).WithMany(p => p.RecipeTags).HasForeignKey(d => d.TagId);
         });
 
 

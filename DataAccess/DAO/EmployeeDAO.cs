@@ -54,13 +54,30 @@ namespace DataAccess
         {
             try
             {
-                _context.Entry(employee).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetEmployeeById(employee.EmployeeId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(employee);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {
                 throw new Exception("Failed to update employee", ex);
             }
         }
+
+        public async Task<Employee?> GetEmployeeByGoogleId(string googleId)
+        {
+            try
+            {
+                return await _context.Employees.FirstOrDefaultAsync(e => e.GoogleId == googleId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve employee by GoogleId", ex);
+            }
+        }
+
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BussinessObject.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDatabase : Migration
+    public partial class fixsyntax : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -60,6 +60,7 @@ namespace BussinessObject.Migrations
                     EmployeeID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    GoogleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FrontIDCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BackIDCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -69,7 +70,7 @@ namespace BussinessObject.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "varchar(11)", unicode: false, maxLength: 11, nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true, defaultValueSql: "((1))"),
-                    EmployeeTypeID = table.Column<int>(type: "int", nullable: true)
+                    EmployeeTypeID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,7 +79,8 @@ namespace BussinessObject.Migrations
                         name: "FK__Employee__Employ__5165187F",
                         column: x => x.EmployeeTypeID,
                         principalTable: "EmployeeType",
-                        principalColumn: "EmployeeTypeID");
+                        principalColumn: "EmployeeTypeID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -88,18 +90,22 @@ namespace BussinessObject.Migrations
                     CustomerID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    GoogleId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "varchar(11)", unicode: false, maxLength: 11, nullable: true),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Coin = table.Column<int>(type: "int", nullable: true, defaultValueSql: "((0))"),
+                    Coin = table.Column<int>(type: "int", nullable: false, defaultValueSql: "((0))"),
                     AccountStatus = table.Column<int>(type: "int", nullable: true, defaultValueSql: "((1))"),
                     FrontIDCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BackIDCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Portrait = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IDCardNumber = table.Column<string>(type: "varchar(12)", unicode: false, maxLength: 12, nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ShopAddress = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Ward_code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    District_code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    Province_code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "date", nullable: true),
-                    SellerStatus = table.Column<int>(type: "int", nullable: true, defaultValueSql: "((0))"),
+                    SellerStatus = table.Column<int>(type: "int", nullable: false, defaultValueSql: "((0))"),
                     CensorID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -121,13 +127,18 @@ namespace BussinessObject.Migrations
                     BookName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<int>(type: "int", nullable: true, defaultValueSql: "((0))"),
+                    Weight = table.Column<int>(type: "int", nullable: false),
+                    Length = table.Column<int>(type: "int", nullable: false),
+                    Width = table.Column<int>(type: "int", nullable: false),
+                    Height = table.Column<int>(type: "int", nullable: false),
+                    Required_note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UnitInStock = table.Column<int>(type: "int", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true),
                     CensorID = table.Column<int>(type: "int", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     CreateByID = table.Column<int>(type: "int", nullable: true),
                     CategoryID = table.Column<int>(type: "int", nullable: true),
-                    ISBN = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((0))")
+                    ISBN = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -150,25 +161,24 @@ namespace BussinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookOrder",
+                name: "CoinTransaction",
                 columns: table => new
                 {
-                    OrderID = table.Column<int>(type: "int", nullable: false)
+                    CoinTransactionID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerID = table.Column<int>(type: "int", nullable: true),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "varchar(11)", unicode: false, maxLength: 11, nullable: true),
-                    PurchaseMethod = table.Column<int>(type: "int", nullable: true),
-                    PurchaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    CustomerId = table.Column<int>(type: "int", nullable: true),
+                    MoneyFluctuations = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    CoinFluctuations = table.Column<int>(type: "int", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookOrder", x => x.OrderID);
+                    table.PrimaryKey("PK_CoinTransaction", x => x.CoinTransactionID);
                     table.ForeignKey(
-                        name: "FK__BookOrder__Custo__0B91BA14",
-                        column: x => x.CustomerID,
+                        name: "FK_CoinTransaction_Customer_CustomerId",
+                        column: x => x.CustomerId,
                         principalTable: "Customer",
                         principalColumn: "CustomerID");
                 });
@@ -245,7 +255,7 @@ namespace BussinessObject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RecipeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NumberofService = table.Column<int>(type: "int", nullable: true, defaultValueSql: "((1))"),
+                    NumberOfService = table.Column<int>(type: "int", nullable: true, defaultValueSql: "((1))"),
                     Nutrition = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Tutorial = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Video = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -304,6 +314,42 @@ namespace BussinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BookOrder",
+                columns: table => new
+                {
+                    OrderID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerID = table.Column<int>(type: "int", nullable: false),
+                    BookID = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
+                    ShipFee = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
+                    PurchaseMethod = table.Column<int>(type: "int", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "varchar(11)", unicode: false, maxLength: 11, nullable: false),
+                    PurchaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Ward_code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    District_Id = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentType = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookOrder", x => x.OrderID);
+                    table.ForeignKey(
+                        name: "FK__BookOrder__BookI__0F624AF8",
+                        column: x => x.BookID,
+                        principalTable: "Book",
+                        principalColumn: "BookID");
+                    table.ForeignKey(
+                        name: "FK__BookOrder__Custo__0B91BA14",
+                        column: x => x.CustomerID,
+                        principalTable: "Customer",
+                        principalColumn: "CustomerID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BookRate",
                 columns: table => new
                 {
@@ -324,30 +370,6 @@ namespace BussinessObject.Migrations
                         column: x => x.CustomerID,
                         principalTable: "Customer",
                         principalColumn: "CustomerID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BookOrderDetail",
-                columns: table => new
-                {
-                    OrderID = table.Column<int>(type: "int", nullable: false),
-                    BookID = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BookOrderDetail", x => new { x.OrderID, x.BookID });
-                    table.ForeignKey(
-                        name: "FK__BookOrder__BookI__0F624AF8",
-                        column: x => x.BookID,
-                        principalTable: "Book",
-                        principalColumn: "BookID");
-                    table.ForeignKey(
-                        name: "FK__BookOrder__Order__0E6E26BF",
-                        column: x => x.OrderID,
-                        principalTable: "BookOrder",
-                        principalColumn: "OrderID");
                 });
 
             migrationBuilder.CreateTable(
@@ -374,6 +396,36 @@ namespace BussinessObject.Migrations
                         column: x => x.EBookID,
                         principalTable: "EBook",
                         principalColumn: "EBookID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EbookTransaction",
+                columns: table => new
+                {
+                    EbookTransactionID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerID = table.Column<int>(type: "int", nullable: false),
+                    EBookID = table.Column<int>(type: "int", nullable: false),
+                    CoinFluctuations = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EbookTransaction", x => x.EbookTransactionID);
+                    table.ForeignKey(
+                        name: "FK_EbookTransaction_Customer_CustomerID",
+                        column: x => x.CustomerID,
+                        principalTable: "Customer",
+                        principalColumn: "CustomerID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EbookTransaction_EBook_EBookID",
+                        column: x => x.EBookID,
+                        principalTable: "EBook",
+                        principalColumn: "EBookID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -453,9 +505,10 @@ namespace BussinessObject.Migrations
                 {
                     RecipeID = table.Column<int>(type: "int", nullable: false),
                     CustomerID = table.Column<int>(type: "int", nullable: false),
-                    NumberofService = table.Column<int>(type: "int", nullable: true),
+                    NumberOfService = table.Column<int>(type: "int", nullable: true),
                     Nutrition = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Tutorial = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ingredient = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true),
                     PurchasePrice = table.Column<int>(type: "int", nullable: true),
                     PurchaseDate = table.Column<DateTime>(type: "datetime", nullable: true)
@@ -502,63 +555,103 @@ namespace BussinessObject.Migrations
                 name: "RecipeTag",
                 columns: table => new
                 {
-                    RecipeID = table.Column<int>(type: "int", nullable: false),
-                    TagID = table.Column<int>(type: "int", nullable: false)
+                    RecipeId = table.Column<int>(type: "int", nullable: false),
+                    TagId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RecipeTag", x => new { x.RecipeID, x.TagID });
+                    table.PrimaryKey("PK_RecipeTag", x => new { x.RecipeId, x.TagId });
                     table.ForeignKey(
-                        name: "FK__RecipeTag__Recip__66603565",
-                        column: x => x.RecipeID,
+                        name: "FK_RecipeTag_Recipe_RecipeId",
+                        column: x => x.RecipeId,
                         principalTable: "Recipe",
-                        principalColumn: "RecipeID");
+                        principalColumn: "RecipeID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK__RecipeTag__TagID__6754599E",
-                        column: x => x.TagID,
+                        name: "FK_RecipeTag_Tag_TagId",
+                        column: x => x.TagId,
                         principalTable: "Tag",
-                        principalColumn: "TagID");
+                        principalColumn: "TagID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transaction",
+                name: "RecipeTransaction",
                 columns: table => new
                 {
-                    TransactionID = table.Column<int>(type: "int", nullable: false)
+                    RecipeTransactionID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerID = table.Column<int>(type: "int", nullable: true),
-                    RecipeID = table.Column<int>(type: "int", nullable: true),
-                    OrderID = table.Column<int>(type: "int", nullable: true),
-                    EBookID = table.Column<int>(type: "int", nullable: true),
-                    MoneyFluctuations = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
-                    CoinFluctuations = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
+                    RecipeID = table.Column<int>(type: "int", nullable: false),
+                    CoinFluctuations = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime", nullable: true),
                     Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transaction", x => x.TransactionID);
+                    table.PrimaryKey("PK_RecipeTransaction", x => x.RecipeTransactionID);
                     table.ForeignKey(
                         name: "FK__Transacti__Custo__1CBC4616",
                         column: x => x.CustomerID,
                         principalTable: "Customer",
                         principalColumn: "CustomerID");
                     table.ForeignKey(
-                        name: "FK__Transacti__EBook__1F98B2C1",
-                        column: x => x.EBookID,
-                        principalTable: "EBook",
-                        principalColumn: "EBookID");
-                    table.ForeignKey(
-                        name: "FK__Transacti__Order__1EA48E88",
-                        column: x => x.OrderID,
-                        principalTable: "BookOrder",
-                        principalColumn: "OrderID");
-                    table.ForeignKey(
                         name: "FK__Transacti__Recip__1DB06A4F",
                         column: x => x.RecipeID,
                         principalTable: "Recipe",
-                        principalColumn: "RecipeID");
+                        principalColumn: "RecipeID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookOrderStatus",
+                columns: table => new
+                {
+                    BookOrderStatusID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StatusDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookOrderStatus", x => x.BookOrderStatusID);
+                    table.ForeignKey(
+                        name: "FK_BookOrderStatus_BookOrder_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "BookOrder",
+                        principalColumn: "OrderID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookTransaction",
+                columns: table => new
+                {
+                    BookTransactionID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerID = table.Column<int>(type: "int", nullable: true),
+                    BookOrderID = table.Column<int>(type: "int", nullable: true),
+                    MoneyFluctuations = table.Column<decimal>(type: "decimal(18,0)", nullable: true),
+                    CoinFluctuations = table.Column<int>(type: "int", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookTransaction", x => x.BookTransactionID);
+                    table.ForeignKey(
+                        name: "FK_BookTransaction_BookOrder_BookOrderID",
+                        column: x => x.BookOrderID,
+                        principalTable: "BookOrder",
+                        principalColumn: "OrderID");
+                    table.ForeignKey(
+                        name: "FK_BookTransaction_Customer_CustomerID",
+                        column: x => x.CustomerID,
+                        principalTable: "Customer",
+                        principalColumn: "CustomerID");
                 });
 
             migrationBuilder.CreateIndex(
@@ -577,14 +670,19 @@ namespace BussinessObject.Migrations
                 column: "CreateByID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookOrder_BookID",
+                table: "BookOrder",
+                column: "BookID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BookOrder_CustomerID",
                 table: "BookOrder",
                 column: "CustomerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookOrderDetail_BookID",
-                table: "BookOrderDetail",
-                column: "BookID");
+                name: "IX_BookOrderStatus_OrderId",
+                table: "BookOrderStatus",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookRate_BookID",
@@ -595,6 +693,21 @@ namespace BussinessObject.Migrations
                 name: "IX_BookShelf_EBookID",
                 table: "BookShelf",
                 column: "EBookID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookTransaction_BookOrderID",
+                table: "BookTransaction",
+                column: "BookOrderID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookTransaction_CustomerID",
+                table: "BookTransaction",
+                column: "CustomerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CoinTransaction_CustomerId",
+                table: "CoinTransaction",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comment_BookID",
@@ -627,9 +740,15 @@ namespace BussinessObject.Migrations
                 column: "CensorID");
 
             migrationBuilder.CreateIndex(
-                name: "UQ__Customer__A9D10534F0D4AE3A",
+                name: "IX_Customer_Email",
                 table: "Customer",
                 column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customer_GoogleId",
+                table: "Customer",
+                column: "GoogleId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -648,9 +767,32 @@ namespace BussinessObject.Migrations
                 column: "CreateByID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EbookTransaction_CustomerID",
+                table: "EbookTransaction",
+                column: "CustomerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EbookTransaction_EBookID",
+                table: "EbookTransaction",
+                column: "EBookID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employee_Email",
+                table: "Employee",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Employee_EmployeeTypeID",
                 table: "Employee",
                 column: "EmployeeTypeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employee_GoogleId",
+                table: "Employee",
+                column: "GoogleId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UQ__Employee__A9D10534EB410196",
@@ -700,9 +842,19 @@ namespace BussinessObject.Migrations
                 column: "CustomerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecipeTag_TagID",
+                name: "IX_RecipeTag_TagId",
                 table: "RecipeTag",
-                column: "TagID");
+                column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipeTransaction_CustomerID",
+                table: "RecipeTransaction",
+                column: "CustomerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipeTransaction_RecipeID",
+                table: "RecipeTransaction",
+                column: "RecipeID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceFeedBack_CustomerID",
@@ -713,33 +865,13 @@ namespace BussinessObject.Migrations
                 name: "IX_ServiceFeedBack_EmployeeID",
                 table: "ServiceFeedBack",
                 column: "EmployeeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transaction_CustomerID",
-                table: "Transaction",
-                column: "CustomerID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transaction_EBookID",
-                table: "Transaction",
-                column: "EBookID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transaction_OrderID",
-                table: "Transaction",
-                column: "OrderID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transaction_RecipeID",
-                table: "Transaction",
-                column: "RecipeID");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookOrderDetail");
+                name: "BookOrderStatus");
 
             migrationBuilder.DropTable(
                 name: "BookRate");
@@ -748,7 +880,16 @@ namespace BussinessObject.Migrations
                 name: "BookShelf");
 
             migrationBuilder.DropTable(
+                name: "BookTransaction");
+
+            migrationBuilder.DropTable(
+                name: "CoinTransaction");
+
+            migrationBuilder.DropTable(
                 name: "Comment");
+
+            migrationBuilder.DropTable(
+                name: "EbookTransaction");
 
             migrationBuilder.DropTable(
                 name: "Image");
@@ -766,25 +907,25 @@ namespace BussinessObject.Migrations
                 name: "RecipeTag");
 
             migrationBuilder.DropTable(
+                name: "RecipeTransaction");
+
+            migrationBuilder.DropTable(
                 name: "ServiceFeedBack");
-
-            migrationBuilder.DropTable(
-                name: "Transaction");
-
-            migrationBuilder.DropTable(
-                name: "Book");
-
-            migrationBuilder.DropTable(
-                name: "Tag");
-
-            migrationBuilder.DropTable(
-                name: "EBook");
 
             migrationBuilder.DropTable(
                 name: "BookOrder");
 
             migrationBuilder.DropTable(
+                name: "EBook");
+
+            migrationBuilder.DropTable(
+                name: "Tag");
+
+            migrationBuilder.DropTable(
                 name: "Recipe");
+
+            migrationBuilder.DropTable(
+                name: "Book");
 
             migrationBuilder.DropTable(
                 name: "BookCategory");

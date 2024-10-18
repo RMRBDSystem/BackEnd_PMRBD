@@ -40,20 +40,20 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Book>> AddComment([FromBody] Comment comment)
+        public async Task AddComment([FromBody] Comment comment)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    BadRequest(ModelState);
                 }
                 await commentRepository.AddComment(comment);
-                return Created(comment);
+                //return Created(comment);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                BadRequest(ex);
             }
         }
 

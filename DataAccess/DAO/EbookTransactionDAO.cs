@@ -67,8 +67,12 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.Entry(ebookTransaction).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetEbookTransactionById(ebookTransaction.EbookTransactionId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(ebookTransaction);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {

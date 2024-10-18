@@ -1,4 +1,5 @@
-﻿using BussinessObject.Models;
+﻿using BusinessObject.Models;
+using BussinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,8 +27,9 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.BookOrderStatuses.Where(x => x.BookOrderId == id).ToListAsync();
-            }catch (Exception ex)
+                return await _context.BookOrderStatuses.Where(x => x.OrderId == id).ToListAsync();
+            }
+            catch (Exception ex)
             {
                 throw new Exception("Failed to retrieve book order statuses by book order id", ex);
             }
@@ -49,11 +51,11 @@ namespace DataAccess.DAO
         {
             try
             {
-                if(bookOrderStatus != null)
+                if (bookOrderStatus != null)
                 {
                     await _context.BookOrderStatuses.AddAsync(bookOrderStatus);
                     await _context.SaveChangesAsync();
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -61,12 +63,17 @@ namespace DataAccess.DAO
             }
         }
 
+
         public async Task UpdateBookOrderStatus(BookOrderStatus bookOrderStatus)
         {
             try
             {
-                _context.Entry(bookOrderStatus).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetBookOrderStatusById(bookOrderStatus.BookOrderStatusId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(bookOrderStatus);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {

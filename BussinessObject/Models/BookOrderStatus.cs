@@ -10,7 +10,7 @@ namespace BussinessObject.Models
     public class BookOrderStatus
     {
         public int BookOrderStatusId { get; set; }
-        public int BookOrderId { get; set; }
+        public int OrderId { get; set; }
         public string Status { get; set; }
         public DateTime StatusDate { get; set; }
         public virtual BookOrder? BookOrder { get; set; }

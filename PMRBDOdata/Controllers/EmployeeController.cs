@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using DataAccess;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
@@ -40,20 +41,20 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Employee>> AddEmployee([FromBody] Employee employee)
+        public async Task AddEmployee([FromBody] Employee employee)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    BadRequest(ModelState);
                 }
                 await employeeRepository.AddEmployee(employee);
-                return Created(employee);
+                //return Created(employee);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                BadRequest(ex);
             }
         }
 
@@ -72,6 +73,6 @@ namespace PMRBDOdata.Controllers
             employee.EmployeeId = employeeToUpdate.EmployeeId;
             await employeeRepository.UpdateEmployee(employee);
             return Updated(employee);
-        }
+        }        
     }
 }

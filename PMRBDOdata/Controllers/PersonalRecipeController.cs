@@ -39,20 +39,20 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PersonalRecipe>> AddPersonalRecipe([FromBody] PersonalRecipe personalRecipe)
+        public async Task AddPersonalRecipe([FromBody] PersonalRecipe personalRecipe)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    BadRequest(ModelState);
                 }
                 await personalRecipeRepository.AddPersonalRecipe(personalRecipe);
-                return Created(personalRecipe);
+                //return Created(personalRecipe);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                BadRequest(ex);
             }
         }
 

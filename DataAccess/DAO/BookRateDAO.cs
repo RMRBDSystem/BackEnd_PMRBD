@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BussinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -66,11 +67,12 @@ namespace DataAccess
         {
             try
             {
-                if (bookrate != null)
+                var existingItem = await GetBookRateByCustomerIdAndBookId(bookrate.CustomerId, bookrate.BookId);
+                if (existingItem != null)
                 {
-                    _context.Entry(bookrate).State = EntityState.Modified;
+                    _context.Entry(existingItem).CurrentValues.SetValues(bookrate);
                     await _context.SaveChangesAsync();
-                }               
+                }
             }
             catch (Exception ex)
             {

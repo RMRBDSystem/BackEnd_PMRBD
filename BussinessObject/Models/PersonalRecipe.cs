@@ -9,11 +9,13 @@ public partial class PersonalRecipe
 
     public int CustomerId { get; set; }
 
-    public int? NumberofService { get; set; }
+    public int? NumberOfService { get; set; }
 
     public string? Nutrition { get; set; }
 
     public string? Tutorial { get; set; }
+
+    public string? Ingredient { get; set; }
 
     public int? Status { get; set; }
 

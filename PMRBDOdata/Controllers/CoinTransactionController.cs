@@ -41,20 +41,20 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CoinTransaction>> AddCoinTransaction([FromBody] CoinTransaction coinTransaction)
+        public async Task AddCoinTransaction([FromBody] CoinTransaction coinTransaction)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    BadRequest(ModelState);
                 }
                 await coinTransactionRepository.AddCoinTransaction(coinTransaction);
-                return Created(coinTransaction);
+                //return Created(coinTransaction);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                BadRequest(ex);
             }
         }
 

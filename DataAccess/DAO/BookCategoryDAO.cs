@@ -49,13 +49,18 @@ namespace DataAccess
                 throw new Exception("Failed to save book category", ex);
             }
         }
+        
 
         public async Task UpdateBookCategory(BookCategory bookCategory)
         {
             try
             {
-                _context.Entry(bookCategory).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetBookCategoryById(bookCategory.CategoryId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(existingItem);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {

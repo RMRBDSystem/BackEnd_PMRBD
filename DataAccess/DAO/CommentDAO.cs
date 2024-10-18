@@ -52,12 +52,14 @@ namespace DataAccess
         {
             try
             {
-                if (comment != null)
+                var existingItem = await GetCommentById(comment.CommentId);
+                if (existingItem != null)
                 {
-                    _context.Entry(comment).State = EntityState.Modified;
+                    _context.Entry(existingItem).CurrentValues.SetValues(comment);
                     await _context.SaveChangesAsync();
                 }
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 throw new Exception("Failed to update comment", ex);
             }

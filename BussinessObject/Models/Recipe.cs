@@ -12,7 +12,7 @@ public partial class Recipe
 
     public string? Description { get; set; }
 
-    public int? NumberofService { get; set; }
+    public int? NumberOfService { get; set; }
 
     public string? Nutrition { get; set; }
 
@@ -50,5 +50,5 @@ public partial class Recipe
 
     public virtual ICollection<RecipeTransaction> RecipeTransactions { get; set; } = new List<RecipeTransaction>();
 
-    public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+    public virtual ICollection<RecipeTag> RecipeTags { get; set; } = new List<RecipeTag>();
 }

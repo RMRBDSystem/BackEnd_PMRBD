@@ -31,7 +31,13 @@ public partial class Customer
 
     public string? IdcardNumber { get; set; }
 
-    public string? Address { get; set; }
+    public string? ShopAddress { get; set; }
+
+    public string? Ward_code { get; set; }
+
+    public string? District_code { get; set; }
+
+    public string? Province_code { get; set; }
 
     public DateTime? DateOfBirth { get; set; }
 
@@ -66,6 +72,7 @@ public partial class Customer
     public virtual ICollection<RecipeTransaction>? RecipeTransactions { get; set; } = new List<RecipeTransaction>();
 
     public virtual ICollection<EbookTransaction>? EbookTransactions { get; set; } = new List<EbookTransaction>();
+
     public virtual ICollection<BookTransaction>? BookTransactions { get; set; } = new List<BookTransaction>();
 
     public virtual ICollection<CoinTransaction>? CoinTransactions { get; set; } = new List<CoinTransaction>();
