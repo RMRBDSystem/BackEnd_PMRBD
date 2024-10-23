@@ -24,7 +24,7 @@ public partial class BookOrder
 
     public decimal? TotalPrice { get; set; }
    
-    public string order_code { get; set; }
+    public string Order_Code { get; set; }
 
     // 1: thanh toan bang coin, 2: thanh toan bang tien mat
 

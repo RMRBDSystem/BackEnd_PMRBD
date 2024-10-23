@@ -54,7 +54,7 @@ builder.Services.AddControllers().AddOData(options => options.Select().Filter().
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddCors();
 // 
 
 
@@ -62,9 +62,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.UseMiddleware<TokenValidationMiddleware>();
-
-builder.Services.AddCors();
 
 if (app.Environment.IsDevelopment())
 {
@@ -79,6 +76,10 @@ app.UseCors(builder =>
     .AllowAnyMethod()
     .AllowAnyHeader();
 });
+
+app.UseMiddleware<TokenValidationMiddleware>();
+
+
 app.UseODataBatching();
 
 app.UseRouting();
