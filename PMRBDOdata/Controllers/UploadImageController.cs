@@ -9,11 +9,22 @@ namespace PMRBDOdata.Controllers
     [ApiController]
     public class UploadImageController : ODataController
     {
-        private readonly string _imageDirectory_Avatar = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Avatar");
-        private readonly string _imageDirectory_Recipe = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Recipe");
-        private readonly string _imageDirectory_Book = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Book");
-        private readonly string _imageDirectory_Ebook = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Ebook");
-        private readonly string _imageDirectory_Service = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Service");
+
+        private readonly IWebHostEnvironment _env;
+
+        public UploadImageController(IWebHostEnvironment env)
+        {
+            _env = env;
+        }
+
+        private readonly Dictionary<int, string> _imageDirectories = new Dictionary<int, string>
+        {
+            { 1, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Avatar") },
+            { 2, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Recipe") },
+            { 3, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Book") },
+            { 4, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Ebook") },
+            { 5, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Service") }
+        };
 
         [HttpPost("{Type}")]
         public async Task<IActionResult> UploadImage(IFormFile image, [FromODataUri] int Type)
@@ -25,27 +36,9 @@ namespace PMRBDOdata.Controllers
                     return BadRequest("No image file provided");
                 }
 
-                string _imageDirectory = "";
-
-                if (Type == 1)
+                if (!_imageDirectories.TryGetValue(Type, out var _imageDirectory))
                 {
-                    _imageDirectory = _imageDirectory_Avatar;
-                }
-                else if (Type == 2)
-                {
-                    _imageDirectory = _imageDirectory_Recipe;
-                }
-                else if (Type == 3)
-                {
-                    _imageDirectory = _imageDirectory_Book;
-                }
-                else if (Type == 4)
-                {
-                    _imageDirectory = _imageDirectory_Ebook;
-                }
-                else if (Type == 5)
-                {
-                    _imageDirectory = _imageDirectory_Service;
+                    return BadRequest("Invalid image type");
                 }
 
                 if (!Directory.Exists(_imageDirectory))
@@ -61,32 +54,8 @@ namespace PMRBDOdata.Controllers
                     await image.CopyToAsync(fileStream);
                 }
 
-                if (Type == 1)
-                {
-                    var relativePath = $"/Images/Avatar/{fileName}";
-                    return Ok(relativePath);
-                }
-                else if (Type == 2)
-                {
-                    var relativePath = $"/Images/Recipe/{fileName}";
-                    return Ok(relativePath);
-                }
-                else if (Type == 3)
-                {
-                    var relativePath = $"/Images/Book/{fileName}";
-                    return Ok(relativePath);
-                }
-                else if (Type == 4)
-                {
-                    var relativePath = $"/Images/Ebook/{fileName}";
-                    return Ok(relativePath);
-                }
-                else if (Type == 5)
-                {
-                    var relativePath = $"/Images/Service/{fileName}";
-                    return Ok(relativePath);
-                }
-                return BadRequest("Invalid image type");
+                var relativePath = $"/Images/{_imageDirectories[Type].Split(Path.DirectorySeparatorChar).Last()}/{fileName}";
+                return Ok(relativePath);
             }
             catch (Exception ex)
             {
@@ -95,12 +64,47 @@ namespace PMRBDOdata.Controllers
         }
 
 
-    //    [HttpPost("{UserID}/{Type}")]
-    //    public async Task<IActionResult> UploadUserProfileImage(IFormFile image, [FromODataUri] int UserID, [FromODataUri] int Type)
-    //    {
-    //        private readonly string _imageDirectory_Service = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Service");
-    // }
+        [HttpGet]
+        public IActionResult GetImage([FromQuery] string relativePath)
+        {
+            if (string.IsNullOrEmpty(relativePath))
+            {
+                return NotFound();
+            }
+
+            var absolutePath = Path.Combine(_env.WebRootPath, relativePath.TrimStart('/'));
+
+            if (!System.IO.File.Exists(absolutePath))
+            {
+                return NotFound();
+            }
+
+            var fileInfo = new FileInfo(absolutePath);
+            var contentType = GetContentType(fileInfo.Extension);
+
+            return File(System.IO.File.ReadAllBytes(absolutePath), contentType, fileInfo.Name);
+        }
+
+        private string GetContentType(string extension)
+        {
+            var types = GetMimeTypes();
+            if (types.TryGetValue(extension.ToLowerInvariant(), out var contentType))
+            {
+                return contentType;
+            }
+            return "application/octet-stream";
+        }
+
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                { ".jpg", "image/jpeg" },
+                { ".jpeg", "image/jpeg" },
+                { ".png", "image/png" },
+            };
+        }
     }
 }
-    
-   
+
+

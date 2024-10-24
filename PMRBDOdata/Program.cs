@@ -79,6 +79,7 @@ app.UseCors(builder =>
 
 app.UseMiddleware<TokenValidationMiddleware>();
 
+app.UseStaticFiles();
 
 app.UseODataBatching();
 
