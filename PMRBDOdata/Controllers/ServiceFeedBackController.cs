@@ -39,20 +39,20 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceFeedBack>> AddServiceFeedBack([FromBody] ServiceFeedBack serviceFeedBack)
+        public async Task AddServiceFeedBack([FromBody] ServiceFeedBack serviceFeedBack)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    BadRequest(ModelState);
                 }
                 await serviceFeedBackRepository.AddServiceFeedBack(serviceFeedBack);
-                return Created(serviceFeedBack);
+                //return Created(serviceFeedBack);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                BadRequest(ex);
             }
         }
 

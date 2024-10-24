@@ -39,20 +39,20 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<EmployeeType>> AddEmployeeType([FromBody] EmployeeType employeetype)
+        public async Task AddEmployeeType([FromBody] EmployeeType employeetype)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                     BadRequest(ModelState);
                 }
                 await employeeTypeRepository.AddEmployeeType(employeetype);
-                return Created(employeetype);
+                //return Created(employeetype);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                BadRequest(ex);
             }
         }
 

@@ -14,9 +14,7 @@ public partial class RmrbdContext : DbContext
 
 
     public RmrbdContext(DbContextOptions<RmrbdContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public virtual DbSet<Book> Books { get; set; }
 
@@ -73,7 +71,8 @@ public partial class RmrbdContext : DbContext
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
             IConfigurationRoot configuration = builder.Build();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                .EnableSensitiveDataLogging();
         }
     }
 

@@ -39,20 +39,20 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<RecipeTag>> AddRecipeTag([FromBody] RecipeTag recipeTag)
+        public async Task AddRecipeTag([FromBody] RecipeTag recipeTag)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    BadRequest(ModelState);
                 }
                 await _recipeTagRepository.AddRecipeTag(recipeTag);
-                return Created(recipeTag);
+                //return Created(recipeTag);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                BadRequest(ex);
             }
         }
 

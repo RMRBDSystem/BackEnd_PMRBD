@@ -2,12 +2,13 @@
 using DataAccess;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace PMRBDOdata.Controllers
 {
-    [Route("Login")]
+    [Route("odata/Login")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class LoginController : ODataController
     {
         public class LoginRequest
         {

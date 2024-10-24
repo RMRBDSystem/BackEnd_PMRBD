@@ -39,20 +39,20 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Notification>> AddNotification([FromBody] Notification notification)
+        public async Task AddNotification([FromBody] Notification notification)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    BadRequest(ModelState);
                 }
                 await NotificationRepository.AddNotification(notification);
-                return Created(notification);
+                //return Created(notification);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                BadRequest(ex);
             }
         }
 

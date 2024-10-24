@@ -7,9 +7,9 @@ public partial class Employee
 {
     public int EmployeeId { get; set; }
 
-    public string? Email { get; set; }
+    public string Email { get; set; } = null!;
 
-    public string GoogleId { get; set; }
+    public string GoogleId { get; set; } = null!;
 
     public string Name { get; set; } = null!;
 

@@ -40,20 +40,20 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Book>> AddBook([FromBody] Book book)
+        public async Task AddBook([FromBody] Book book)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    BadRequest(ModelState);
                 }
                 await bookRepository.AddBook(book);
-                return Created(book);
+                //return Created(book);
             }
             catch(Exception ex)
             {
-                return BadRequest(ex);
+                BadRequest(ex);
             }
         }
 

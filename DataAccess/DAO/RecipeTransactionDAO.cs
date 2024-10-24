@@ -67,8 +67,12 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.Entry(recipeTransaction).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetRecipeTransactionById(recipeTransaction.RecipeTransactionId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(recipeTransaction);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {

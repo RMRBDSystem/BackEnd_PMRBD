@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
@@ -9,6 +10,7 @@ using Repository.Repository;
 
 namespace PMRBDOdata.Controllers
 {
+    
     [Route("odata/Customer")]
     [ApiController]
     public class CustomerController : ODataController
@@ -19,7 +21,6 @@ namespace PMRBDOdata.Controllers
             customerRepository = new CustomerRepository();
         }
 
-        
         [HttpGet]
         [EnableQuery]
         public async Task<ActionResult<IEnumerable<Customer>>> GetAllCustomers()
@@ -73,5 +74,6 @@ namespace PMRBDOdata.Controllers
             await customerRepository.UpdateCustomer(customer);
             return Updated(customer);
         }
+
     }
 }

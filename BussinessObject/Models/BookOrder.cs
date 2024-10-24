@@ -23,8 +23,11 @@ public partial class BookOrder
     public int Status { get; set; }
 
     public decimal? TotalPrice { get; set; }
+   
+    public string Order_Code { get; set; }
 
     // 1: thanh toan bang coin, 2: thanh toan bang tien mat
+
     public int? PurchaseMethod { get; set; }
 
     public string PhoneNumber { get; set; }

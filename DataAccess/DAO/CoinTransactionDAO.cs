@@ -66,8 +66,12 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.Entry(coinTransaction).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var existingItem = await GetCoinTransactionById(coinTransaction.CoinTransactionId);
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(coinTransaction);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {
