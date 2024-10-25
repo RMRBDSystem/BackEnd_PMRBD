@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using System.Net.Http.Headers;
 
 namespace PMRBDOdata.Controllers
 {
@@ -62,6 +63,55 @@ namespace PMRBDOdata.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+
+        [HttpPost("{Type}/{Id}")]
+        public async Task<IActionResult> UploadProfileImage(IFormFile image, [FromODataUri] int Type, [FromODataUri] int Id)
+        {
+            try
+            {
+                if (image == null || image.Length == 0)
+                {
+                    return BadRequest("No image file provided");
+                }
+
+                var fileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
+
+                string directoryPath;
+                string relativePath;
+                if (Type == 1)
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "UserProfile", Id.ToString());
+                    relativePath = $"/Images/UserProfile/{Id}/{fileName}";
+                }
+                else if (Type == 2)
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "EmployeeProfile", Id.ToString());
+                    relativePath = $"/Images/EmployeeProfile/{Id}/{fileName}";
+                }
+                else
+                {
+                    return BadRequest("Invalid Type");
+                }
+
+                Directory.CreateDirectory(directoryPath);
+
+                string filePath = Path.Combine(directoryPath, fileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(fileStream);
+                }
+
+                return Ok(relativePath);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
 
         [HttpGet]

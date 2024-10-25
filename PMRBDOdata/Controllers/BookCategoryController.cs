@@ -56,8 +56,6 @@ namespace PMRBDOdata.Controllers
                 BadRequest(ex);
             }
         }
-
-
         
 
         [HttpPut("{id}")]

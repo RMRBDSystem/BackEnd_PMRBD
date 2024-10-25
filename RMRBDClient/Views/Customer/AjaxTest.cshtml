@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "test";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Employee Types</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Employee Types</h1>
+    <ul id="employeeTypesList"></ul>
+    <select id="districtSelect"></select>
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: 'https://rmrbdapi.somee.com/odata/EmployeeType',
+                method: 'GET',
+                headers: {
+                    'token': '123-abc'
+                },
+                success: function (response) {
+                    $('#districtSelect').empty();
+                    $.each(response.data, function (index, item) {
+                        var option = $('<option>').val(item.employeeTypeId).text(item.typeName);
+                        $('#districtSelect').append(option);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 401) {
+                        console.log('Unauthorized');
+                    } else {
+                        console.log('Error: ' + error);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+

@@ -11,6 +11,7 @@ namespace RMRBDClient.Controllers
 {
     public class CustomerController : BaseController
     {
+
         public CustomerController(IConfiguration configuration) : base(configuration) { }
         public async Task<IActionResult> PersonalProfile()
         {
@@ -33,23 +34,23 @@ namespace RMRBDClient.Controllers
 
         public async Task<IActionResult> SellerRegister()
         {
-            if (HttpContext.Session.GetInt32("CustomerId") != null)
-            {
-                HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync($"{CustomerUrl}?$filter=CustomerId eq {HttpContext.Session.GetInt32("CustomerId")}");
-                httpResponseMessage.EnsureSuccessStatusCode();
-                var customer = JsonConvert.DeserializeObject<List<Customer>>(httpResponseMessage.Content.ReadAsStringAsync().Result).FirstOrDefault();
-
-                ViewData["CustomerId"] = customer.CustomerId;
-                ViewData["UserName"] = customer.UserName;
-                ViewData["Coin"] = customer.Coin;
-                ViewData["Avatar"] = customer.Avatar;
-                ViewData["SellerStatus"] = customer.SellerStatus;
-            }
-            else
-            {
-                return RedirectToAction("Logout", "LoginPages");
-                
-            }
+            //if (HttpContext.Session.GetInt32("CustomerId") != null)
+            //{
+            //    HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync($"{CustomerUrl}?$filter=CustomerId eq {HttpContext.Session.GetInt32("CustomerId")}");
+            //    httpResponseMessage.EnsureSuccessStatusCode();
+            //    var customer = JsonConvert.DeserializeObject<List<Customer>>(httpResponseMessage.Content.ReadAsStringAsync().Result).FirstOrDefault();
+            //
+            //    ViewData["CustomerId"] = customer.CustomerId;
+            //    ViewData["UserName"] = customer.UserName;
+            //    ViewData["Coin"] = customer.Coin;
+            //    ViewData["Avatar"] = customer.Avatar;
+            //    ViewData["SellerStatus"] = customer.SellerStatus;
+            //}
+            //else
+            //{
+            //    return RedirectToAction("Logout", "LoginPages");
+            //    
+            //}
             ViewData["provinces"] = await GetProvinces();
             return View();
             
@@ -74,6 +75,11 @@ namespace RMRBDClient.Controllers
             var provinces = dataArray.ToObject<List<Province>>();
 
             return provinces;
+        }
+
+        public async Task<IActionResult> AjaxTest()
+        {
+            return View();
         }
         
     }
