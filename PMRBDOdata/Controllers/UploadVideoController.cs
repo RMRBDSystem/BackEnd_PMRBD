@@ -5,11 +5,10 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace PMRBDOdata.Controllers
 {
-    [Route("odata/UploadPDF")]
+    [Route("odata/UploadVideo")]
     [ApiController]
-    public class UploadPDFController : ODataController
+    public class UploadVideoController : ODataController
     {
-
         [HttpPost("{id}")]
         public async Task<IActionResult> Post([FromODataUri] int id, IFormFile file)
         {
@@ -20,14 +19,14 @@ namespace PMRBDOdata.Controllers
                     return BadRequest("No file provided");
                 }
 
-                var allowedFileTypes = new[] { "application/pdf", "application/vnd.openxmlformats-officedocument.presentationml.presentation" };
+                var allowedFileTypes = new[] { "video/mp4", "video/x-m4v", "video/quicktime", "video/x-msvideo", "video/x-flv", "video/x-mpeg" };
                 if (!allowedFileTypes.Contains(file.ContentType))
                 {
-                    return BadRequest("Invalid file type. Only PDF and PPTX files are allowed.");
+                    return BadRequest("Invalid file type. Only video files are allowed.");
                 }
 
                 var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(file.FileName)}";
-                string directoryPath = Path.Combine("wwwroot", "PDF", id.ToString());
+                string directoryPath = Path.Combine("wwwroot", "Videos", id.ToString());
                 string filePath = Path.Combine(directoryPath, fileName);
 
                 Directory.CreateDirectory(directoryPath);
@@ -37,7 +36,7 @@ namespace PMRBDOdata.Controllers
                     await file.CopyToAsync(fileStream);
                 }
 
-                string relativePath = $"/PDF/{id}/{fileName}";
+                string relativePath = $"/Videos/{id}/{fileName}";
                 return Ok(relativePath);
             }
             catch (Exception ex)
@@ -46,21 +45,21 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-
-        [HttpGet("{relativePath}")]
-        public async Task<IActionResult> GetPDF([FromODataUri] string relativePath)
+        [HttpGet]
+        public IActionResult GetVideo(string relativePath)
         {
             try
             {
-                string filePath = Path.Combine("wwwroot", relativePath);
-
-                if (!System.IO.File.Exists(filePath))
+                var filePath = Path.Combine("wwwroot", relativePath.TrimStart('~', '/'));
+                if (System.IO.File.Exists(filePath))
                 {
-                    return NotFound();
+                    var fileBytes = System.IO.File.ReadAllBytes(filePath);
+                    return File(fileBytes, "video/mp4", Path.GetFileName(filePath));
                 }
-
-                var fileStream = new FileStream(filePath, FileMode.Open);
-                return File(fileStream, GetContentType(filePath), Path.GetFileName(filePath));
+                else
+                {
+                    return NotFound("Video not found");
+                }
             }
             catch (Exception ex)
             {
@@ -68,23 +67,8 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-        private string GetContentType(string filePath)
-        {
-            var extension = Path.GetExtension(filePath);
-            switch (extension)
-            {
-                case ".pdf":
-                    return "application/pdf";
-                case ".pptx":
-                    return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-                default:
-                    return "application/octet-stream";
-            }
-        }
-
-
         [HttpDelete]
-        public IActionResult DeletePDF([FromBody] DeletePDFRequest relativePath)
+        public IActionResult DeleteVideo([FromBody] DeleteVideoRequest relativePath)
         {
             try
             {
@@ -92,11 +76,11 @@ namespace PMRBDOdata.Controllers
                 if (System.IO.File.Exists(filePath))
                 {
                     System.IO.File.Delete(filePath);
-                    return Ok("File deleted successfully");
+                    return Ok("Video deleted successfully");
                 }
                 else
                 {
-                    return NotFound("File not found");
+                    return NotFound("Video not found");
                 }
             }
             catch (Exception ex)
@@ -105,7 +89,8 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-        public class DeletePDFRequest
+
+        public class DeleteVideoRequest
         {
             public string RelativePath { get; set; }
         }
