@@ -16,7 +16,7 @@
             if (!context.Request.Headers.ContainsKey("Token"))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsync("Missing Token");
+                await context.Response.WriteAsync("Unauthorized Access");
                 return;
             }
 
@@ -24,7 +24,7 @@
             if (token != _validToken)
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsync("Invalid Token");
+                await context.Response.WriteAsync("Unauthorized Access");
                 return;
             }
 

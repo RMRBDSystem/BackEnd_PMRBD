@@ -33,7 +33,8 @@ namespace RMRBDClient.Controllers
 
                 string GoogleID = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
                 HttpResponseMessage response = await _httpClient.GetAsync($"{EmployeeUrl}?$filter=GoogleId eq '{GoogleID}' and Status eq 1");
-                response.EnsureSuccessStatusCode(); 
+                response.Headers.Add("Token", "123-abc");
+                response.EnsureSuccessStatusCode();
                 var employee = JsonConvert.DeserializeObject<List<Employee>>(await response.Content.ReadAsStringAsync()).FirstOrDefault();
 
                 if (employee == null)
@@ -42,6 +43,7 @@ namespace RMRBDClient.Controllers
                     // Đăng nhập Customer
 
                     response = await _httpClient.GetAsync($"{CustomerUrl}?$filter=GoogleId eq '{GoogleID}'");
+                    response.Headers.Add("Token", "123-abc");
                     response.EnsureSuccessStatusCode();
                     var customer = JsonConvert.DeserializeObject<List<Customer>>(await response.Content.ReadAsStringAsync()).FirstOrDefault();
 
@@ -69,9 +71,11 @@ namespace RMRBDClient.Controllers
                         try
                         {
                             response = await _httpClient.PostAsync($"{CustomerUrl}", content);
+                            response.Headers.Add("Token", "123-abc");
                             response.EnsureSuccessStatusCode();
 
                             response = await _httpClient.GetAsync($"{CustomerUrl}?$filter=GoogleId eq '{GoogleID}'");
+                            response.Headers.Add("Token", "123-abc");
                             response.EnsureSuccessStatusCode();
                             var customerIn = JsonConvert.DeserializeObject<List<Customer>>(await response.Content.ReadAsStringAsync()).FirstOrDefault();
 
