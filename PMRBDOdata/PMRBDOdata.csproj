@@ -31,7 +31,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Images\UserProfile\1\" />
+    <Folder Include="wwwroot\Images\Book\" />
+    <Folder Include="wwwroot\Images\CustomerProfile\" />
+    <Folder Include="wwwroot\Images\Ebook\" />
+    <Folder Include="wwwroot\Images\EmployeeProfile\" />
+    <Folder Include="wwwroot\Images\Recipe\" />
+    <Folder Include="wwwroot\Images\Service\" />
     <Folder Include="wwwroot\PDF\" />
     <Folder Include="wwwroot\Videos\" />
   </ItemGroup>

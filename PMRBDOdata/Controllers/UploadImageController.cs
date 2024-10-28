@@ -18,56 +18,59 @@ namespace PMRBDOdata.Controllers
             _env = env;
         }
 
-        private readonly Dictionary<int, string> _imageDirectories = new Dictionary<int, string>
-        {
-            { 1, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Avatar") },
-            { 2, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Recipe") },
-            { 3, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Book") },
-            { 4, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Ebook") },
-            { 5, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Service") }
-        };
-
-        [HttpPost("{Type}")]
-        public async Task<IActionResult> UploadImage(IFormFile image, [FromODataUri] int Type)
-        {
-            try
-            {
-                if (image == null || image.Length == 0)
-                {
-                    return BadRequest("No image file provided");
-                }
-
-                if (!_imageDirectories.TryGetValue(Type, out var _imageDirectory))
-                {
-                    return BadRequest("Invalid image type");
-                }
-
-                if (!Directory.Exists(_imageDirectory))
-                {
-                    Directory.CreateDirectory(_imageDirectory);
-                }
-
-                var fileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
-                var filePath = Path.Combine(_imageDirectory, fileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await image.CopyToAsync(fileStream);
-                }
-
-                var relativePath = $"/Images/{_imageDirectories[Type].Split(Path.DirectorySeparatorChar).Last()}/{fileName}";
-                return Ok(relativePath);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
+        //[HttpPost("{TypeName}/{Id}")]
+        //public async Task<IActionResult> UploadListImage(List<IFormFile> image, [FromODataUri] string TypeName, [FromODataUri] int Id)
+        //{
+        //    try
+        //    {
+        //        if (image == null || image.Count == 0)
+        //        {
+        //            return BadRequest("No image file provided");
+        //        }
+        //
+        //        List<string> fileNameList = new List<string>();
+        //
+        //        foreach (var item in image)
+        //        {
+        //            var fileName = $"{Path.GetFileNameWithoutExtension(item.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(item.FileName)}";
+        //            string directoryPath;
+        //            string relativePath;
+        //
+        //            if (TypeName.Equals("Recipe"))
+        //            {
+        //                directoryPath = Path.Combine("wwwroot", "Images", "Recipe", Id.ToString());
+        //                relativePath = $"/Images/Recipe/{Id}/{fileName}";
+        //            }
+        //            else if (TypeName.Equals("Book"))
+        //            {
+        //                directoryPath = Path.Combine("wwwroot", "Images", "Book", Id.ToString());
+        //                relativePath = $"/Images/Book/{Id}/{fileName}";
+        //            }
+        //            else
+        //            {
+        //                return BadRequest("Invalid type");
+        //            }
+        //
+        //            Directory.CreateDirectory(directoryPath);
+        //
+        //            string filePath = Path.Combine(directoryPath, fileName);
+        //            using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //            {
+        //                await item.CopyToAsync(fileStream);
+        //            }
+        //
+        //            fileNameList.Add(relativePath);
+        //        }
+        //        return Ok(fileNameList);
+        //    }
+        //    catch
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
         [HttpPost("{Type}/{Id}")]
-        public async Task<IActionResult> UploadProfileImage(IFormFile image, [FromODataUri] int Type, [FromODataUri] int Id)
+        public async Task<IActionResult> UploadImage(IFormFile image, [FromODataUri] int Type, [FromODataUri] int Id)
         {
             try
             {
@@ -75,34 +78,54 @@ namespace PMRBDOdata.Controllers
                 {
                     return BadRequest("No image file provided");
                 }
-
+        
                 var fileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
-
+        
                 string directoryPath;
                 string relativePath;
                 if (Type == 1)
                 {
-                    directoryPath = Path.Combine("wwwroot", "Images", "UserProfile", Id.ToString());
-                    relativePath = $"/Images/UserProfile/{Id}/{fileName}";
+                    directoryPath = Path.Combine("wwwroot", "Images", "CustomerProfile", Id.ToString());
+                    relativePath = $"/Images/CustomerProfile/{Id}/{fileName}";
                 }
                 else if (Type == 2)
                 {
                     directoryPath = Path.Combine("wwwroot", "Images", "EmployeeProfile", Id.ToString());
                     relativePath = $"/Images/EmployeeProfile/{Id}/{fileName}";
                 }
+                else if (Type == 3)
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "Recipe", Id.ToString());
+                    relativePath = $"/Images/Recipe/{Id}/{fileName}";
+                }
+                else if (Type == 4)
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "Book", Id.ToString());
+                    relativePath = $"/Images/Book/{Id}/{fileName}";
+                }
+                else if (Type == 5)
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "Ebook", Id.ToString());
+                    relativePath = $"/Images/Ebook/{Id}/{fileName}";
+                }
+                else if (Type == 6)
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "Service", Id.ToString());
+                    relativePath = $"/Images/Service/{Id}/{fileName}";
+                }
                 else
                 {
                     return BadRequest("Invalid Type");
                 }
-
+        
                 Directory.CreateDirectory(directoryPath);
-
+        
                 string filePath = Path.Combine(directoryPath, fileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     await image.CopyToAsync(fileStream);
                 }
-
+        
                 return Ok(relativePath);
             }
             catch (Exception ex)
@@ -110,7 +133,6 @@ namespace PMRBDOdata.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
 
 
