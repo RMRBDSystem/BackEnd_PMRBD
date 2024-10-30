@@ -291,8 +291,7 @@ public partial class RmrbdContext : DbContext
                 .HasConstraintName("FK__BookTrans__Custo__2180FB33");
 
             entity.HasOne(d => d.Order).WithMany(p => p.BookTransactions)
-                .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__BookTrans__Order__22751F6C");
+                .HasForeignKey(d => d.OrderId);
         });
 
         modelBuilder.Entity<CoinTransaction>(entity =>
@@ -551,6 +550,7 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.RecipeTransactionId).HasColumnName("RecipeTransactionID");
             entity.Property(e => e.CoinFluctuations).HasDefaultValueSql("((0))");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.Detail).HasMaxLength(500);
             entity.Property(e => e.Date).HasColumnType("datetime");
             entity.Property(e => e.RecipeId).HasColumnName("RecipeID");
 

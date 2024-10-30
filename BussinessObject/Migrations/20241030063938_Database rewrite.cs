@@ -463,6 +463,7 @@ namespace BussinessObject.Migrations
                     RecipeID = table.Column<int>(type: "int", nullable: true),
                     CoinFluctuations = table.Column<int>(type: "int", nullable: true, defaultValueSql: "((0))"),
                     Date = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Detail = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -549,7 +550,7 @@ namespace BussinessObject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__BookOrde__C3905BAFEEF8B964", x => x.OrderID);
+                    table.PrimaryKey("PK_BookOrder", x => x.OrderID);
                     table.ForeignKey(
                         name: "FK__BookOrder__BookI__160F4887",
                         column: x => x.BookID,
@@ -700,15 +701,15 @@ namespace BussinessObject.Migrations
                 {
                     table.PrimaryKey("PK__BookTran__4F2B2B26F32064C6", x => x.BookTransactionID);
                     table.ForeignKey(
+                        name: "FK_BookTransaction_BookOrder_OrderID",
+                        column: x => x.OrderID,
+                        principalTable: "BookOrder",
+                        principalColumn: "OrderID");
+                    table.ForeignKey(
                         name: "FK__BookTrans__Custo__2180FB33",
                         column: x => x.CustomerID,
                         principalTable: "Account",
                         principalColumn: "AccountID");
-                    table.ForeignKey(
-                        name: "FK__BookTrans__Order__22751F6C",
-                        column: x => x.OrderID,
-                        principalTable: "BookOrder",
-                        principalColumn: "OrderID");
                 });
 
             migrationBuilder.CreateIndex(

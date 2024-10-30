@@ -292,8 +292,7 @@ namespace BussinessObject.Migrations
                     b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18, 0)");
 
-                    b.HasKey("OrderId")
-                        .HasName("PK__BookOrde__C3905BAFEEF8B964");
+                    b.HasKey("OrderId");
 
                     b.HasIndex("BookId");
 
@@ -905,6 +904,10 @@ namespace BussinessObject.Migrations
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("Detail")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<int?>("RecipeId")
                         .HasColumnType("int")
                         .HasColumnName("RecipeID");
@@ -1208,8 +1211,7 @@ namespace BussinessObject.Migrations
 
                     b.HasOne("BusinessObject.Models.BookOrder", "Order")
                         .WithMany("BookTransactions")
-                        .HasForeignKey("OrderId")
-                        .HasConstraintName("FK__BookTrans__Order__22751F6C");
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("Customer");
 
@@ -1351,7 +1353,7 @@ namespace BussinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.PersonalRecipe", b =>
                 {
-                    b.HasOne("BusinessObject.Models.Account", "Customer")
+                    b.HasOne("BusinessObject.Models.Account", "Account")
                         .WithMany("PersonalRecipes")
                         .HasForeignKey("CustomerId")
                         .IsRequired()
@@ -1363,7 +1365,7 @@ namespace BussinessObject.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__PersonalR__Recip__66603565");
 
-                    b.Navigation("Customer");
+                    b.Navigation("Account");
 
                     b.Navigation("Recipe");
                 });
