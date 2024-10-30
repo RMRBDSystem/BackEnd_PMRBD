@@ -8,9 +8,10 @@ namespace BusinessObject.Models;
 public partial class BookCategory
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int CategoryId { get; set; }
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public int? Status { get; set; }
 

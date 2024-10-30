@@ -26,8 +26,6 @@ public partial class Recipe
 
     public string? Ingredient { get; set; }
 
-    public int? Status { get; set; }
-
     public int? CensorId { get; set; }
 
     public DateTime? CreateDate { get; set; }
@@ -36,19 +34,21 @@ public partial class Recipe
 
     public int? TotalTime { get; set; }
 
-    public virtual Employee? Censor { get; set; }
+    public virtual Account? Censor { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-    public virtual Customer? CreateBy { get; set; }
+    public virtual Account? CreateBy { get; set; }
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();
 
     public virtual ICollection<PersonalRecipe> PersonalRecipes { get; set; } = new List<PersonalRecipe>();
 
-    public virtual ICollection<RecipeRate> RecipeRates { get; set; } = new List<RecipeRate>();
-
     public virtual ICollection<RecipeTransaction> RecipeTransactions { get; set; } = new List<RecipeTransaction>();
 
+    public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
+
     public virtual ICollection<RecipeTag> RecipeTags { get; set; } = new List<RecipeTag>();
+
+    public virtual ICollection<RecipeRate> RecipeRates { get; set; } = new List<RecipeRate>();
 }

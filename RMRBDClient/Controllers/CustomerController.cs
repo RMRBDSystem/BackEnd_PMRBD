@@ -13,24 +13,7 @@ namespace RMRBDClient.Controllers
     {
 
         public CustomerController(IConfiguration configuration) : base(configuration) { }
-        public async Task<IActionResult> PersonalProfile()
-        {
-            if (HttpContext.Session.GetInt32("CustomerId") != null)
-            {
-                HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync($"{CustomerUrl}?$filter=CustomerId eq {HttpContext.Session.GetInt32("CustomerId")}");
-                httpResponseMessage.EnsureSuccessStatusCode();
-                var customer = JsonConvert.DeserializeObject<List<Customer>>(httpResponseMessage.Content.ReadAsStringAsync().Result).FirstOrDefault();
-
-                ViewData["CustomerId"] = customer.CustomerId;
-                ViewData["UserName"] = customer.UserName;
-                ViewData["Coin"] = customer.Coin;
-                ViewData["Avatar"] = customer.Avatar;
-                ViewData["SellerStatus"] = customer.SellerStatus;
-
-                return View(customer);
-            }
-            return RedirectToAction("Logout", "LoginPages");
-        }
+        
 
         public async Task<IActionResult> SellerRegister()
         {

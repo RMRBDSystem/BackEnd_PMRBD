@@ -15,9 +15,7 @@ public partial class CoinTransaction
 
     public DateTime? Date { get; set; }
 
-    public string? Details { get; set; }
-
     public int? Status { get; set; }
 
-    public virtual Customer? Customer { get; set; }
+    public virtual Account? Customer { get; set; }
 }

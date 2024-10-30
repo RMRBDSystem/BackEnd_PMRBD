@@ -11,35 +11,35 @@ namespace PMRBDOdata.Controllers
 {
     [Route("odata/ServiceFeedBack")]
     [ApiController]
-    public class ServiceFeedBackController : ODataController
+    public class ServiceFeedbackController : ODataController
     {
         private readonly IServiceFeedBackRepository serviceFeedBackRepository;
-        public ServiceFeedBackController()
+        public ServiceFeedbackController()
         {
             serviceFeedBackRepository = new ServiceFeedBackRepository();
         }
 
         [EnableQuery]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ServiceFeedBack>>> GetAllServiceFeedBacks()
+        public async Task<ActionResult<IEnumerable<ServiceFeedback>>> GetAllServiceFeedbacks()
         {
             var list = await serviceFeedBackRepository.GetAllServiceFeedBacks();
             return Ok(list);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceFeedBack>> GetServiceFeedBackById([FromODataUri] int id)
+        public async Task<ActionResult<ServiceFeedback>> GetServiceFeedbackById([FromODataUri] int id)
         {
-            var ServiceFeedBack = await serviceFeedBackRepository.GetServiceFeedBackById(id);
-            if (ServiceFeedBack == null)
+            var ServiceFeedback = await serviceFeedBackRepository.GetServiceFeedBackById(id);
+            if (ServiceFeedback == null)
             {
                 return NotFound();
             }
-            return Ok(ServiceFeedBack);
+            return Ok(ServiceFeedback);
         }
 
         [HttpPost]
-        public async Task AddServiceFeedBack([FromBody] ServiceFeedBack serviceFeedBack)
+        public async Task AddServiceFeedback([FromBody] ServiceFeedback serviceFeedBack)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ServiceFeedBack>> UpdateServiceFeedBack([FromODataUri] int id, [FromBody] ServiceFeedBack serviceFeedBack)
+        public async Task<ActionResult<ServiceFeedback>> UpdateServiceFeedback([FromODataUri] int id, [FromBody] ServiceFeedback serviceFeedBack)
         {
             if (!ModelState.IsValid)
             {
