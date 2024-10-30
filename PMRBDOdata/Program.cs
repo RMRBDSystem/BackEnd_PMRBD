@@ -26,7 +26,6 @@ modelbuilder.EntitySet<Comment>("Comments");
 modelbuilder.EntitySet<Account>("Accounts");
 modelbuilder.EntitySet<Ebook>("Ebooks");
 modelbuilder.EntitySet<AccountProfile>("AccountProfiles");
-modelbuilder.EntitySet<PhoneNumber>("PhoneNumbers");
 modelbuilder.EntitySet<Image>("Images");
 modelbuilder.EntitySet<Notification>("Notifications");
 modelbuilder.EntitySet<Recipe>("Recipes");

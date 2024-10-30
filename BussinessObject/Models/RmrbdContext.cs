@@ -51,8 +51,6 @@ public partial class RmrbdContext : DbContext
 
     public virtual DbSet<PersonalRecipe> PersonalRecipes { get; set; }
 
-    public virtual DbSet<PhoneNumber> PhoneNumbers { get; set; }
-
     public virtual DbSet<Recipe> Recipes { get; set; }
 
     public virtual DbSet<RecipeTransaction> RecipeTransactions { get; set; }
@@ -359,17 +357,13 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.AddressDetail).HasMaxLength(500);
             entity.Property(e => e.AddressStatus).HasDefaultValueSql("((1))");
             entity.Property(e => e.DistrictCode).HasColumnName("District_Code");
-            entity.Property(e => e.PhoneNumberId).HasColumnName("PhoneNumberID");
+            entity.Property(e => e.PhoneNumber).HasMaxLength(500);
             entity.Property(e => e.ProvinceCode).HasColumnName("Province_Code");
             entity.Property(e => e.WardCode).HasColumnName("Ward_Code");
 
             entity.HasOne(d => d.Account).WithMany(p => p.CustomerAddresses)
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("FK__CustomerA__Accou__4D94879B");
-
-            entity.HasOne(d => d.PhoneNumber).WithMany(p => p.CustomerAddresses)
-                .HasForeignKey(d => d.PhoneNumberId)
-                .HasConstraintName("FK__CustomerA__Phone__4F7CD00D");
         });
 
         modelBuilder.Entity<Ebook>(entity =>
@@ -480,25 +474,7 @@ public partial class RmrbdContext : DbContext
                 .HasConstraintName("FK__PersonalR__Recip__66603565");
         });
 
-        modelBuilder.Entity<PhoneNumber>(entity =>
-        {
-            entity.HasKey(e => e.PhoneNumberId).HasName("PK__PhoneNum__D2D34FB1D7AE8963");
-
-            entity.ToTable("PhoneNumber");
-
-            entity.HasIndex(e => e.Number, "UQ__PhoneNum__85FB4E3847CDA52B").IsUnique();
-
-            entity.Property(e => e.PhoneNumberId).HasColumnName("PhoneNumberID");
-            entity.Property(e => e.AccountId).HasColumnName("AccountID");
-            entity.Property(e => e.Number)
-                .HasMaxLength(30)
-                .HasColumnName("Number");
-            entity.Property(e => e.Status).HasDefaultValueSql("((1))");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.PhoneNumbers)
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__PhoneNumb__Accou__49C3F6B7");
-        });
+        
 
         modelBuilder.Entity<Recipe>(entity =>
         {

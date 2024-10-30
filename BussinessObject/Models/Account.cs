@@ -52,8 +52,6 @@ public partial class Account
 
     public virtual ICollection<PersonalRecipe> PersonalRecipes { get; set; } = new List<PersonalRecipe>();
 
-    public virtual ICollection<PhoneNumber> PhoneNumbers { get; set; } = new List<PhoneNumber>();
-
     public virtual ICollection<Recipe> RecipeCensors { get; set; } = new List<Recipe>();
 
     public virtual ICollection<Recipe> RecipeCreateBies { get; set; } = new List<Recipe>();
