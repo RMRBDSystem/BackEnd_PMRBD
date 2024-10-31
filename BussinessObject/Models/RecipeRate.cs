@@ -1,17 +1,18 @@
-﻿using System;
+﻿using BusinessObject.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BusinessObject.Models;
-
-public partial class RecipeRate
+namespace BussinessObject.Models
 {
-    public int RecipeId { get; set; }
-
-    public int CustomerId { get; set; }
-
-    public int? RatePoint { get; set; }
-
-    public virtual Customer Customer { get; set; } = null!;
-
-    public virtual Recipe Recipe { get; set; } = null!;
+    public partial class RecipeRate
+    {
+        public int RecipeId { get; set; }
+        public int AccountId { get; set; }
+        public int RatePoint { get; set; }
+        public virtual Recipe? Recipe { get; set; }
+        public virtual Account? Account { get; set; }
+    }
 }

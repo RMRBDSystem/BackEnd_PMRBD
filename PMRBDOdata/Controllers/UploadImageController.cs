@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BusinessObject.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Repository.Repository;
+using System.Net.Http.Headers;
 
 namespace PMRBDOdata.Controllers
 {
@@ -17,17 +20,60 @@ namespace PMRBDOdata.Controllers
             _env = env;
         }
 
-        private readonly Dictionary<int, string> _imageDirectories = new Dictionary<int, string>
-        {
-            { 1, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Avatar") },
-            { 2, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Recipe") },
-            { 3, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Book") },
-            { 4, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Ebook") },
-            { 5, Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Service") }
-        };
+        //[HttpPost("{TypeName}/{Id}")]
+        //public async Task<IActionResult> UploadListImage(List<IFormFile> image, [FromODataUri] string TypeName, [FromODataUri] int Id)
+        //{
+        //    try
+        //    {
+        //        if (image == null || image.Count == 0)
+        //        {
+        //            return BadRequest("No image file provided");
+        //        }
+        //
+        //        List<string> fileNameList = new List<string>();
+        //
+        //        foreach (var item in image)
+        //        {
+        //            var fileName = $"{Path.GetFileNameWithoutExtension(item.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(item.FileName)}";
+        //            string directoryPath;
+        //            string relativePath;
+        //
+        //            if (TypeName.Equals("Recipe"))
+        //            {
+        //                directoryPath = Path.Combine("wwwroot", "Images", "Recipe", Id.ToString());
+        //                relativePath = $"/Images/Recipe/{Id}/{fileName}";
+        //            }
+        //            else if (TypeName.Equals("Book"))
+        //            {
+        //                directoryPath = Path.Combine("wwwroot", "Images", "Book", Id.ToString());
+        //                relativePath = $"/Images/Book/{Id}/{fileName}";
+        //            }
+        //            else
+        //            {
+        //                return BadRequest("Invalid type");
+        //            }
+        //
+        //            Directory.CreateDirectory(directoryPath);
+        //
+        //            string filePath = Path.Combine(directoryPath, fileName);
+        //            using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //            {
+        //                await item.CopyToAsync(fileStream);
+        //            }
+        //
+        //            fileNameList.Add(relativePath);
+        //        }
+        //        return Ok(fileNameList);
+        //    }
+        //    catch
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
-        [HttpPost("{Type}")]
-        public async Task<IActionResult> UploadImage(IFormFile image, [FromODataUri] int Type)
+        
+        [HttpPost("{Type}/{Id}")]
+        public async Task<IActionResult> UploadImage(IFormFile image, [FromODataUri] string Type, [FromODataUri] int Id)
         {
             try
             {
@@ -36,25 +82,62 @@ namespace PMRBDOdata.Controllers
                     return BadRequest("No image file provided");
                 }
 
-                if (!_imageDirectories.TryGetValue(Type, out var _imageDirectory))
-                {
-                    return BadRequest("Invalid image type");
-                }
-
-                if (!Directory.Exists(_imageDirectory))
-                {
-                    Directory.CreateDirectory(_imageDirectory);
-                }
-
                 var fileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
-                var filePath = Path.Combine(_imageDirectory, fileName);
 
+                string directoryPath;
+                string relativePath;
+                if (Type == "CustomerProfile")
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "CustomerProfile", Id.ToString());
+                    relativePath = $"/Images/CustomerProfile/{Id}/{fileName}";
+                }
+                else if (Type == "EmployeeProfile")
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "EmployeeProfile", Id.ToString());
+                    relativePath = $"/Images/EmployeeProfile/{Id}/{fileName}";
+                }
+                else if (Type == "Recipe")
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "Recipe", Id.ToString());
+                    relativePath = $"/Images/Recipe/{Id}/{fileName}";
+
+                    var imageEntity = new Image
+                    {
+                        RecipeId = Id,
+                        BookId = null,
+                        ImageUrl = relativePath,
+                        Status = 1
+
+                    };
+                }
+                else if (Type == "Book")
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "Book", Id.ToString());
+                    relativePath = $"/Images/Book/{Id}/{fileName}";
+                }
+                else if (Type == "Ebook")
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "Ebook", Id.ToString());
+                    relativePath = $"/Images/Ebook/{Id}/{fileName}";
+                }
+                else if (Type == "Service")
+                {
+                    directoryPath = Path.Combine("wwwroot", "Images", "Service", Id.ToString());
+                    relativePath = $"/Images/Service/{Id}/{fileName}";
+                }
+                else
+                {
+                    return BadRequest("Invalid Type");
+                }
+
+                Directory.CreateDirectory(directoryPath);
+
+                string filePath = Path.Combine(directoryPath, fileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     await image.CopyToAsync(fileStream);
                 }
 
-                var relativePath = $"/Images/{_imageDirectories[Type].Split(Path.DirectorySeparatorChar).Last()}/{fileName}";
                 return Ok(relativePath);
             }
             catch (Exception ex)

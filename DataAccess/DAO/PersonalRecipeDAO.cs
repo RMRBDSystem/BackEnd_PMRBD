@@ -10,7 +10,7 @@ namespace DataAccess
 {
     public class PersonalRecipeDAO : SingletonBase<PersonalRecipeDAO>
     {
-        public async Task<IEnumerable<PersonalRecipe>> GetAllPersonalRecipes() => await _context.PersonalRecipes.Include(p=>p.Customer).ToListAsync();
+        public async Task<IEnumerable<PersonalRecipe>> GetAllPersonalRecipes() => await _context.PersonalRecipes.ToListAsync();
 
         public async Task<PersonalRecipe> GetPersonalRecipeById(int id)
         {

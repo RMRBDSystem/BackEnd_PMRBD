@@ -25,7 +25,7 @@ public partial class Comment
 
     public virtual Book? Book { get; set; }
 
-    public virtual Customer? Customer { get; set; }
+    public virtual Account? Customer { get; set; }
 
     public virtual Ebook? Ebook { get; set; }
 

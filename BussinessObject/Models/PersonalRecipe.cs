@@ -17,13 +17,11 @@ public partial class PersonalRecipe
 
     public string? Ingredient { get; set; }
 
-    public int? Status { get; set; }
-
     public int? PurchasePrice { get; set; }
 
-    public DateTime? PurchaseDate { get; set; }
+    public int? Status { get; set; }
 
-    public virtual Customer Customer { get; set; } = null!;
+    public virtual Account? Account { get; set; }
 
-    public virtual Recipe Recipe { get; set; } = null!;
+    public virtual Recipe? Recipe { get; set; }
 }

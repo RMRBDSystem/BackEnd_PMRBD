@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace BusinessObject.Models;
 
-public partial class ServiceFeedBack
+public partial class ServiceFeedback
 {
-    [Key]
     public int FeedBackId { get; set; }
 
-    public string Title { get; set; } = null!;
+    public string? Title { get; set; }
 
-    public string Content { get; set; } = null!;
+    public string? Content { get; set; }
 
     public string? ImageUrl { get; set; }
 
@@ -25,7 +23,7 @@ public partial class ServiceFeedBack
 
     public int? CustomerId { get; set; }
 
-    public virtual Customer? Customer { get; set; }
+    public virtual Account? Customer { get; set; }
 
-    public virtual Employee? Employee { get; set; }
+    public virtual Account? Employee { get; set; }
 }

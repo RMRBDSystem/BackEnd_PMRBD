@@ -9,9 +9,9 @@ namespace Repository.IRepository
 {
     public interface IServiceFeedBackRepository
     {
-        Task<IEnumerable<ServiceFeedBack>> GetAllServiceFeedBacks();
-        Task<ServiceFeedBack> GetServiceFeedBackById(int id);
-        Task AddServiceFeedBack(ServiceFeedBack feedBack);
-        Task UpdateServiceFeedBack(ServiceFeedBack feedBack);
+        Task<IEnumerable<ServiceFeedback>> GetAllServiceFeedBacks();
+        Task<ServiceFeedback> GetServiceFeedBackById(int id);
+        Task AddServiceFeedBack(ServiceFeedback feedBack);
+        Task UpdateServiceFeedBack(ServiceFeedback feedBack);
     }
 }

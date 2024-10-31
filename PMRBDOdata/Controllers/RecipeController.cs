@@ -39,20 +39,23 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task AddRecipe([FromBody] Recipe recipe)
+        public async Task<IActionResult> AddRecipe([FromBody] Recipe recipe)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    BadRequest(ModelState);
+                    return BadRequest(ModelState);
                 }
+
                 await recipeRepository.AddRecipe(recipe);
-                //return Created(recipe);
+
+                var recipeId = recipe.RecipeId;
+                return CreatedAtAction(nameof(GetRecipeById), new { id = recipeId }, recipe);
             }
             catch (Exception ex)
             {
-                BadRequest(ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
