@@ -7,9 +7,7 @@ public partial class Notification
 {
     public int NotificationId { get; set; }
 
-    public int? EmployeeId { get; set; }
-
-    public int? CustomerId { get; set; }
+    public int? AccountId { get; set; }
 
     public string? Content { get; set; }
 
@@ -17,7 +15,5 @@ public partial class Notification
 
     public int? Status { get; set; }
 
-    public virtual Customer? Customer { get; set; }
-
-    public virtual Employee? Employee { get; set; }
+    public virtual Account? Account { get; set; }
 }

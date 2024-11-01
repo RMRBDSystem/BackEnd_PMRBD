@@ -1,18 +1,19 @@
-﻿using BusinessObject.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BussinessObject.Models
+namespace BusinessObject.Models;
+
+public partial class BookOrderStatus
 {
-    public class BookOrderStatus
-    {
-        public int BookOrderStatusId { get; set; }
-        public int OrderId { get; set; }
-        public string Status { get; set; }
-        public DateTime StatusDate { get; set; }
-        public virtual BookOrder? BookOrder { get; set; }
-    }
+    public int BookOrderStatusId { get; set; }
+
+    public int? OrderId { get; set; }
+
+    public int? Status { get; set; }
+
+    public DateTime? StatusDate { get; set; }
+
+    public string? Details { get; set; }
+
+    public virtual BookOrder? Order { get; set; }
 }

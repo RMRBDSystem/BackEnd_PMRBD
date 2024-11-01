@@ -4,6 +4,7 @@ using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BussinessObject.Migrations
 {
     [DbContext(typeof(RmrbdContext))]
-    partial class RmrbdContextModelSnapshot : ModelSnapshot
+    [Migration("20241030063938_Database rewrite")]
+    partial class Databaserewrite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -550,12 +553,9 @@ namespace BussinessObject.Migrations
                         .HasColumnType("int")
                         .HasColumnName("District_Code");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<int?>("PhoneNumberId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("PhoneNumberID");
 
                     b.Property<int>("ProvinceCode")
                         .HasColumnType("int")
@@ -569,6 +569,8 @@ namespace BussinessObject.Migrations
                         .HasName("PK__Customer__091C2A1B175C7F51");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("PhoneNumberId");
 
                     b.ToTable("CustomerAddress", (string)null);
                 });
@@ -781,6 +783,41 @@ namespace BussinessObject.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("PersonalRecipe", (string)null);
+                });
+
+            modelBuilder.Entity("BusinessObject.Models.PhoneNumber", b =>
+                {
+                    b.Property<int>("PhoneNumberId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("PhoneNumberID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PhoneNumberId"));
+
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("int")
+                        .HasColumnName("AccountID");
+
+                    b.Property<string>("Number")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
+                        .HasColumnName("Number");
+
+                    b.Property<int?>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("((1))");
+
+                    b.HasKey("PhoneNumberId")
+                        .HasName("PK__PhoneNum__D2D34FB1D7AE8963");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex(new[] { "Number" }, "UQ__PhoneNum__85FB4E3847CDA52B")
+                        .IsUnique()
+                        .HasFilter("[Number] IS NOT NULL");
+
+                    b.ToTable("PhoneNumber", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Recipe", b =>
@@ -1239,7 +1276,14 @@ namespace BussinessObject.Migrations
                         .HasForeignKey("AccountId")
                         .HasConstraintName("FK__CustomerA__Accou__4D94879B");
 
+                    b.HasOne("BusinessObject.Models.PhoneNumber", "PhoneNumber")
+                        .WithMany("CustomerAddresses")
+                        .HasForeignKey("PhoneNumberId")
+                        .HasConstraintName("FK__CustomerA__Phone__4F7CD00D");
+
                     b.Navigation("Account");
+
+                    b.Navigation("PhoneNumber");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Ebook", b =>
@@ -1327,6 +1371,16 @@ namespace BussinessObject.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("BusinessObject.Models.PhoneNumber", b =>
+                {
+                    b.HasOne("BusinessObject.Models.Account", "Account")
+                        .WithMany("PhoneNumbers")
+                        .HasForeignKey("AccountId")
+                        .HasConstraintName("FK__PhoneNumb__Accou__49C3F6B7");
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Recipe", b =>
@@ -1452,6 +1506,8 @@ namespace BussinessObject.Migrations
 
                     b.Navigation("PersonalRecipes");
 
+                    b.Navigation("PhoneNumbers");
+
                     b.Navigation("RecipeCensors");
 
                     b.Navigation("RecipeCreateBies");
@@ -1509,6 +1565,11 @@ namespace BussinessObject.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("EbookTransactions");
+                });
+
+            modelBuilder.Entity("BusinessObject.Models.PhoneNumber", b =>
+                {
+                    b.Navigation("CustomerAddresses");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Recipe", b =>

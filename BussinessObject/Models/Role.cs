@@ -5,17 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObject.Models;
 
-public partial class BookCategory
+public partial class Role
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int CategoryId { get; set; }
+    public int RoleId { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string? RoleName { get; set; }
 
     public int? Status { get; set; }
 
-    public virtual ICollection<Book> Books { get; set; } = new List<Book>();
-
-    public virtual ICollection<Ebook> Ebooks { get; set; } = new List<Ebook>();
+    public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 }

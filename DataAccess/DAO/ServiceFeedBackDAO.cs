@@ -10,24 +10,24 @@ namespace DataAccess.DAO
 {
     public class ServiceFeedBackDAO : SingletonBase<ServiceFeedBackDAO>
     {
-        public async Task<IEnumerable<ServiceFeedBack>> GetAllServiceFeedBacks() => await _context.ServiceFeedBacks.ToListAsync();
+        public async Task<IEnumerable<ServiceFeedback>> GetAllServiceFeedbacks() => await _context.ServiceFeedbacks.ToListAsync();
 
-        public async Task<ServiceFeedBack> GetServiceFeedBackById(int id)
+        public async Task<ServiceFeedback> GetServiceFeedBackById(int id)
         {
-            var ServiceFeedBack = await _context.ServiceFeedBacks
+            var ServiceFeedBack = await _context.ServiceFeedbacks
                 .Where(c => c.FeedBackId == id)
                 .FirstOrDefaultAsync();
             if (ServiceFeedBack == null) return null;
             return ServiceFeedBack;
         }
 
-        public async Task Add(ServiceFeedBack feedBack)
+        public async Task Add(ServiceFeedback feedBack)
         {
-            _context.ServiceFeedBacks.AddAsync(feedBack);
+            _context.ServiceFeedbacks.AddAsync(feedBack);
             await _context.SaveChangesAsync();
         }
 
-        public async Task Update(ServiceFeedBack feedBack)
+        public async Task Update(ServiceFeedback feedBack)
         {
             var existingItem = await GetServiceFeedBackById(feedBack.FeedBackId);
             if (existingItem != null)
@@ -36,7 +36,7 @@ namespace DataAccess.DAO
             }
             else
             {
-                _context.ServiceFeedBacks.Add(feedBack);
+                _context.ServiceFeedbacks.Add(feedBack);
             }
             await _context.SaveChangesAsync();
         }
@@ -46,7 +46,7 @@ namespace DataAccess.DAO
             var ServiceFeedBack = await GetServiceFeedBackById(id);
             if (ServiceFeedBack != null)
             {
-                _context.ServiceFeedBacks.Remove(ServiceFeedBack);
+                _context.ServiceFeedbacks.Remove(ServiceFeedBack);
                 await _context.SaveChangesAsync();
             }
         }
