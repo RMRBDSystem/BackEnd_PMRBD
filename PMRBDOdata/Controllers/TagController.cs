@@ -70,7 +70,7 @@ namespace PMRBDOdata.Controllers
             }
             tag.TagId = tagToUpdate.TagId;
             await tagRepository.UpdateTag(tag);
-            return Updated(tag);
+            return Ok(tag);
         }
     }
 }

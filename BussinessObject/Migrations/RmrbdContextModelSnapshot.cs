@@ -34,7 +34,7 @@ namespace BussinessObject.Migrations
 
                     b.HasIndex("RecipesRecipeId");
 
-                    b.ToTable("AccountRecipe");
+                    b.ToTable("AccountRecipe", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Account", b =>

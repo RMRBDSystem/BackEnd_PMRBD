@@ -58,7 +58,7 @@ namespace DataAccess
                 var existingItem = await GetBookCategoryById(bookCategory.CategoryId);
                 if (existingItem != null)
                 {
-                    _context.Entry(existingItem).CurrentValues.SetValues(existingItem);
+                    _context.Entry(existingItem).CurrentValues.SetValues(bookCategory);
                     await _context.SaveChangesAsync();
                 }
             }
