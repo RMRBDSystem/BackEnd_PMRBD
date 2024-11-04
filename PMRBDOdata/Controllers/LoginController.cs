@@ -54,6 +54,7 @@ namespace PMRBDOdata.Controllers
                 }
                 HttpContext.Session.SetString("UserRole", role);
                 HttpContext.Session.SetString("UserName", checkAccount.UserName);
+                HttpContext.Session.SetInt32("UserId", checkAccount.AccountId);
                 return Ok(new { message = $"Logged in as {role}", role });
             }
             // Create a new Customer account if not found
@@ -67,8 +68,10 @@ namespace PMRBDOdata.Controllers
                 AccountStatus = 1
             };
             await AccountDAO.Instance.AddAccount(newCustomer);
+            int newCustomerId = (await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId)).AccountId;
             HttpContext.Session.SetString("UserRole", "Customer");
             HttpContext.Session.SetString("UserName", newCustomer.UserName);
+            HttpContext.Session.SetInt32("UserId", newCustomerId);
             return Ok(new { message = "New Customer created and logged in", role = "Customer" });
         }
         [HttpPost("logout")]
