@@ -1,7 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Firebase.Auth;
+using Firebase.Storage;
+using System.Net.Sockets;
+using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Repository.IRepository;
+using BusinessObject.Models;
 
 namespace PMRBDOdata.Controllers
 {
@@ -9,42 +15,89 @@ namespace PMRBDOdata.Controllers
     [ApiController]
     public class UploadPDFController : ODataController
     {
-
+        private static string ApiKey = "AIzaSyCPn2OSvk7rHKjBFwe9Sa_v-aSUZUHxdM4";
+        private static string Bucket = "rmrbdfirebase.appspot.com";
+        private static string AuthEmail = "ngockhanhpham8a@gmail.com";
+        private static string AuthPassword = "khanh30320";
+        private readonly IWebHostEnvironment _env;
+        private readonly IEbookRepository _ebookRepository;
+        public UploadPDFController(IWebHostEnvironment env, IEbookRepository ebookRepository)
+        {
+            _env = env;
+            _ebookRepository = ebookRepository;
+        }
         [HttpPost("{id}")]
-        public async Task<IActionResult> Post([FromODataUri] int id, IFormFile file)
+        public async Task<IActionResult> UploadPDF([FromForm] IFormFile document, [FromODataUri] int Id)
         {
             try
             {
-                if (file == null || file.Length == 0)
+                // Check if the document is provided
+                if (document == null || document.Length == 0)
                 {
-                    return BadRequest("No file provided");
+                    return BadRequest("No document file provided");
                 }
 
+                // Validate file type (PDF and PPTX only)
                 var allowedFileTypes = new[] { "application/pdf", "application/vnd.openxmlformats-officedocument.presentationml.presentation" };
-                if (!allowedFileTypes.Contains(file.ContentType))
+                if (!allowedFileTypes.Contains(document.ContentType))
                 {
                     return BadRequest("Invalid file type. Only PDF and PPTX files are allowed.");
                 }
 
-                var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(file.FileName)}";
-                string directoryPath = Path.Combine("wwwroot", "PDF", id.ToString());
-                string filePath = Path.Combine(directoryPath, fileName);
+                // Generate a unique file name
+                var fileName = $"{Path.GetFileNameWithoutExtension(document.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(document.FileName)}";
 
-                Directory.CreateDirectory(directoryPath);
+                // Sign in to Firebase
+                var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                // Set up Firebase Storage
+                var cancellationToken = new CancellationTokenSource();
+                var firebaseStorage = new FirebaseStorage(
+                    Bucket,
+                    new FirebaseStorageOptions
+                    {
+                        AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
+                        ThrowOnCancel = true
+                    });
+
+                // Upload document to Firebase Storage
+                var uploadTask = firebaseStorage
+                    .Child("ebook")
+                    .Child(Id.ToString())
+                    .Child(fileName)
+                    .PutAsync(document.OpenReadStream(), cancellationToken.Token);
+
+                await uploadTask;
+
+                // Retrieve the download URL
+                var downloadUrl = await firebaseStorage
+                    .Child("ebook")
+                    .Child(Id.ToString())
+                    .Child(fileName)
+                    .GetDownloadUrlAsync();
+
+                // Save URL in the database for the ebook type
+                var eboookEntity = new Ebook
                 {
-                    await file.CopyToAsync(fileStream);
-                }
+                    EbookName = "aaaa",
+                    EbookId = Id,
+                    Pdfurl = downloadUrl,
+                    Status = 1,
+                    ImageUrl = "aaaa"
+                };
+                await _ebookRepository.AddEbook(eboookEntity);
 
-                string relativePath = $"/PDF/{id}/{fileName}";
-                return Ok(relativePath);
+                // Return the download URL
+                return Ok(downloadUrl);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error occurred: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
+
 
 
         [HttpGet("{relativePath}")]

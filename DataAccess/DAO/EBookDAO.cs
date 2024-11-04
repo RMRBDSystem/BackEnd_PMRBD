@@ -40,7 +40,7 @@ namespace DataAccess
             {
                 if (ebook != null)
                 {
-                    await _context.Ebooks.AddAsync(ebook);
+                    _context.Ebooks.AddAsync(ebook);
                     await _context.SaveChangesAsync();
                 }
             }

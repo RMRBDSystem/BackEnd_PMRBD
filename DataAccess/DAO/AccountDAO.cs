@@ -67,5 +67,16 @@ namespace DataAccess.DAO
                 throw new Exception("Failed to update book category", ex);
             }
         }
+        public async Task<Account?> GetAccountByGoogleId(string googleId)
+        {
+            try
+            {
+                return await _context.Accounts.FirstOrDefaultAsync(e => e.GoogleId == googleId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve account by GoogleId", ex);
+            }
+        }
     }
 }
