@@ -17,15 +17,13 @@ public partial class CustomerAddress
 
     public int? AddressStatus { get; set; }
 
-    public int WardCode { get; set; }
+    public string WardCode { get; set; }
 
     public int DistrictCode { get; set; }
 
     public int ProvinceCode { get; set; }
 
     public string? AddressDetail { get; set; }
-
-    public int? PhoneNumberId { get; set; }
 
     public virtual Account? Account { get; set; }
 

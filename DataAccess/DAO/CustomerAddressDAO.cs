@@ -59,7 +59,7 @@ namespace DataAccess.DAO
                 var existingItem = await GetCustomerAddressById(customerAddress.AddressId);
                 if (existingItem != null)
                 {
-                    _context.Entry(existingItem).CurrentValues.SetValues(existingItem);
+                    _context.Entry(existingItem).CurrentValues.SetValues(customerAddress);
                     await _context.SaveChangesAsync();
                 }
             }

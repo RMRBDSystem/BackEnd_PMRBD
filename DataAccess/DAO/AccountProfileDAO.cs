@@ -58,7 +58,7 @@ namespace DataAccess.DAO
                 var existingItem = await GetAccountProfileByAccountId(accountProfile.AccountId);
                 if (existingItem != null)
                 {
-                    _context.Entry(existingItem).CurrentValues.SetValues(existingItem);
+                    _context.Entry(existingItem).CurrentValues.SetValues(accountProfile);
                     await _context.SaveChangesAsync();
                 }
             }
