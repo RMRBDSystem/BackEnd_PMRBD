@@ -13,5 +13,7 @@ namespace Repository.IRepository
         Task<Image> GetImageById(int id);
         Task AddImage(Image image);
         Task UpdateImage(Image image);
+        Task<Image> GetFirstImageByRecipeId(int recipeId);
+        Task<IEnumerable<Image>> GetImagesByRecipeId(int recipeId);
     }
 }

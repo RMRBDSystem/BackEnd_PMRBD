@@ -1,10 +1,14 @@
 ﻿using BusinessObject.Models;
+using Firebase.Auth;
+using Firebase.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Repository.IRepository;
 using Repository.Repository;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 
 namespace PMRBDOdata.Controllers
 {
@@ -12,69 +16,27 @@ namespace PMRBDOdata.Controllers
     [ApiController]
     public class UploadImageController : ODataController
     {
-
+        
         private readonly IWebHostEnvironment _env;
+        private readonly IImageRepository _imageRepository;
+        private readonly IConfiguration _configuration;
 
-        public UploadImageController(IWebHostEnvironment env)
+        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository, IConfiguration configuration)
         {
             _env = env;
+            _imageRepository = imageRepository;
+            _configuration = configuration;
         }
 
-        //[HttpPost("{TypeName}/{Id}")]
-        //public async Task<IActionResult> UploadListImage(List<IFormFile> image, [FromODataUri] string TypeName, [FromODataUri] int Id)
-        //{
-        //    try
-        //    {
-        //        if (image == null || image.Count == 0)
-        //        {
-        //            return BadRequest("No image file provided");
-        //        }
-        //
-        //        List<string> fileNameList = new List<string>();
-        //
-        //        foreach (var item in image)
-        //        {
-        //            var fileName = $"{Path.GetFileNameWithoutExtension(item.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(item.FileName)}";
-        //            string directoryPath;
-        //            string relativePath;
-        //
-        //            if (TypeName.Equals("Recipe"))
-        //            {
-        //                directoryPath = Path.Combine("wwwroot", "Images", "Recipe", Id.ToString());
-        //                relativePath = $"/Images/Recipe/{Id}/{fileName}";
-        //            }
-        //            else if (TypeName.Equals("Book"))
-        //            {
-        //                directoryPath = Path.Combine("wwwroot", "Images", "Book", Id.ToString());
-        //                relativePath = $"/Images/Book/{Id}/{fileName}";
-        //            }
-        //            else
-        //            {
-        //                return BadRequest("Invalid type");
-        //            }
-        //
-        //            Directory.CreateDirectory(directoryPath);
-        //
-        //            string filePath = Path.Combine(directoryPath, fileName);
-        //            using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //            {
-        //                await item.CopyToAsync(fileStream);
-        //            }
-        //
-        //            fileNameList.Add(relativePath);
-        //        }
-        //        return Ok(fileNameList);
-        //    }
-        //    catch
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
-
         
+
         [HttpPost("{Type}/{Id}")]
-        public async Task<IActionResult> UploadImage(IFormFile image, [FromODataUri] string Type, [FromODataUri] int Id)
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile image, [FromODataUri] string Type, [FromODataUri] int Id)
         {
+            string ApiKey = _configuration["FirebaseSettings:ApiKey"];
+            string Bucket = _configuration["FirebaseSettings:Bucket"];
+            string AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
+            string AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
             try
             {
                 if (image == null || image.Length == 0)
@@ -84,68 +46,125 @@ namespace PMRBDOdata.Controllers
 
                 var fileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
 
-                string directoryPath;
-                string relativePath;
+                // Đăng nhập vào Firebase
+                var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
+                // Thiết lập Firebase Storage
+                var cancellationToken = new CancellationTokenSource();
+                var firebaseStorage = new FirebaseStorage(
+                    Bucket,
+                    new FirebaseStorageOptions
+                    {
+                        AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
+                        ThrowOnCancel = true
+                    });
+
+                // Tải ảnh lên Firebase Storage
+                var uploadTask = firebaseStorage
+                    .Child(Type)
+                    .Child(Id.ToString())
+                    .Child(fileName)
+                    .PutAsync(image.OpenReadStream(), cancellationToken.Token);
+
+                await uploadTask;
+
+                // Lấy URL tải về
+                var downloadUrl = await firebaseStorage
+                    .Child(Type)
+                    .Child(Id.ToString())
+                    .Child(fileName)
+                    .GetDownloadUrlAsync();
+
+                // Lưu vào cơ sở dữ liệu dựa trên Type
+
                 if (Type == "CustomerProfile")
                 {
-                    directoryPath = Path.Combine("wwwroot", "Images", "CustomerProfile", Id.ToString());
-                    relativePath = $"/Images/CustomerProfile/{Id}/{fileName}";
+
                 }
                 else if (Type == "EmployeeProfile")
                 {
-                    directoryPath = Path.Combine("wwwroot", "Images", "EmployeeProfile", Id.ToString());
-                    relativePath = $"/Images/EmployeeProfile/{Id}/{fileName}";
+
                 }
                 else if (Type == "Recipe")
                 {
-                    directoryPath = Path.Combine("wwwroot", "Images", "Recipe", Id.ToString());
-                    relativePath = $"/Images/Recipe/{Id}/{fileName}";
-
                     var imageEntity = new Image
                     {
                         RecipeId = Id,
                         BookId = null,
-                        ImageUrl = relativePath,
+                        ImageUrl = downloadUrl,
                         Status = 1
 
                     };
+                    await _imageRepository.AddImage(imageEntity);
                 }
                 else if (Type == "Book")
                 {
-                    directoryPath = Path.Combine("wwwroot", "Images", "Book", Id.ToString());
-                    relativePath = $"/Images/Book/{Id}/{fileName}";
+
                 }
                 else if (Type == "Ebook")
                 {
-                    directoryPath = Path.Combine("wwwroot", "Images", "Ebook", Id.ToString());
-                    relativePath = $"/Images/Ebook/{Id}/{fileName}";
+
                 }
                 else if (Type == "Service")
                 {
-                    directoryPath = Path.Combine("wwwroot", "Images", "Service", Id.ToString());
-                    relativePath = $"/Images/Service/{Id}/{fileName}";
+
                 }
                 else
                 {
                     return BadRequest("Invalid Type");
                 }
 
-                Directory.CreateDirectory(directoryPath);
 
-                string filePath = Path.Combine(directoryPath, fileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await image.CopyToAsync(fileStream);
-                }
 
-                return Ok(relativePath);
+                // Trả về URL tải ảnh
+                return Ok(downloadUrl);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error occurred: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
 
+
+        [HttpGet("firstImage/{recipeId}")]
+        public async Task<IActionResult> GetFirstImageByRecipeId([FromODataUri] int recipeId)
+        {
+            var image = await _imageRepository.GetFirstImageByRecipeId(recipeId);
+            if (image == null)
+            {
+                return NotFound($"No images found for recipe ID {recipeId}.");
+            }
+
+            var downloadUrl = image.ImageUrl;
+            try
+            {
+                // Tạo một HttpClient để lấy ảnh từ Firebase
+                using (var httpClient = new HttpClient())
+                {
+                    var imageBytes = await httpClient.GetByteArrayAsync(downloadUrl);
+
+                    // Xác định loại nội dung dựa trên phần mở rộng
+                    var extension = Path.GetExtension(downloadUrl).ToLower();
+                    string contentType = extension switch
+                    {
+                        ".jpg" or ".jpeg" => "image/jpeg",
+                        ".png" => "image/png",
+                        ".gif" => "image/gif",
+                        ".bmp" => "image/bmp",
+                        ".tiff" => "image/tiff",
+                        _ => "application/octet-stream" // Loại mặc định nếu không xác định được
+                    };
+
+                    return File(imageBytes, contentType); // Trả về ảnh cho client
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Failed to retrieve image from Firebase: {ex.Message}");
+            }
+        }
 
         [HttpGet]
         public IActionResult GetImage([FromQuery] string relativePath)
@@ -189,5 +208,3 @@ namespace PMRBDOdata.Controllers
         }
     }
 }
-
-

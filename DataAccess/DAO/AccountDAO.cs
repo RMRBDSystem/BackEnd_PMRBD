@@ -18,7 +18,7 @@ namespace DataAccess.DAO
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to retrieve book categories", ex);
+                throw new Exception("Failed to retrieve Accounts", ex);
             }
         }
 
@@ -30,7 +30,7 @@ namespace DataAccess.DAO
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to retrieve book category by id", ex);
+                throw new Exception("Failed to retrieve Account by id", ex);
             }
         }
 
@@ -46,7 +46,7 @@ namespace DataAccess.DAO
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to save book category", ex);
+                throw new Exception("Failed to save Account", ex);
             }
         }
 
@@ -64,7 +64,19 @@ namespace DataAccess.DAO
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to update book category", ex);
+                throw new Exception("Failed to update Account", ex);
+            }
+        }
+
+        public async Task<Account?> GetAccountByGoogleId(string googleId)
+        {
+            try
+            {
+                return await _context.Accounts.FirstOrDefaultAsync(e => e.GoogleId == googleId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve account by GoogleId", ex);
             }
         }
     }
