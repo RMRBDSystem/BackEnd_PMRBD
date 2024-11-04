@@ -18,6 +18,8 @@ public partial class Account
 
     public string UserName { get; set; } = null!;
 
+    public string? Avatar { get; set; }
+
     public int? Coin { get; set; }
 
     public int? RoleId { get; set; }

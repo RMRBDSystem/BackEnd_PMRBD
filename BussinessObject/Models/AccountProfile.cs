@@ -16,7 +16,7 @@ public partial class AccountProfile
 
     public string? Portrait { get; set; }
 
-    public string? Avatar { get; set; }
+    public string? BankAccountQR { get; set; }
 
     public DateTime? DateOfBirth { get; set; }
 
