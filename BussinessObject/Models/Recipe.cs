@@ -32,6 +32,8 @@ public partial class Recipe
 
     public int? CensorId { get; set; }
 
+    public int Status { get; set; } = -1;
+
     public DateTime? CreateDate { get; set; }
 
     public DateTime? UpdateDate { get; set; }
