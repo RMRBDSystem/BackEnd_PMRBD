@@ -15,7 +15,7 @@ public partial class EbookTransaction
 
     public int? EbookId { get; set; }
 
-    public int? CoinFluctuations { get; set; }
+    public decimal? CoinFluctuations { get; set; }
 
     public DateTime? Date { get; set; }
 

@@ -17,7 +17,7 @@ public partial class PersonalRecipe
 
     public string? Ingredient { get; set; }
 
-    public int? PurchasePrice { get; set; }
+    public decimal? PurchasePrice { get; set; }
 
     public int? Status { get; set; }
 

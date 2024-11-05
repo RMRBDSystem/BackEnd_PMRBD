@@ -61,5 +61,19 @@ namespace DataAccess
                 .Where(i => i.RecipeId == recipeId)
                 .ToListAsync();
         }
+
+        public async Task<Image> GetFirstImageByBookId(int bookId)
+        {
+            return await _context.Images
+                .Where(i => i.BookId == bookId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Image>> GetImagesByBookId(int bookId)
+        {
+            return await _context.Images
+                .Where(i => i.BookId == bookId)
+                .ToListAsync();
+        }
     }
 }

@@ -20,7 +20,7 @@ public partial class Account
 
     public string? Avatar { get; set; }
 
-    public int? Coin { get; set; }
+    public decimal? Coin { get; set; }
 
     public int? RoleId { get; set; }
 

@@ -15,7 +15,7 @@ public partial class RecipeTransaction
 
     public int? RecipeId { get; set; }
 
-    public int? CoinFluctuations { get; set; }
+    public decimal? CoinFluctuations { get; set; }
 
     public DateTime? Date { get; set; }
 

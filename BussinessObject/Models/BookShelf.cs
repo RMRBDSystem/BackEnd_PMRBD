@@ -11,7 +11,7 @@ public partial class BookShelf
 
     public int? RatePoint { get; set; }
 
-    public int? PurchasePrice { get; set; }
+    public decimal? PurchasePrice { get; set; }
 
     public DateTime? PurchaseDate { get; set; }
 
