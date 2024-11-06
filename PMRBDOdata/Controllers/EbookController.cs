@@ -39,7 +39,7 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task AddEbook([FromBody] Ebook ebook)
+        public async Task<IActionResult> AddEbook([FromBody] Ebook ebook)
         {
             try
             {
@@ -48,11 +48,12 @@ namespace PMRBDOdata.Controllers
                      BadRequest(ModelState);
                 }
                 await ebookRepository.AddEbook(ebook);
-                //return Created(ebook);
+                var ebookId = ebook.EbookId;
+                return CreatedAtAction(nameof(GetEbookById), new { id = ebookId }, ebook);
             }
             catch (Exception ex)
             {
-                BadRequest(ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 

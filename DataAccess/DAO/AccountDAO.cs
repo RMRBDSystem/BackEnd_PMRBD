@@ -58,13 +58,24 @@ namespace DataAccess.DAO
                 var existingItem = await GetAccountById(account.AccountId);
                 if (existingItem != null)
                 {
-                    _context.Entry(existingItem).CurrentValues.SetValues(existingItem);
+                    _context.Entry(existingItem).CurrentValues.SetValues(account);
                     await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception("Failed to update book category", ex);
+            }
+        }
+        public async Task<Account?> GetAccountByGoogleId(string googleId)
+        {
+            try
+            {
+                return await _context.Accounts.FirstOrDefaultAsync(e => e.GoogleId == googleId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve account by GoogleId", ex);
             }
         }
     }

@@ -15,6 +15,8 @@ namespace Repository.Repository
         public async Task<Image> GetImageById(int id) => await ImageDAO.Instance.GetImageById(id);
         public async Task AddImage(Image image) => await ImageDAO.Instance.Add(image);
         public async Task UpdateImage(Image image) => await ImageDAO.Instance.Update(image);
+        public async Task<Image> GetFirstImageByRecipeId(int recipeId) => await ImageDAO.Instance.GetFirstImageByRecipeId(recipeId);
+        public async Task<IEnumerable<Image>> GetImagesByRecipeId(int recipeId) => await ImageDAO.Instance.GetImagesByRecipeId(recipeId);
     }
 }
 

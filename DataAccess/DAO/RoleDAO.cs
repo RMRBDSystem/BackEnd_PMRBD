@@ -59,7 +59,7 @@ namespace DataAccess.DAO
                 var existingItem = await GetRoleById(role.RoleId);
                 if (existingItem != null)
                 {
-                    _context.Entry(existingItem).CurrentValues.SetValues(existingItem);
+                    _context.Entry(existingItem).CurrentValues.SetValues(role);
                     await _context.SaveChangesAsync();
                 }
             }

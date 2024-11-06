@@ -1,6 +1,8 @@
 using BusinessObject.Models;
 using BussinessObject.Models;
 using DataAccess;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +13,27 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection.Emit;
 using System.Text;
+using Repository.IRepository;
+using Repository.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(typeof(RmrbdContext));
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<IEbookRepository, EbookRepository>();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
+// Google Authentication Configuration
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+.AddCookie()
+.AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -53,17 +71,34 @@ modelbuilder.EntityType<RecipeRate>().HasKey(x => new { x.RecipeId, x.AccountId 
 
 builder.Services.AddControllers().AddOData(options => options.Select().Filter().OrderBy().SetMaxTop(null).Count().Expand().AddRouteComponents("odata", modelbuilder.GetEdmModel()));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
 // 
-
 
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -77,20 +112,26 @@ app.UseCors(builder =>
     .AllowAnyMethod()
     .AllowAnyHeader();
 });
+app.UseHttpsRedirection();
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+    context.Response.Headers.Add("Cross-Origin-Embedder-Policy", "require-corp");
+    await next();
+});
+app.UseRouting();
+app.UseCors("AllowAll");
+// JWT Authentication
+app.UseAuthentication();
+app.UseAuthorization();
+// Session middleware
+app.UseSession();
 
 app.UseMiddleware<TokenValidationMiddleware>();
 
 app.UseStaticFiles();
 
 app.UseODataBatching();
-
-app.UseRouting();
-
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

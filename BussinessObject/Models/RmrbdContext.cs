@@ -81,13 +81,13 @@ public partial class RmrbdContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.AccountId).HasName("PK__Account__349DA586628C74C8");
+            entity.HasKey(e => e.AccountId);
 
             entity.ToTable("Account");
 
-            entity.HasIndex(e => e.GoogleId, "UQ__Account__A6FBF31B9019A517").IsUnique();
+            entity.HasIndex(e => e.GoogleId).IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Account__A9D1053417B0D0A4").IsUnique();
+            entity.HasIndex(e => e.Email).IsUnique();
 
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.AccountStatus).HasDefaultValueSql("((1))");
@@ -100,17 +100,16 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.UserName).HasMaxLength(500);
 
             entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
-                .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK__Account__RoleID__412EB0B6");
+                .HasForeignKey(d => d.RoleId);
         });
 
         modelBuilder.Entity<AccountProfile>(entity =>
         {
-            entity.HasKey(e => e.AccountId).HasName("PK__AccountP__349DA58673F25A35");
+            entity.HasKey(e => e.AccountId);
 
             entity.ToTable("AccountProfile");
 
-            entity.HasIndex(e => e.IdcardNumber, "UQ__AccountP__2CEB98360078DE47").IsUnique();
+            entity.HasIndex(e => e.IdcardNumber).IsUnique();
 
             entity.Property(e => e.AccountId)
                 .ValueGeneratedNever()
@@ -125,17 +124,15 @@ public partial class RmrbdContext : DbContext
 
             entity.HasOne(d => d.Account).WithOne(p => p.AccountProfileAccount)
                 .HasForeignKey<AccountProfile>(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__AccountPr__Accou__44FF419A");
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.Censor).WithMany(p => p.AccountProfileCensors)
-                .HasForeignKey(d => d.CensorId)
-                .HasConstraintName("FK__AccountPr__Censo__45F365D3");
+                .HasForeignKey(d => d.CensorId);
         });
 
         modelBuilder.Entity<Book>(entity =>
         {
-            entity.HasKey(e => e.BookId).HasName("PK__Book__3DE0C227629A9559");
+            entity.HasKey(e => e.BookId);
 
             entity.ToTable("Book");
 
@@ -154,25 +151,21 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.SenderAddressId).HasColumnName("SenderAddressID");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Books)
-                .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK__Book__CategoryID__09A971A2");
+                .HasForeignKey(d => d.CategoryId);
 
             entity.HasOne(d => d.Censor).WithMany(p => p.BookCensors)
-                .HasForeignKey(d => d.CensorId)
-                .HasConstraintName("FK__Book__CensorID__07C12930");
+                .HasForeignKey(d => d.CensorId);
 
             entity.HasOne(d => d.CreateBy).WithMany(p => p.BookCreateBies)
-                .HasForeignKey(d => d.CreateById)
-                .HasConstraintName("FK__Book__CreateByID__08B54D69");
+                .HasForeignKey(d => d.CreateById);
 
             entity.HasOne(d => d.SenderAddress).WithMany(p => p.Books)
-                .HasForeignKey(d => d.SenderAddressId)
-                .HasConstraintName("FK__Book__SenderAddr__0A9D95DB");
+                .HasForeignKey(d => d.SenderAddressId);
         });
 
         modelBuilder.Entity<BookCategory>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__BookCate__19093A2BE1875784");
+            entity.HasKey(e => e.CategoryId);
 
             entity.ToTable("BookCategory");
 
@@ -201,16 +194,13 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 0)");
 
             entity.HasOne(d => d.Book).WithMany(p => p.BookOrders)
-                .HasForeignKey(d => d.BookId)
-                .HasConstraintName("FK__BookOrder__BookI__160F4887");
+                .HasForeignKey(d => d.BookId);
 
             entity.HasOne(d => d.ClientAddress).WithMany(p => p.BookOrders)
-                .HasForeignKey(d => d.ClientAddressId)
-                .HasConstraintName("FK__BookOrder__Clien__17F790F9");
+                .HasForeignKey(d => d.ClientAddressId);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.BookOrders)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__BookOrder__Custo__151B244E");
+                .HasForeignKey(d => d.CustomerId);
         });
 
         modelBuilder.Entity<BookOrderStatus>(entity =>
@@ -224,8 +214,7 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.StatusDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Order).WithMany(p => p.BookOrderStatuses)
-                .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__BookOrder__Order__1EA48E88");
+                .HasForeignKey(d => d.OrderId);
         });
 
         modelBuilder.Entity<BookRate>(entity =>
@@ -239,18 +228,16 @@ public partial class RmrbdContext : DbContext
 
             entity.HasOne(d => d.Book).WithMany(p => p.BookRates)
                 .HasForeignKey(d => d.BookId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BookRate__BookID__1BC821DD");
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.BookRates)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BookRate__Custom__1AD3FDA4");
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<BookShelf>(entity =>
         {
-            entity.HasKey(e => new { e.CustomerId, e.EbookId }).HasName("PK__BookShel__536ED3E52AC1BCE2");
+            entity.HasKey(e => new { e.CustomerId, e.EbookId });
 
             entity.ToTable("BookShelf");
 
@@ -262,18 +249,16 @@ public partial class RmrbdContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.BookShelves)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BookShelf__Custo__7C4F7684");
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.Ebook).WithMany(p => p.BookShelves)
                 .HasForeignKey(d => d.EbookId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BookShelf__EBook__7D439ABD");
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<BookTransaction>(entity =>
         {
-            entity.HasKey(e => e.BookTransactionId).HasName("PK__BookTran__4F2B2B26F32064C6");
+            entity.HasKey(e => e.BookTransactionId);
 
             entity.ToTable("BookTransaction");
 
@@ -285,8 +270,7 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.Status).HasDefaultValueSql("((1))");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.BookTransactions)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__BookTrans__Custo__2180FB33");
+                .HasForeignKey(d => d.CustomerId);
 
             entity.HasOne(d => d.Order).WithMany(p => p.BookTransactions)
                 .HasForeignKey(d => d.OrderId);
@@ -294,7 +278,7 @@ public partial class RmrbdContext : DbContext
 
         modelBuilder.Entity<CoinTransaction>(entity =>
         {
-            entity.HasKey(e => e.CoinTransactionId).HasName("PK__CoinTran__610ECDE83A70CF87");
+            entity.HasKey(e => e.CoinTransactionId);
 
             entity.ToTable("CoinTransaction");
 
@@ -305,13 +289,12 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.Status).HasDefaultValueSql("((1))");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.CoinTransactions)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__CoinTrans__Custo__6FE99F9F");
+                .HasForeignKey(d => d.CustomerId);
         });
 
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.CommentId).HasName("PK__Comment__C3B4DFAA801BC416");
+            entity.HasKey(e => e.CommentId);
 
             entity.ToTable("Comment");
 
@@ -326,29 +309,24 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.Status).HasDefaultValueSql("((1))");
 
             entity.HasOne(d => d.Book).WithMany(p => p.Comments)
-                .HasForeignKey(d => d.BookId)
-                .HasConstraintName("FK__Comment__BookID__282DF8C2");
+                .HasForeignKey(d => d.BookId);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Comments)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__Comment__Custome__2A164134");
+                .HasForeignKey(d => d.CustomerId);
 
             entity.HasOne(d => d.Ebook).WithMany(p => p.Comments)
-                .HasForeignKey(d => d.EbookId)
-                .HasConstraintName("FK__Comment__EBookID__29221CFB");
+                .HasForeignKey(d => d.EbookId);
 
             entity.HasOne(d => d.Recipe).WithMany(p => p.Comments)
-                .HasForeignKey(d => d.RecipeId)
-                .HasConstraintName("FK__Comment__RecipeI__2B0A656D");
+                .HasForeignKey(d => d.RecipeId);
 
             entity.HasOne(d => d.RootComment).WithMany(p => p.InverseRootComment)
-                .HasForeignKey(d => d.RootCommentId)
-                .HasConstraintName("FK__Comment__RootCom__2645B050");
+                .HasForeignKey(d => d.RootCommentId);
         });
 
         modelBuilder.Entity<CustomerAddress>(entity =>
         {
-            entity.HasKey(e => e.AddressId).HasName("PK__Customer__091C2A1B175C7F51");
+            entity.HasKey(e => e.AddressId);
 
             entity.ToTable("CustomerAddress");
 
@@ -362,13 +340,12 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.WardCode).HasColumnName("Ward_Code");
 
             entity.HasOne(d => d.Account).WithMany(p => p.CustomerAddresses)
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__CustomerA__Accou__4D94879B");
+                .HasForeignKey(d => d.AccountId);
         });
 
         modelBuilder.Entity<Ebook>(entity =>
         {
-            entity.HasKey(e => e.EbookId).HasName("PK__EBook__7C0B75DE78A5ACEF");
+            entity.HasKey(e => e.EbookId);
 
             entity.ToTable("EBook");
 
@@ -383,21 +360,18 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.Price).HasDefaultValueSql("((0))");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Ebooks)
-                .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK__EBook__CategoryI__797309D9");
+                .HasForeignKey(d => d.CategoryId);
 
             entity.HasOne(d => d.Censor).WithMany(p => p.EbookCensors)
-                .HasForeignKey(d => d.CensorId)
-                .HasConstraintName("FK__EBook__CensorID__787EE5A0");
+                .HasForeignKey(d => d.CensorId);
 
             entity.HasOne(d => d.CreateBy).WithMany(p => p.EbookCreateBies)
-                .HasForeignKey(d => d.CreateById)
-                .HasConstraintName("FK__EBook__CreateByI__778AC167");
+                .HasForeignKey(d => d.CreateById);
         });
 
         modelBuilder.Entity<EbookTransaction>(entity =>
         {
-            entity.HasKey(e => e.EbookTransactionId).HasName("PK__EBookTra__1A9A10901E1B7544");
+            entity.HasKey(e => e.EbookTransactionId);
 
             entity.ToTable("EBookTransaction");
 
@@ -409,17 +383,15 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.Status).HasDefaultValueSql("((1))");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.EbookTransactions)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__EBookTran__Custo__02084FDA");
+                .HasForeignKey(d => d.CustomerId);
 
             entity.HasOne(d => d.Ebook).WithMany(p => p.EbookTransactions)
-                .HasForeignKey(d => d.EbookId)
-                .HasConstraintName("FK__EBookTran__EBook__02FC7413");
+                .HasForeignKey(d => d.EbookId);
         });
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__Image__7516F4EC1AE18B0A");
+            entity.HasKey(e => e.ImageId);
 
             entity.ToTable("Image");
 
@@ -430,17 +402,15 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.Status).HasDefaultValueSql("((1))");
 
             entity.HasOne(d => d.Book).WithMany(p => p.Images)
-                .HasForeignKey(d => d.BookId)
-                .HasConstraintName("FK__Image__BookID__0E6E26BF");
+                .HasForeignKey(d => d.BookId);
 
             entity.HasOne(d => d.Recipe).WithMany(p => p.Images)
-                .HasForeignKey(d => d.RecipeId)
-                .HasConstraintName("FK__Image__RecipeID__0D7A0286");
+                .HasForeignKey(d => d.RecipeId);
         });
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E32A078B7C7");
+            entity.HasKey(e => e.NotificationId);
 
             entity.ToTable("Notification");
 
@@ -449,13 +419,12 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.Date).HasColumnType("datetime");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Notifications)
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__Notificat__Accou__52593CB8");
+                .HasForeignKey(d => d.AccountId);
         });
 
         modelBuilder.Entity<PersonalRecipe>(entity =>
         {
-            entity.HasKey(e => new { e.RecipeId, e.CustomerId }).HasName("PK__Personal__67936E9BFA8C1025");
+            entity.HasKey(e => new { e.RecipeId, e.CustomerId });
 
             entity.ToTable("PersonalRecipe");
 
@@ -465,20 +434,18 @@ public partial class RmrbdContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.PersonalRecipes)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PersonalR__Custo__6754599E");
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.Recipe).WithMany(p => p.PersonalRecipes)
                 .HasForeignKey(d => d.RecipeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PersonalR__Recip__66603565");
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         
 
         modelBuilder.Entity<Recipe>(entity =>
         {
-            entity.HasKey(e => e.RecipeId).HasName("PK__Recipe__FDD988D0A98C78E3");
+            entity.HasKey(e => e.RecipeId);
 
             entity.ToTable("Recipe");
 
@@ -492,12 +459,10 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Censor).WithMany(p => p.RecipeCensors)
-                .HasForeignKey(d => d.CensorId)
-                .HasConstraintName("FK__Recipe__CensorID__5812160E");
+                .HasForeignKey(d => d.CensorId);
 
             entity.HasOne(d => d.CreateBy).WithMany(p => p.RecipeCreateBies)
-                .HasForeignKey(d => d.CreateById)
-                .HasConstraintName("FK__Recipe__CreateBy__5629CD9C");           
+                .HasForeignKey(d => d.CreateById);           
                 
         });
 
@@ -519,7 +484,7 @@ public partial class RmrbdContext : DbContext
 
         modelBuilder.Entity<RecipeTransaction>(entity =>
         {
-            entity.HasKey(e => e.RecipeTransactionId).HasName("PK__RecipeTr__AD09EAF84D449249");
+            entity.HasKey(e => e.RecipeTransactionId);
 
             entity.ToTable("RecipeTransaction");
 
@@ -531,17 +496,15 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.RecipeId).HasColumnName("RecipeID");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.RecipeTransactions)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__RecipeTra__Custo__6B24EA82");
+                .HasForeignKey(d => d.CustomerId);
 
             entity.HasOne(d => d.Recipe).WithMany(p => p.RecipeTransactions)
-                .HasForeignKey(d => d.RecipeId)
-                .HasConstraintName("FK__RecipeTra__Recip__6C190EBB");
+                .HasForeignKey(d => d.RecipeId);
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE3A8E1D1BE3");
+            entity.HasKey(e => e.RoleId);
 
             entity.ToTable("Role");
 
@@ -552,7 +515,7 @@ public partial class RmrbdContext : DbContext
 
         modelBuilder.Entity<ServiceFeedback>(entity =>
         {
-            entity.HasKey(e => e.FeedBackId).HasName("PK__Service___E2CB3867CB8D4277");
+            entity.HasKey(e => e.FeedBackId);
 
             entity.ToTable("Service_Feedback");
 
@@ -565,17 +528,15 @@ public partial class RmrbdContext : DbContext
             entity.Property(e => e.Title).HasMaxLength(100);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.ServiceFeedbackCustomers)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__Service_F__Custo__6383C8BA");
+                .HasForeignKey(d => d.CustomerId);
 
             entity.HasOne(d => d.Employee).WithMany(p => p.ServiceFeedbackEmployees)
-                .HasForeignKey(d => d.EmployeeId)
-                .HasConstraintName("FK__Service_F__Emplo__628FA481");
+                .HasForeignKey(d => d.EmployeeId);
         });
 
         modelBuilder.Entity<Tag>(entity =>
         {
-            entity.HasKey(e => e.TagId).HasName("PK__Tag__657CF9ACC8C9F18C");
+            entity.HasKey(e => e.TagId);
 
             entity.ToTable("Tag");
 

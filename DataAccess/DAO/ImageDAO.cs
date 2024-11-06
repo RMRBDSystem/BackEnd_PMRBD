@@ -50,5 +50,17 @@ namespace DataAccess
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<Image> GetFirstImageByRecipeId(int recipeId)
+        {
+            return await _context.Images.Where(i => i.RecipeId == recipeId).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Image>> GetImagesByRecipeId(int recipeId)
+        {
+            return await _context.Images
+                .Where(i => i.RecipeId == recipeId)
+                .ToListAsync();
+        }
     }
 }

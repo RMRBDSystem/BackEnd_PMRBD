@@ -1,7 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Firebase.Auth;
+using Firebase.Storage;
+using System.Net.Sockets;
+using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Repository.IRepository;
+using BusinessObject.Models;
 
 namespace PMRBDOdata.Controllers
 {
@@ -9,42 +15,112 @@ namespace PMRBDOdata.Controllers
     [ApiController]
     public class UploadPDFController : ODataController
     {
-
-        [HttpPost("{id}")]
-        public async Task<IActionResult> Post([FromODataUri] int id, IFormFile file)
+        private static string ApiKey = "AIzaSyCPn2OSvk7rHKjBFwe9Sa_v-aSUZUHxdM4";
+        private static string Bucket = "rmrbdfirebase.appspot.com";
+        private static string AuthEmail = "ngockhanhpham8a@gmail.com";
+        private static string AuthPassword = "khanh30320";
+        private readonly IWebHostEnvironment _env;
+        private readonly IEbookRepository _ebookRepository;
+        public UploadPDFController(IWebHostEnvironment env, IEbookRepository ebookRepository)
+        {
+            _env = env;
+            _ebookRepository = ebookRepository;
+        }
+        [HttpPost]
+        public async Task<IActionResult> UploadPDF(IFormFile image, IFormFile document, [FromForm] string ebookName, [FromForm] string description, [FromForm] int price, [FromForm] int createById)
         {
             try
             {
-                if (file == null || file.Length == 0)
+                // Kiểm tra null cho các trường
+                if (string.IsNullOrWhiteSpace(ebookName) || string.IsNullOrWhiteSpace(description))
                 {
-                    return BadRequest("No file provided");
+                    return BadRequest("Tên sách và mô tả không được trống");
                 }
 
-                var allowedFileTypes = new[] { "application/pdf", "application/vnd.openxmlformats-officedocument.presentationml.presentation" };
-                if (!allowedFileTypes.Contains(file.ContentType))
+                // Kiểm tra giá trị của createById
+                if (createById <= 0)
                 {
-                    return BadRequest("Invalid file type. Only PDF and PPTX files are allowed.");
+                    return BadRequest("ID tạo sách không hợp lệ");
                 }
 
-                var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(file.FileName)}";
-                string directoryPath = Path.Combine("wwwroot", "PDF", id.ToString());
-                string filePath = Path.Combine(directoryPath, fileName);
-
-                Directory.CreateDirectory(directoryPath);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                // Kiểm tra file
+                if (document == null || document.Length == 0)
                 {
-                    await file.CopyToAsync(fileStream);
+                    return BadRequest("Không có file tài liệu");
                 }
 
-                string relativePath = $"/PDF/{id}/{fileName}";
-                return Ok(relativePath);
+                if (image == null || image.Length == 0)
+                {
+                    return BadRequest("Không có file hình ảnh");
+                }
+
+                // Kiểm tra loại file
+                var allowedFileTypes = new[] { "application/pdf", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "image/jpeg", "image/png" };
+                if (!allowedFileTypes.Contains(document.ContentType) || !allowedFileTypes.Contains(image.ContentType))
+                {
+                    return BadRequest("Loại file không hợp lệ. Chỉ cho phép file PDF, PPTX, JPEG và PNG");
+                }
+
+                // Upload file lên Firebase Storage
+                var documentFileName = $"{Path.GetFileNameWithoutExtension(document.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(document.FileName)}";
+                var imageFileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
+
+                var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
+                var cancellationToken = new CancellationTokenSource();
+                var firebaseStorage = new FirebaseStorage(
+                    Bucket,
+                    new FirebaseStorageOptions
+                    {
+                        AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
+                        ThrowOnCancel = true
+                    });
+
+                try
+                {
+                    // Upload file tài liệu
+                    await firebaseStorage.Child("EbookPDF").Child(createById.ToString()).Child(documentFileName).PutAsync(document.OpenReadStream(), cancellationToken.Token);
+
+                    // Upload file hình ảnh
+                    await firebaseStorage.Child("EbookImages").Child(createById.ToString()).Child(imageFileName).PutAsync(image.OpenReadStream(), cancellationToken.Token);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Lỗi upload file: {ex.Message}");
+                    return BadRequest("Lỗi upload file");
+                }
+
+                // Lấy URL download file
+                var documentUrl = await firebaseStorage.Child("EbookPDF").Child(createById.ToString()).Child(documentFileName).GetDownloadUrlAsync();
+                var imageUrl = await firebaseStorage.Child("EbookImages").Child(createById.ToString()).Child(imageFileName).GetDownloadUrlAsync();
+
+                // Tạo sách
+                var ebookEntity = new Ebook
+                {
+                    EbookName = ebookName,
+                    Description = description,
+                    Price = price,
+                    Status = 1,
+                    CreateById = createById,
+                    ImageUrl = imageUrl,
+                    Pdfurl = documentUrl
+                };
+
+                await _ebookRepository.AddEbook(ebookEntity);
+
+                return Ok(new { DocumentUrl = documentUrl, ImageUrl = imageUrl });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                Console.WriteLine($"Lỗi: {ex.Message}");
+                return BadRequest("Lỗi");
             }
         }
+
+
+
+
 
 
         [HttpGet("{relativePath}")]
