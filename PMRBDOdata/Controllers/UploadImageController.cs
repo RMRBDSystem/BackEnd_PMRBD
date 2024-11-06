@@ -22,11 +22,14 @@ namespace PMRBDOdata.Controllers
         private static string AuthPassword = "khanh30320";
         private readonly IWebHostEnvironment _env;
         private readonly IImageRepository _imageRepository;
+        private readonly IEbookRepository _ebookRepository;
 
-        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository)
+
+        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository, IEbookRepository ebookRepository)
         {
             _env = env;
             _imageRepository = imageRepository;
+            _ebookRepository = ebookRepository;
         }
 
         [HttpPost("{Type}/{Id}")]
@@ -89,7 +92,6 @@ namespace PMRBDOdata.Controllers
                         BookId = null,
                         ImageUrl = downloadUrl,
                         Status = 1
-
                     };
                     await _imageRepository.AddImage(imageEntity);
                 }
@@ -99,7 +101,6 @@ namespace PMRBDOdata.Controllers
                 }
                 else if (Type == "Ebook")
                 {
-
                 }
                 else if (Type == "Service")
                 {

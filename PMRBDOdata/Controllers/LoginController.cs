@@ -59,7 +59,8 @@ namespace PMRBDOdata.Controllers
 
                 HttpContext.Session.SetString("UserRole", role);
                 HttpContext.Session.SetString("UserName", checkAccount.UserName);
-                return Ok(new { message = $"Logged in as {role}", role });
+                HttpContext.Session.SetInt32("UserId", checkAccount.AccountId);
+                return Ok(new { message = $"Logged in as {role}", role, UserId = checkAccount.AccountId });
             }
                     // Create a new Customer account if not found
                     var newCustomer = new Account
@@ -71,11 +72,11 @@ namespace PMRBDOdata.Controllers
                         RoleId = 1,
                         AccountStatus = 1
                     };
-
                     await AccountDAO.Instance.AddAccount(newCustomer);
                     HttpContext.Session.SetString("UserRole", "Customer");
                     HttpContext.Session.SetString("UserName", newCustomer.UserName);
-                    return Ok(new { message = "New Customer created and logged in", role = "Customer" });   
+                    HttpContext.Session.SetInt32("UserId", newCustomer.AccountId);
+                    return Ok(new { message = "New Customer created and logged in", role = "Customer", UserId = newCustomer.AccountId });
         }
 
         [HttpPost("logout")]
