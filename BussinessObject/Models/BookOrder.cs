@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models;
 
@@ -35,13 +36,16 @@ public partial class BookOrder
 
     public int? ClientAddressId { get; set; }
 
+    [JsonIgnore]
     public virtual Book? Book { get; set; }
 
     public virtual ICollection<BookOrderStatus> BookOrderStatuses { get; set; } = new List<BookOrderStatus>();
 
     public virtual ICollection<BookTransaction> BookTransactions { get; set; } = new List<BookTransaction>();
 
+    [JsonIgnore]
     public virtual CustomerAddress? ClientAddress { get; set; }
 
+    [JsonIgnore]
     public virtual Account? Customer { get; set; }
 }

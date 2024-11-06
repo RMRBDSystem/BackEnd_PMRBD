@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models;
 
@@ -19,5 +20,6 @@ public partial class Notification
 
     public int? Status { get; set; }
 
+    [JsonIgnore]
     public virtual Account? Account { get; set; }
 }

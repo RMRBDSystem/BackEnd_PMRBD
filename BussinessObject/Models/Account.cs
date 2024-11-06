@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models;
 
@@ -18,12 +19,15 @@ public partial class Account
 
     public string UserName { get; set; } = null!;
 
-    public int? Coin { get; set; }
+    public string? Avatar { get; set; }
+
+    public decimal? Coin { get; set; }
 
     public int? RoleId { get; set; }
 
     public int? AccountStatus { get; set; }
 
+    [JsonIgnore]
     public virtual AccountProfile? AccountProfileAccount { get; set; }
 
     public virtual ICollection<AccountProfile> AccountProfileCensors { get; set; } = new List<AccountProfile>();
@@ -62,6 +66,7 @@ public partial class Account
 
     public virtual ICollection<RecipeTransaction> RecipeTransactions { get; set; } = new List<RecipeTransaction>();
 
+    [JsonIgnore]
     public virtual Role? Role { get; set; }
 
     public virtual ICollection<ServiceFeedback> ServiceFeedbackCustomers { get; set; } = new List<ServiceFeedback>();

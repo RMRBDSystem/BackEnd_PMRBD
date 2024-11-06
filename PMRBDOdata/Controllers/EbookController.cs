@@ -40,7 +40,8 @@ namespace PMRBDOdata.Controllers
 
         [HttpPost]
         public async Task<IActionResult> AddEbook([FromBody] Ebook ebook)
-        {
+        { 
+
             try
             {
                 if (!ModelState.IsValid)

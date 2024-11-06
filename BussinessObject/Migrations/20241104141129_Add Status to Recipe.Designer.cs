@@ -4,6 +4,7 @@ using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BussinessObject.Migrations
 {
     [DbContext(typeof(RmrbdContext))]
-    partial class RmrbdContextModelSnapshot : ModelSnapshot
+    [Migration("20241104141129_Add Status to Recipe")]
+    partial class AddStatustoRecipe
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,9 +57,9 @@ namespace BussinessObject.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("Coin")
+                    b.Property<int?>("Coin")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
 
                     b.Property<string>("Email")
@@ -123,9 +126,6 @@ namespace BussinessObject.Migrations
 
                     b.Property<string>("Portrait")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.HasKey("AccountId");
 
@@ -369,9 +369,9 @@ namespace BussinessObject.Migrations
                     b.Property<DateTime?>("PurchaseDate")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal?>("PurchasePrice")
+                    b.Property<int?>("PurchasePrice")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
 
                     b.Property<int?>("RatePoint")
@@ -398,8 +398,8 @@ namespace BussinessObject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookTransactionId"));
 
-                    b.Property<decimal?>("CoinFluctuations")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int?>("CoinFluctuations")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int")
@@ -441,8 +441,8 @@ namespace BussinessObject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CoinTransactionId"));
 
-                    b.Property<decimal?>("CoinFluctuations")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int?>("CoinFluctuations")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int")
@@ -610,9 +610,9 @@ namespace BussinessObject.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("PDFUrl");
 
-                    b.Property<decimal?>("Price")
+                    b.Property<int?>("Price")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
 
                     b.Property<int?>("Status")
@@ -638,9 +638,9 @@ namespace BussinessObject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EbookTransactionId"));
 
-                    b.Property<decimal?>("CoinFluctuations")
+                    b.Property<int?>("CoinFluctuations")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
 
                     b.Property<int?>("CustomerId")
@@ -757,8 +757,8 @@ namespace BussinessObject.Migrations
                     b.Property<string>("Nutrition")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("PurchasePrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int?>("PurchasePrice")
+                        .HasColumnType("int");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
@@ -807,9 +807,9 @@ namespace BussinessObject.Migrations
                     b.Property<string>("Nutrition")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("Price")
+                    b.Property<int?>("Price")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
 
                     b.Property<string>("RecipeName")
@@ -850,9 +850,9 @@ namespace BussinessObject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecipeTransactionId"));
 
-                    b.Property<decimal?>("CoinFluctuations")
+                    b.Property<int?>("CoinFluctuations")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("int")
                         .HasDefaultValueSql("((0))");
 
                     b.Property<int?>("CustomerId")

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models;
 
@@ -25,6 +26,7 @@ public partial class CustomerAddress
 
     public string? AddressDetail { get; set; }
 
+    [JsonIgnore]
     public virtual Account? Account { get; set; }
 
     public virtual ICollection<BookOrder> BookOrders { get; set; } = new List<BookOrder>();
