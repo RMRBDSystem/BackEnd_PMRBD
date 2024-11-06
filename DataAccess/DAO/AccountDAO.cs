@@ -14,7 +14,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.Accounts.ToListAsync();
+                return await _context.Accounts.Include(x => x.Role).ToListAsync();
             }
             catch (Exception ex)
             {

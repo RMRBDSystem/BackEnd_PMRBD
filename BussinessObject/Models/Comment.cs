@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models;
 
@@ -27,15 +28,20 @@ public partial class Comment
 
     public int? RecipeId { get; set; }
 
+    [JsonIgnore]
     public virtual Book? Book { get; set; }
 
+    [JsonIgnore]
     public virtual Account? Customer { get; set; }
 
+    [JsonIgnore]
     public virtual Ebook? Ebook { get; set; }
 
     public virtual ICollection<Comment> InverseRootComment { get; set; } = new List<Comment>();
 
+    [JsonIgnore]
     public virtual Recipe? Recipe { get; set; }
 
+    [JsonIgnore]
     public virtual Comment? RootComment { get; set; }
 }

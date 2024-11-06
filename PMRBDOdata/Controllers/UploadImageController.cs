@@ -20,15 +20,16 @@ namespace PMRBDOdata.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly IImageRepository _imageRepository;
         private readonly IConfiguration _configuration;
+        private readonly IEbookRepository _ebookRepository;
 
-        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository, IConfiguration configuration)
+        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository, IEbookRepository ebookRepository)
         {
             _env = env;
             _imageRepository = imageRepository;
-            _configuration = configuration;
+            _ebookRepository = ebookRepository;
         }
 
-        
+
 
         [HttpPost("{Type}/{Id}")]
         public async Task<IActionResult> UploadImage([FromForm] IFormFile image, [FromODataUri] string Type, [FromODataUri] int Id)

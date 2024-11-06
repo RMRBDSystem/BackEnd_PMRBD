@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models;
 
@@ -19,7 +20,8 @@ public partial class Image
 
     public int? Status { get; set; }
 
+    [JsonIgnore]
     public virtual Book? Book { get; set; }
-
+    [JsonIgnore]
     public virtual Recipe? Recipe { get; set; }
 }

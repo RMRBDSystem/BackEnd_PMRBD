@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models;
 
@@ -11,7 +12,9 @@ public partial class BookRate
 
     public int BookId { get; set; }
 
+    [JsonIgnore]
     public virtual Book? Book { get; set; }
 
+    [JsonIgnore]
     public virtual Account? Customer { get; set; }
 }
