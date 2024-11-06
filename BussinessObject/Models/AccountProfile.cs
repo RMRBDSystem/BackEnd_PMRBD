@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Internal;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,6 +25,8 @@ public partial class AccountProfile
     public string? IdcardNumber { get; set; }
 
     public int? CensorId { get; set; }
+
+    public int Status { get; set; } = -1;
 
     [JsonIgnore]
     public virtual Account? Account { get; set; }
