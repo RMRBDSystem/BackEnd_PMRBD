@@ -14,7 +14,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.Books.ToListAsync();
+                return await _context.Books.Include(b => b.Images).Include(b => b.CreateBy).ToListAsync();
             }
             catch (Exception ex)
             {

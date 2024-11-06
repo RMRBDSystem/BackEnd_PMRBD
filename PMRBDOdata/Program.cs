@@ -97,7 +97,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -105,34 +104,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(builder =>
-{
-    builder
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader();
-});
+app.UseRouting();
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.Use(async (context, next) =>
 {
-    context.Response.Headers.Add("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
-    context.Response.Headers.Add("Cross-Origin-Embedder-Policy", "require-corp");
+    context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, Accept-Language, Accept-Encoding");
     await next();
 });
-app.UseRouting();
-app.UseCors("AllowAll");
-// JWT Authentication
 app.UseAuthentication();
 app.UseAuthorization();
-// Session middleware
 app.UseSession();
-
 app.UseMiddleware<TokenValidationMiddleware>();
-
 app.UseStaticFiles();
-
 app.UseODataBatching();
-
 app.MapControllers();
 
 app.Run();

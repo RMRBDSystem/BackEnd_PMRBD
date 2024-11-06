@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repository.IRepository;
 using BusinessObject.Models;
+using System.Threading;
 
 namespace PMRBDOdata.Controllers
 {
@@ -15,20 +16,25 @@ namespace PMRBDOdata.Controllers
     [ApiController]
     public class UploadPDFController : ODataController
     {
-        private static string ApiKey = "AIzaSyCPn2OSvk7rHKjBFwe9Sa_v-aSUZUHxdM4";
-        private static string Bucket = "rmrbdfirebase.appspot.com";
-        private static string AuthEmail = "ngockhanhpham8a@gmail.com";
-        private static string AuthPassword = "khanh30320";
+
         private readonly IWebHostEnvironment _env;
         private readonly IEbookRepository _ebookRepository;
-        public UploadPDFController(IWebHostEnvironment env, IEbookRepository ebookRepository)
+        private readonly IConfiguration _configuration;
+        public UploadPDFController(IWebHostEnvironment env, IEbookRepository ebookRepository, IConfiguration configuration)
         {
             _env = env;
             _ebookRepository = ebookRepository;
+            _configuration = configuration;
         }
+
+
         [HttpPost]
         public async Task<IActionResult> UploadPDF(IFormFile image, IFormFile document, [FromForm] string ebookName, [FromForm] string description, [FromForm] int price, [FromForm] int createById)
         {
+            string ApiKey = _configuration["FirebaseSettings:ApiKey"];
+            string Bucket = _configuration["FirebaseSettings:Bucket"];
+            string AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
+            string AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
             try
             {
                 // Kiểm tra null cho các trường
@@ -117,7 +123,6 @@ namespace PMRBDOdata.Controllers
                 return BadRequest("Lỗi");
             }
         }
-
 
 
 

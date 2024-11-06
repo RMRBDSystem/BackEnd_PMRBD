@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models;
 
@@ -17,10 +18,11 @@ public partial class PersonalRecipe
 
     public string? Ingredient { get; set; }
 
-    public int? PurchasePrice { get; set; }
+    public decimal? PurchasePrice { get; set; }
 
     public int? Status { get; set; }
 
+    [JsonIgnore]
     public virtual Account? Account { get; set; }
 
     public virtual Recipe? Recipe { get; set; }

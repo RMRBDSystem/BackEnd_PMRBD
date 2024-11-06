@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models;
 
@@ -26,11 +27,13 @@ public partial class Recipe
 
     public int? CreateById { get; set; }
 
-    public int? Price { get; set; }
+    public decimal? Price { get; set; }
 
     public string? Ingredient { get; set; }
 
     public int? CensorId { get; set; }
+
+    public int Status { get; set; } = -1;
 
     public DateTime? CreateDate { get; set; }
 
@@ -38,10 +41,12 @@ public partial class Recipe
 
     public int? TotalTime { get; set; }
 
+    [JsonIgnore]
     public virtual Account? Censor { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
+    [JsonIgnore]
     public virtual Account? CreateBy { get; set; }
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();
