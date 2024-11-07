@@ -1,4 +1,6 @@
 ﻿using BusinessObject.Models;
+using Firebase.Auth;
+using Firebase.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
@@ -6,6 +8,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repository.IRepository;
 using Repository.Repository;
+using System.Runtime.InteropServices;
 
 namespace PMRBDOdata.Controllers
 {
@@ -14,9 +17,12 @@ namespace PMRBDOdata.Controllers
     public class EbookController : ODataController
     {
         private readonly IEbookRepository ebookRepository;
-        public EbookController()
+        private readonly IConfiguration _configuration;
+
+        public EbookController(IConfiguration configuration)
         {
             ebookRepository = new EbookRepository();
+            _configuration = configuration;
         }
 
         [EnableQuery]
@@ -58,21 +64,57 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Ebook>> UpdateEbook([FromODataUri] int id, [FromBody] Ebook ebook)
+        [HttpPut("{ebookId}")]
+        public async Task<IActionResult> UpdateEBook(IFormFile image, [FromForm] Ebook ebook, [FromODataUri] int ebookId)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var ebookEntity = await ebookRepository.GetEbookById(ebookId);
+                ebook.EbookId = ebookEntity.EbookId;
+
+                if (image != null && image.Length > 0)
+                {
+                    var allowedFileTypes = new[] { "application/pdf", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "image/jpeg", "image/png" };
+                    if (!allowedFileTypes.Contains(image.ContentType))
+                    {
+                        return BadRequest("Invalid file type. Only PDF, PPTX, JPEG, and PNG files are allowed.");
+                    }
+
+                    var firebaseSettings = _configuration.GetSection("FirebaseSettings").Get<FirebaseSettings>();
+                    var authProvider = new FirebaseAuthProvider(new FirebaseConfig(firebaseSettings.ApiKey));
+                    var authLink = await authProvider.SignInWithEmailAndPasswordAsync(firebaseSettings.AuthEmail, firebaseSettings.AuthPassword);
+
+                    var firebaseStorage = new FirebaseStorage(
+                        firebaseSettings.Bucket,
+                        new FirebaseStorageOptions
+                        {
+                            AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
+                            ThrowOnCancel = true
+                        });
+
+                    var imageFileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
+                    await firebaseStorage.Child("EbookImages").Child(ebook.CreateById.ToString()).Child(imageFileName).PutAsync(image.OpenReadStream());
+
+                    var imageUrl = await firebaseStorage.Child("EbookImages").Child(ebook.CreateById.ToString()).Child(imageFileName).GetDownloadUrlAsync();
+                    ebook.ImageUrl = imageUrl;
+                }
+
+                await ebookRepository.UpdateEbook(ebook);
+                return Ok();
             }
-            var ebookToUpdate = await ebookRepository.GetEbookById(id);
-            if (ebookToUpdate == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                Console.WriteLine($"Error: {ex.Message}");
+                return BadRequest("Error");
             }
-            ebook.EbookId = ebookToUpdate.EbookId;
-            await ebookRepository.UpdateEbook(ebook);
-            return Updated(ebook);
+        }
+
+        public class FirebaseSettings
+        {
+            public string ApiKey { get; set; }
+            public string Bucket { get; set; }
+            public string AuthEmail { get; set; }
+            public string AuthPassword { get; set; }
         }
     }
 }
