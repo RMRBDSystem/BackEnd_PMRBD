@@ -23,7 +23,7 @@ namespace DataAccess
 
         public async Task Add(Tag tag)
         {
-            _context.Tags.AddAsync(tag);
+            await _context.Tags.AddAsync(tag);
             await _context.SaveChangesAsync();
         }
 

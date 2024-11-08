@@ -23,7 +23,7 @@ namespace DataAccess
 
         public async Task Add(Image image)
         {
-            _context.Images.AddAsync(image);
+            await _context.Images.AddAsync(image);
             await _context.SaveChangesAsync();
         }
 
@@ -62,11 +62,9 @@ namespace DataAccess
                 .ToListAsync();
         }
 
-        public async Task<Image> GetFirstImageByBookId(int bookId)
+        public async Task<Image?> GetFirstImageByBookId(int bookId)
         {
-            return await _context.Images
-                .Where(i => i.BookId == bookId)
-                .FirstOrDefaultAsync();
+            return await _context.Images.FirstOrDefaultAsync(i => i.BookId == bookId);
         }
 
         public async Task<IEnumerable<Image>> GetImagesByBookId(int bookId)

@@ -14,7 +14,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.Books.Include(b => b.Images).Include(b => b.CreateBy).ToListAsync();
+                return await _context.Books.Include(b => b.Images).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -49,9 +49,7 @@ namespace DataAccess
                 throw new Exception("Failed to save book", ex);
             }
         }
-
-        
-
+       
         public async Task UpdateBook(Book book)
         {
             try

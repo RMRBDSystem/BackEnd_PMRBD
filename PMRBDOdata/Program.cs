@@ -79,6 +79,13 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
+
+    options.AddPolicy("AllowSpecificOrigins",
+        builder =>
+        {
+            builder.WithOrigins("http://rmrbdapi.somee.some/").AllowAnyMethod().AllowAnyHeader();
+        });
+        
 });
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -103,14 +110,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseODataBatching();
 app.UseRouting();
 app.UseCors("AllowAll");
+app.UseCors("AllowSpecificOrigins");
 app.UseHttpsRedirection();
 app.Use(async (context, next) =>
 {
     context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, Accept-Language, Accept-Encoding");
     await next();
 });
@@ -119,7 +127,7 @@ app.UseAuthorization();
 app.UseSession();
 app.UseMiddleware<TokenValidationMiddleware>();
 app.UseStaticFiles();
-app.UseODataBatching();
+
 app.MapControllers();
 
 app.Run();

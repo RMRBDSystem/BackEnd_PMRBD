@@ -20,11 +20,11 @@ public partial class Ebook
 
     public int? Status { get; set; }
 
-    public string Pdfurl { get; set; } = null!;
+    public string? Pdfurl { get; set; } = null!;
 
     public DateTime? CreateDate { get; set; }
 
-    public string ImageUrl { get; set; } = null!;
+    public string? ImageUrl { get; set; } = null!;
 
     public int? CreateById { get; set; }
 
