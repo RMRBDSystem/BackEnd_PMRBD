@@ -79,7 +79,7 @@ namespace DataAccess.DAO
                 throw new Exception("Failed to retrieve account by GoogleId", ex);
             }
         }
-        public async Task<Account?> GetAccountByGoogleId(string googleId)
+        /*public async Task<Account?> GetAccountByGoogleId(string googleId)
         {
             try
             {
@@ -89,6 +89,6 @@ namespace DataAccess.DAO
             {
                 throw new Exception("Failed to retrieve account by GoogleId", ex);
             }
-        }
+        }*/
     }
 }
