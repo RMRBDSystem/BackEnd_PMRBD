@@ -23,7 +23,7 @@ namespace DataAccess
 
         public async Task Add(Notification noti)
         {
-            _context.Notifications.AddAsync(noti);
+            await _context.Notifications.AddAsync(noti);
             await _context.SaveChangesAsync();
         }
 
