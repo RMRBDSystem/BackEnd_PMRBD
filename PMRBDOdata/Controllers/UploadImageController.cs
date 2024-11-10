@@ -16,10 +16,12 @@ namespace PMRBDOdata.Controllers
     [ApiController]
     public class UploadImageController : ODataController
     {
-        
+        private static string ApiKey = "AIzaSyCPn2OSvk7rHKjBFwe9Sa_v-aSUZUHxdM4";
+        private static string Bucket = "rmrbdfirebase.appspot.com";
+        private static string AuthEmail = "ngockhanhpham8a@gmail.com";
+        private static string AuthPassword = "khanh30320";
         private readonly IWebHostEnvironment _env;
         private readonly IImageRepository _imageRepository;
-        private readonly IConfiguration _configuration;
         private readonly IEbookRepository _ebookRepository;
 
         public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository, IEbookRepository ebookRepository)
@@ -34,10 +36,6 @@ namespace PMRBDOdata.Controllers
         [HttpPost("{Type}/{Id}")]
         public async Task<IActionResult> UploadImage([FromForm] IFormFile image, [FromODataUri] string Type, [FromODataUri] int Id)
         {
-            string ApiKey = _configuration["FirebaseSettings:ApiKey"];
-            string Bucket = _configuration["FirebaseSettings:Bucket"];
-            string AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
-            string AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
             try
             {
                 if (image == null || image.Length == 0)
@@ -95,7 +93,6 @@ namespace PMRBDOdata.Controllers
                         BookId = null,
                         ImageUrl = downloadUrl,
                         Status = 1
-
                     };
                     await _imageRepository.AddImage(imageEntity);
                 }
