@@ -13,5 +13,6 @@ namespace Repository.IRepository
         Task<Comment> GetCommentById(int id);
         Task AddComment(Comment comment);
         Task UpdateComment(Comment comment);
+        Task DeleteComment(int id);
     }
 }
