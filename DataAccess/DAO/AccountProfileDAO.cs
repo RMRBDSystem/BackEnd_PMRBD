@@ -40,13 +40,30 @@ namespace DataAccess.DAO
             {
                 if (accountProfile != null)
                 {
+                    var existingProfile = await _context.AccountProfiles
+                       .AsNoTracking()  // Ngắt theo dõi để tránh xung đột khi kiểm tra
+                       .FirstOrDefaultAsync(a => a.AccountId == accountProfile.AccountId);
+                    if (existingProfile != null)
+                    {
+                        // Nếu đã tồn tại, có thể ném ra ngoại lệ hoặc tiến hành cập nhật
+                        throw new Exception("Account profile already exists.");
+                    }
+                    // Tách thực thể nếu DbContext đang theo dõi
+                    var trackedProfile = _context.AccountProfiles.Local
+                        .FirstOrDefault(entry => entry.AccountId == accountProfile.AccountId);
+                    if (trackedProfile != null)
+                    {
+                        _context.Entry(trackedProfile).State = EntityState.Detached;
+                    }
+                    // Thêm mới AccountProfile
                     await _context.AccountProfiles.AddAsync(accountProfile);
                     await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to save book category", ex);
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                throw new Exception("Failed to save account profile", ex);
             }
         }
 

@@ -11,7 +11,8 @@ namespace Repository.IRepository
     public interface IRecipeRateRepository
     {
         Task<IEnumerable<RecipeRate>> GetAllRecipeRates();
-        Task<RecipeRate> GetRecipeRateById(int id);
+        Task<RecipeRate> GetRecipeRateById(int recipeid);
+        Task<RecipeRate> GetRecipeRateByRecipeIdAccountId(int recipeid, int accountid);
         Task AddRecipeRate(RecipeRate recipeRate);
         Task UpdateRecipeRate(RecipeRate recipeRate);
     }

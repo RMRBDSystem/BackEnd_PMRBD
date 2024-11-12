@@ -29,7 +29,7 @@ namespace PMRBDOdata.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> UploadPDF(IFormFile image, IFormFile document, [FromForm] string ebookName, [FromForm] string description, [FromForm] int price, [FromForm] int createById)
+        public async Task<IActionResult> UploadPDF(IFormFile image, IFormFile document, [FromForm] Ebook ebook)
         {
             string ApiKey = _configuration["FirebaseSettings:ApiKey"];
             string Bucket = _configuration["FirebaseSettings:Bucket"];
@@ -38,13 +38,13 @@ namespace PMRBDOdata.Controllers
             try
             {
                 // Kiểm tra null cho các trường
-                if (string.IsNullOrWhiteSpace(ebookName) || string.IsNullOrWhiteSpace(description))
+                if (string.IsNullOrWhiteSpace(ebook.EbookName) || string.IsNullOrWhiteSpace(ebook.Description))
                 {
                     return BadRequest("Tên sách và mô tả không được trống");
                 }
 
                 // Kiểm tra giá trị của createById
-                if (createById <= 0)
+                if (ebook.CreateById <= 0)
                 {
                     return BadRequest("ID tạo sách không hợp lệ");
                 }
@@ -86,10 +86,10 @@ namespace PMRBDOdata.Controllers
                 try
                 {
                     // Upload file tài liệu
-                    await firebaseStorage.Child("EbookPDF").Child(createById.ToString()).Child(documentFileName).PutAsync(document.OpenReadStream(), cancellationToken.Token);
+                    await firebaseStorage.Child("EbookPDF").Child(ebook.CreateById.ToString()).Child(documentFileName).PutAsync(document.OpenReadStream(), cancellationToken.Token);
 
                     // Upload file hình ảnh
-                    await firebaseStorage.Child("EbookImages").Child(createById.ToString()).Child(imageFileName).PutAsync(image.OpenReadStream(), cancellationToken.Token);
+                    await firebaseStorage.Child("EbookImages").Child(ebook.CreateById.ToString()).Child(imageFileName).PutAsync(image.OpenReadStream(), cancellationToken.Token);
                 }
                 catch (Exception ex)
                 {
@@ -98,22 +98,16 @@ namespace PMRBDOdata.Controllers
                 }
 
                 // Lấy URL download file
-                var documentUrl = await firebaseStorage.Child("EbookPDF").Child(createById.ToString()).Child(documentFileName).GetDownloadUrlAsync();
-                var imageUrl = await firebaseStorage.Child("EbookImages").Child(createById.ToString()).Child(imageFileName).GetDownloadUrlAsync();
+                var documentUrl = await firebaseStorage.Child("EbookPDF").Child(ebook.CreateById.ToString()).Child(documentFileName).GetDownloadUrlAsync();
+                var imageUrl = await firebaseStorage.Child("EbookImages").Child(ebook.CreateById.ToString()).Child(imageFileName).GetDownloadUrlAsync();
 
                 // Tạo sách
-                var ebookEntity = new Ebook
-                {
-                    EbookName = ebookName,
-                    Description = description,
-                    Price = price,
-                    Status = 1,
-                    CreateById = createById,
-                    ImageUrl = imageUrl,
-                    Pdfurl = documentUrl
-                };
+                ebook.ImageUrl = imageUrl;
+                ebook.Pdfurl = documentUrl;
+                ebook.Status = -1;
 
-                await _ebookRepository.AddEbook(ebookEntity);
+
+                await _ebookRepository.AddEbook(ebook);
 
                 return Ok(new { DocumentUrl = documentUrl, ImageUrl = imageUrl });
             }

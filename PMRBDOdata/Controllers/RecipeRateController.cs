@@ -29,9 +29,21 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<RecipeRate>> GetRecipeRateById([FromODataUri] int id)
+        public async Task<ActionResult<RecipeRate>> GetRecipeRateById([FromODataUri] int recipeid)
         {
-            var recipeRate = await recipeRateRepository.GetRecipeRateById(id);
+            var recipeRate = await recipeRateRepository.GetRecipeRateById(recipeid);
+            if (recipeRate == null)
+            {
+                return NotFound();
+            }
+            return Ok(recipeRate);
+        }
+
+
+        [HttpGet("{RecipeId}/{AccountId}")]
+        public async Task<ActionResult<RecipeRate>> GetRecipeRateByRecipeIdAccountId([FromODataUri] int recipeId, [FromODataUri] int accountId)
+        {
+            var recipeRate = await recipeRateRepository.GetRecipeRateByRecipeIdAccountId(recipeId, accountId);
             if (recipeRate == null)
             {
                 return NotFound();
@@ -40,36 +52,37 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task AddRecipeRate([FromBody] RecipeRate recipeRate)
+        public async Task<ActionResult> AddRecipeRate([FromBody] RecipeRate recipeRate)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    BadRequest(ModelState);
+                    return BadRequest(ModelState);
                 }
                 await recipeRateRepository.AddRecipeRate(recipeRate);
-                //return Created(recipeRate);
+                return Ok();
             }
             catch (Exception ex)
             {
-                BadRequest(ex);
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<RecipeRate>> UpdateRecipeRate([FromODataUri] int id, [FromBody] RecipeRate recipeRate)
+        [HttpPut("{RecipeId}/{AccountId}")]
+        public async Task<ActionResult<RecipeRate>> UpdateRecipeRate([FromODataUri] int recipeId, [FromODataUri] int accountId, [FromBody] RecipeRate recipeRate)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var recipeRateToUpdate = await recipeRateRepository.GetRecipeRateById(id);
+            var recipeRateToUpdate = await recipeRateRepository.GetRecipeRateByRecipeIdAccountId(recipeId, accountId);
             if (recipeRateToUpdate == null)
             {
                 return NotFound();
             }
-            recipeRate.RecipeId = recipeRateToUpdate.RecipeId;
+            recipeRateToUpdate.RecipeId = recipeId;
+            recipeRateToUpdate.AccountId = accountId;
             await recipeRateRepository.UpdateRecipeRate(recipeRate);
             return Updated(recipeRate);
         }

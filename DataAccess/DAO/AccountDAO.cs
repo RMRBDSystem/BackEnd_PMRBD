@@ -79,5 +79,6 @@ namespace DataAccess.DAO
                 throw new Exception("Failed to retrieve account by GoogleId", ex);
             }
         }
+
     }
 }

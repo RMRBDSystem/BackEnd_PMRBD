@@ -13,7 +13,8 @@ namespace Repository.Repository
     public class RecipeRateRepository : IRecipeRateRepository
     {
         public async Task<IEnumerable<RecipeRate>> GetAllRecipeRates() => await RecipeRateDAO.Instance.GetAllRecipeRates();
-        public async Task<RecipeRate> GetRecipeRateById(int id) => await RecipeRateDAO.Instance.GetRecipeRateById(id);
+        public async Task<RecipeRate> GetRecipeRateById(int recipeid) => await RecipeRateDAO.Instance.GetRecipeRateById(recipeid);
+        public async Task<RecipeRate> GetRecipeRateByRecipeIdAccountId(int recipeid, int accountid) => await RecipeRateDAO.Instance.GetRecipeRateByRecipeIdAccountId(recipeid, accountid);
         public async Task AddRecipeRate(RecipeRate perrecipe) => await RecipeRateDAO.Instance.Add(perrecipe);
         public async Task UpdateRecipeRate(RecipeRate perrecipe) => await RecipeRateDAO.Instance.Update(perrecipe);
     }

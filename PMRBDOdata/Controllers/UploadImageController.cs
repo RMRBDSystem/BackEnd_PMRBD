@@ -20,13 +20,11 @@ namespace PMRBDOdata.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly IImageRepository _imageRepository;
         private readonly IConfiguration _configuration;
-        private readonly IEbookRepository _ebookRepository;
 
-        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository, IEbookRepository ebookRepository)
+        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository)
         {
             _env = env;
             _imageRepository = imageRepository;
-            _ebookRepository = ebookRepository;
         }
 
 
