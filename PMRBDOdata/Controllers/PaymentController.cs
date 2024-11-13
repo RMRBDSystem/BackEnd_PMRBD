@@ -70,8 +70,7 @@ namespace PMRBDOdata.Controllers
                     MoneyFluctuations = Coin,
                     Date = DateTime.Now,
                     Status = 1
-                };
-             
+                };           
                 await _accountRepository.UpdateAccount(account);
                 await _coinTransactionRepository.AddCoinTransaction(coinTransaction);               
                 return Ok();

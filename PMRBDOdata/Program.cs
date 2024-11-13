@@ -101,14 +101,11 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 
-    options.AddPolicy("AllowSpecificOrigins",
-    builder =>
-    {
-        builder.WithOrigins("http://localhost:5173").AllowAnyMethod().AllowAnyHeader();
-    });
-
-
-
+    //options.AddPolicy("AllowSpecificOrigins",
+    //builder =>
+    //{
+    //    builder.WithOrigins("http://localhost:5173").AllowAnyMethod().AllowAnyHeader();
+    //});
 });
 
 //Session
@@ -119,7 +116,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+builder.Services.AddMemoryCache();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -138,7 +135,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseODataBatching();
 app.UseCors("AllowAll");
-app.UseCors("AllowSpecificOrigins");
+//app.UseCors("AllowSpecificOrigins");
 app.UseRouting();
 
 

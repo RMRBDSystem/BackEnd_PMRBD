@@ -16,7 +16,10 @@ namespace PMRBDOdata.Controllers
     [ApiController]
     public class UploadImageController : ODataController
     {
-        
+        private static string ApiKey = "AIzaSyCPn2OSvk7rHKjBFwe9Sa_v-aSUZUHxdM4";
+        private static string Bucket = "rmrbdfirebase.appspot.com";
+        private static string AuthEmail = "ngockhanhpham8a@gmail.com";
+        private static string AuthPassword = "khanh30320";
         private readonly IWebHostEnvironment _env;
         private readonly IImageRepository _imageRepository;
         private readonly IConfiguration _configuration;
@@ -27,15 +30,10 @@ namespace PMRBDOdata.Controllers
             _imageRepository = imageRepository;
         }
 
-
-
         [HttpPost("{Type}/{Id}")]
         public async Task<IActionResult> UploadImage([FromForm] IFormFile image, [FromODataUri] string Type, [FromODataUri] int Id)
         {
-            string ApiKey = _configuration["FirebaseSettings:ApiKey"];
-            string Bucket = _configuration["FirebaseSettings:Bucket"];
-            string AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
-            string AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
+            
             try
             {
                 if (image == null || image.Length == 0)
@@ -46,8 +44,9 @@ namespace PMRBDOdata.Controllers
                 var fileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
 
                 // Đăng nhập vào Firebase
+                //var firebaseSettings = _configuration.GetSection("FirebaseSettings").Get<FirebaseSettings>();
                 var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
-                var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+                var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail,AuthPassword);
 
                 // Thiết lập Firebase Storage
                 var cancellationToken = new CancellationTokenSource();
@@ -124,6 +123,14 @@ namespace PMRBDOdata.Controllers
                 Console.WriteLine($"Error occurred: {ex.Message}");
                 return BadRequest(ex.Message);
             }
+        }
+
+        public class FirebaseSettings
+        {
+            public string ApiKey { get; set; }
+            public string Bucket { get; set; }
+            public string AuthEmail { get; set; }
+            public string AuthPassword { get; set; }
         }
 
 
