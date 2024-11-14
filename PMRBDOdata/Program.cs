@@ -15,6 +15,7 @@ using System.Reflection.Emit;
 using System.Text;
 using Repository.IRepository;
 using Repository.Repository;
+using Net.payOS;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(typeof(RmrbdContext));
@@ -34,8 +35,16 @@ builder.Services.AddAuthentication(options =>
     options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
     options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
-// Add services to the container.
 
+//PayOS
+
+PayOS payOS = new PayOS(builder.Configuration["PayOS:ClientID"] ?? throw new Exception("Cannot find environment"),
+                    builder.Configuration["PayOS:APIKey"] ?? throw new Exception("Cannot find environment"),
+                    builder.Configuration["PayOS:ChecksumKey"] ?? throw new Exception("Cannot find environment"));
+
+
+builder.Services.AddSingleton(payOS);
+//Odata Service
 builder.Services.AddControllers();
 
 var modelbuilder = new ODataConventionModelBuilder();
@@ -61,7 +70,7 @@ modelbuilder.EntitySet<BookRate>("BookRates");
 modelbuilder.EntitySet<BookShelf>("BookShelves");
 modelbuilder.EntitySet<PersonalRecipe>("PersonalRecipes");
 modelbuilder.EntitySet<RecipeRate>("RecipeRates");
-//
+
 modelbuilder.EntityType<RecipeTag>().HasKey(x => new { x.RecipeId, x.TagId });
 modelbuilder.EntityType<BookRate>().HasKey(x => new { x.BookId, x.CustomerId });
 modelbuilder.EntityType<BookShelf>().HasKey(x => new { x.EbookId, x.CustomerId });
@@ -70,7 +79,19 @@ modelbuilder.EntityType<RecipeRate>().HasKey(x => new { x.RecipeId, x.AccountId 
 
 
 builder.Services.AddControllers().AddOData(options => options.Select().Filter().OrderBy().SetMaxTop(null).Count().Expand().AddRouteComponents("odata", modelbuilder.GetEdmModel()));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+//CORS
+
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(
+//        builder =>
+//        {
+//            builder.WithOrigins("http://localhost:5173")
+//                   .AllowAnyMethod()
+//                   .AllowAnyHeader();
+//        });
+//});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -79,7 +100,15 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
+
+    //options.AddPolicy("AllowSpecificOrigins",
+    //builder =>
+    //{
+    //    builder.WithOrigins("http://localhost:5173").AllowAnyMethod().AllowAnyHeader();
+    //});
 });
+
+//Session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -87,6 +116,9 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -103,14 +135,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseRouting();
+app.UseODataBatching();
 app.UseCors("AllowAll");
+//app.UseCors("AllowSpecificOrigins");
+app.UseRouting();
+
+
 app.UseHttpsRedirection();
 app.Use(async (context, next) =>
 {
     context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, Accept-Language, Accept-Encoding");
     await next();
 });
@@ -119,7 +154,7 @@ app.UseAuthorization();
 app.UseSession();
 app.UseMiddleware<TokenValidationMiddleware>();
 app.UseStaticFiles();
-app.UseODataBatching();
+
 app.MapControllers();
 
 app.Run();

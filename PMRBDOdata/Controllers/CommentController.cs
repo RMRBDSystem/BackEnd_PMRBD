@@ -73,5 +73,17 @@ namespace PMRBDOdata.Controllers
             await commentRepository.UpdateComment(comment);
             return Updated(comment);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Comment>> DeleteComment([FromODataUri] int id)
+        {
+            var commentToDelete = await commentRepository.GetCommentById(id);
+            if (commentToDelete == null)
+            {
+                return NotFound();
+            }
+            await commentRepository.DeleteComment(id);
+            return Content("Delete success");
+        }
     }
 }

@@ -13,24 +13,42 @@ namespace DataAccess
     {
         public async Task<IEnumerable<RecipeRate>> GetAllRecipeRates() => await _context.RecipeRates.ToListAsync();
 
-        public async Task<RecipeRate> GetRecipeRateById(int id)
+        public async Task<RecipeRate> GetRecipeRateById(int recipeid)
         {
             var reciperate = await _context.RecipeRates
-                .Where(c => c.RecipeId == id)
+                .Where(c => c.RecipeId == recipeid)
                 .FirstOrDefaultAsync();
+            if (reciperate == null) return null;
+            return reciperate;
+        }
+
+        public async Task<RecipeRate> GetRecipeRateByRecipeIdAccountId(int recipeId, int accountId)
+        {
+            var reciperate = await _context.RecipeRates
+                .FirstOrDefaultAsync(c => c.RecipeId == recipeId && c.AccountId == accountId);
             if (reciperate == null) return null;
             return reciperate;
         }
 
         public async Task Add(RecipeRate reciperate)
         {
-            _context.RecipeRates.AddAsync(reciperate);
-            await _context.SaveChangesAsync();
+            try
+            {
+                if (reciperate != null)
+                {
+                    await _context.RecipeRates.AddAsync(reciperate);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to save recipe rate", ex);
+            }
         }
 
         public async Task Update(RecipeRate reciperate)
         {
-            var existingItem = await GetRecipeRateById(reciperate.RecipeId);
+            var existingItem = await GetRecipeRateByRecipeIdAccountId(reciperate.RecipeId, reciperate.AccountId);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(reciperate);
@@ -42,14 +60,14 @@ namespace DataAccess
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
-        {
-            var reciperate = await GetRecipeRateById(id);
-            if (reciperate != null)
-            {
-                _context.RecipeRates.Remove(reciperate);
-                await _context.SaveChangesAsync();
-            }
-        }
+        //public async Task Delete(int id)
+        //{
+        //    var reciperate = await GetRecipeRateById(id);
+        //    if (reciperate != null)
+        //    {
+        //        _context.RecipeRates.Remove(reciperate);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //}
     }
 }

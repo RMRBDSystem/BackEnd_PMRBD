@@ -14,17 +14,19 @@ public partial class Ebook
 
     public string EbookName { get; set; } = null!;
 
+    public string? Author { get; set; }
+
     public string? Description { get; set; }
 
     public decimal? Price { get; set; }
 
     public int? Status { get; set; }
 
-    public string Pdfurl { get; set; } = null!;
+    public string? Pdfurl { get; set; } = null!;
 
     public DateTime? CreateDate { get; set; }
 
-    public string ImageUrl { get; set; } = null!;
+    public string? ImageUrl { get; set; } = null!;
 
     public int? CreateById { get; set; }
 

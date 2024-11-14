@@ -64,5 +64,22 @@ namespace DataAccess
                 throw new Exception("Failed to update comment", ex);
             }
         }
+
+        public async Task DeleteComment(int id)
+        {
+            try
+            {
+                var comment = await GetCommentById(id);
+                if (comment != null)
+                {
+                    _context.Comments.Remove(comment);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to update comment", ex);
+            }
+        }
     }
 }

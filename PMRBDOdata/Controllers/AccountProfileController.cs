@@ -23,10 +23,14 @@ namespace PMRBDOdata.Controllers
         private static string Bucket = "rmrbdfirebase.appspot.com";
         private static string AuthEmail = "ngockhanhpham8a@gmail.com";
         private static string AuthPassword = "khanh30320";
+
         private readonly IAccountProfileRepository accountProfileRepository;
-        public AccountProfileController()
+        private readonly IConfiguration _configuration;
+
+        public AccountProfileController(IConfiguration configuration)
         {
             accountProfileRepository = new AccountProfileRepository();
+            _configuration = configuration;
         }
 
 
@@ -84,6 +88,7 @@ namespace PMRBDOdata.Controllers
             return Updated(accountProfile);
         }
 
+
         [HttpPost("{AccountID}")]
         public async Task<IActionResult> UploadImage(
     IFormFile bankAccountQR,
@@ -94,6 +99,7 @@ namespace PMRBDOdata.Controllers
     [FromForm] DateTime dateOfBirth,
     [FromForm] string iDCardNumber)
         {
+
             try
             {
                 // Check if account profile exists and is under review
@@ -103,11 +109,15 @@ namespace PMRBDOdata.Controllers
                     return BadRequest(new { message = "You have already submitted your profile. Please wait for approval." });
                 }
 
+
+
                 // Validate required fields
                 if (string.IsNullOrWhiteSpace(iDCardNumber))
                 {
                     return BadRequest(new { message = "Please provide all required fields." });
                 }
+
+
 
                 // Check required files
                 if (portrait == null || portrait.Length == 0)
@@ -119,11 +129,14 @@ namespace PMRBDOdata.Controllers
                 if (backIDCard == null || backIDCard.Length == 0)
                     return BadRequest(new { message = "No back ID card file provided." });
 
+
+
                 // Generate unique file names
                 var portraitFileName = $"{Path.GetFileNameWithoutExtension(portrait.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(portrait.FileName)}";
                 var bankQRFileName = $"{Path.GetFileNameWithoutExtension(bankAccountQR.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(bankAccountQR.FileName)}";
                 var frontIDCardFileName = $"{Path.GetFileNameWithoutExtension(frontIDCard.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(frontIDCard.FileName)}";
                 var backIDCardFileName = $"{Path.GetFileNameWithoutExtension(backIDCard.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(backIDCard.FileName)}";
+
 
                 // Firebase Authentication
                 var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
@@ -138,6 +151,7 @@ namespace PMRBDOdata.Controllers
                         AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
                         ThrowOnCancel = true
                     });
+
 
                 // Upload files to Firebase Storage
                 var uploadTaskPortrait = firebaseStorage

@@ -23,7 +23,7 @@ namespace DataAccess
 
         public async Task Add(Recipe recipe)
         {
-            _context.Recipes.AddAsync(recipe);
+            await _context.Recipes.AddAsync(recipe);
             await _context.SaveChangesAsync();
         }
 

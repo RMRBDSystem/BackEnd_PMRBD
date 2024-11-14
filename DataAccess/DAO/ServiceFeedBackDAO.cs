@@ -23,7 +23,7 @@ namespace DataAccess.DAO
 
         public async Task Add(ServiceFeedback feedBack)
         {
-            _context.ServiceFeedbacks.AddAsync(feedBack);
+            await _context.ServiceFeedbacks.AddAsync(feedBack);
             await _context.SaveChangesAsync();
         }
 

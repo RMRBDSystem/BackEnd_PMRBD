@@ -12,10 +12,10 @@ namespace DataAccess
     {
         public async Task<IEnumerable<PersonalRecipe>> GetAllPersonalRecipes() => await _context.PersonalRecipes.ToListAsync();
 
-        public async Task<PersonalRecipe> GetPersonalRecipeById(int id)
+        public async Task<PersonalRecipe> GetPersonalRecipeByCustomerIdAndRecipeId(int CustomerId, int RecipId)
         {
             var perrecipe = await _context.PersonalRecipes
-                .Where(c => c.RecipeId == id)
+                .Where(c => c.RecipeId == RecipId && c.CustomerId == CustomerId)
                 .FirstOrDefaultAsync();
             if (perrecipe == null) return null;
             return perrecipe;
@@ -23,13 +23,13 @@ namespace DataAccess
 
         public async Task Add(PersonalRecipe perrecipe)
         {
-            _context.PersonalRecipes.AddAsync(perrecipe);
+            await _context.PersonalRecipes.AddAsync(perrecipe);
             await _context.SaveChangesAsync();
         }
 
         public async Task Update(PersonalRecipe perrecipe)
         {
-            var existingItem = await GetPersonalRecipeById(perrecipe.RecipeId);
+            var existingItem = await GetPersonalRecipeByCustomerIdAndRecipeId(perrecipe.CustomerId, perrecipe.RecipeId);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(perrecipe);
@@ -41,9 +41,9 @@ namespace DataAccess
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int CustomerId, int RecipeId)
         {
-            var perrecipe = await GetPersonalRecipeById(id);
+            var perrecipe = await GetPersonalRecipeByCustomerIdAndRecipeId(CustomerId, RecipeId);
             if (perrecipe != null)
             {
                 _context.PersonalRecipes.Remove(perrecipe);

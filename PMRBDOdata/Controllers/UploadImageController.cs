@@ -22,20 +22,22 @@ namespace PMRBDOdata.Controllers
         private static string AuthPassword = "khanh30320";
         private readonly IWebHostEnvironment _env;
         private readonly IImageRepository _imageRepository;
+
+        private readonly IConfiguration _configuration;
+
         private readonly IEbookRepository _ebookRepository;
 
-        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository, IEbookRepository ebookRepository)
+
+        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository)
         {
             _env = env;
             _imageRepository = imageRepository;
-            _ebookRepository = ebookRepository;
         }
-
-
 
         [HttpPost("{Type}/{Id}")]
         public async Task<IActionResult> UploadImage([FromForm] IFormFile image, [FromODataUri] string Type, [FromODataUri] int Id)
         {
+
             try
             {
                 if (image == null || image.Length == 0)
@@ -46,8 +48,9 @@ namespace PMRBDOdata.Controllers
                 var fileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
 
                 // Đăng nhập vào Firebase
+                //var firebaseSettings = _configuration.GetSection("FirebaseSettings").Get<FirebaseSettings>();
                 var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
-                var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+                var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail,AuthPassword);
 
                 // Thiết lập Firebase Storage
                 var cancellationToken = new CancellationTokenSource();
@@ -123,6 +126,14 @@ namespace PMRBDOdata.Controllers
                 Console.WriteLine($"Error occurred: {ex.Message}");
                 return BadRequest(ex.Message);
             }
+        }
+
+        public class FirebaseSettings
+        {
+            public string ApiKey { get; set; }
+            public string Bucket { get; set; }
+            public string AuthEmail { get; set; }
+            public string AuthPassword { get; set; }
         }
 
 

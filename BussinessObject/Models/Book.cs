@@ -16,6 +16,8 @@ public partial class Book
 
     public string? Description { get; set; }
 
+    public string? Author { get; set; }
+
     public decimal Price { get; set; }
 
     public int UnitInStock { get; set; }
@@ -50,12 +52,13 @@ public partial class Book
 
     [JsonIgnore]
     public virtual BookCategory? Category { get; set; }
+
     [JsonIgnore]
     public virtual Account? Censor { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-    [JsonIgnore]
+    //[JsonIgnore]
     public virtual Account? CreateBy { get; set; }
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();

@@ -15,5 +15,6 @@ namespace Repository.Repository
         public async Task<IEnumerable<Comment>> GetAllComments() => await CommentDAO.Instance.GetAllComments();
         public async Task AddComment(Comment comment) => await CommentDAO.Instance.AddComment(comment);
         public async Task UpdateComment(Comment comment) => await CommentDAO.Instance.UpdateComment(comment);
+        public async Task DeleteComment(int id) => await CommentDAO.Instance.DeleteComment(id);
     }
 }

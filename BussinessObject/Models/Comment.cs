@@ -16,7 +16,7 @@ public partial class Comment
 
     public string? Content { get; set; }
 
-    public DateTime? Date { get; set; }
+    public DateTime? Date { get; set; } = DateTime.Now;
 
     public int? Status { get; set; }
 
