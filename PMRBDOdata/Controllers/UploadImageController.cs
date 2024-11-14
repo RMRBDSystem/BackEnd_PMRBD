@@ -22,7 +22,11 @@ namespace PMRBDOdata.Controllers
         private static string AuthPassword = "khanh30320";
         private readonly IWebHostEnvironment _env;
         private readonly IImageRepository _imageRepository;
+
         private readonly IConfiguration _configuration;
+
+        private readonly IEbookRepository _ebookRepository;
+
 
         public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository)
         {
@@ -33,7 +37,7 @@ namespace PMRBDOdata.Controllers
         [HttpPost("{Type}/{Id}")]
         public async Task<IActionResult> UploadImage([FromForm] IFormFile image, [FromODataUri] string Type, [FromODataUri] int Id)
         {
-            
+
             try
             {
                 if (image == null || image.Length == 0)
@@ -92,7 +96,6 @@ namespace PMRBDOdata.Controllers
                         BookId = null,
                         ImageUrl = downloadUrl,
                         Status = 1
-
                     };
                     await _imageRepository.AddImage(imageEntity);
                 }

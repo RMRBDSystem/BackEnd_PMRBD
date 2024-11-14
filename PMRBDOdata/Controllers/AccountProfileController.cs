@@ -18,7 +18,12 @@ namespace PMRBDOdata.Controllers
     [Route("odata/AccountProfile")]
     [ApiController]
     public class AccountProfileController : ODataController
-    {        
+    {
+        private static string ApiKey = "AIzaSyCPn2OSvk7rHKjBFwe9Sa_v-aSUZUHxdM4";
+        private static string Bucket = "rmrbdfirebase.appspot.com";
+        private static string AuthEmail = "ngockhanhpham8a@gmail.com";
+        private static string AuthPassword = "khanh30320";
+
         private readonly IAccountProfileRepository accountProfileRepository;
         private readonly IConfiguration _configuration;
 
@@ -82,6 +87,8 @@ namespace PMRBDOdata.Controllers
             await accountProfileRepository.UpdateAccountProfile(accountProfile);
             return Updated(accountProfile);
         }
+
+
         [HttpPost("{AccountID}")]
         public async Task<IActionResult> UploadImage(
     IFormFile bankAccountQR,
@@ -92,10 +99,7 @@ namespace PMRBDOdata.Controllers
     [FromForm] DateTime dateOfBirth,
     [FromForm] string iDCardNumber)
         {
-            string ApiKey = _configuration["FirebaseSettings:ApiKey"];
-            string Bucket = _configuration["FirebaseSettings:Bucket"];
-            string AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
-            string AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
+
             try
             {
                 // Check if account profile exists and is under review
@@ -104,11 +108,17 @@ namespace PMRBDOdata.Controllers
                 {
                     return BadRequest(new { message = "You have already submitted your profile. Please wait for approval." });
                 }
+
+
+
                 // Validate required fields
                 if (string.IsNullOrWhiteSpace(iDCardNumber))
                 {
                     return BadRequest(new { message = "Please provide all required fields." });
                 }
+
+
+
                 // Check required files
                 if (portrait == null || portrait.Length == 0)
                     return BadRequest(new { message = "No portrait file provided." });
@@ -118,14 +128,20 @@ namespace PMRBDOdata.Controllers
                     return BadRequest(new { message = "No front ID card file provided." });
                 if (backIDCard == null || backIDCard.Length == 0)
                     return BadRequest(new { message = "No back ID card file provided." });
+
+
+
                 // Generate unique file names
                 var portraitFileName = $"{Path.GetFileNameWithoutExtension(portrait.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(portrait.FileName)}";
                 var bankQRFileName = $"{Path.GetFileNameWithoutExtension(bankAccountQR.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(bankAccountQR.FileName)}";
                 var frontIDCardFileName = $"{Path.GetFileNameWithoutExtension(frontIDCard.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(frontIDCard.FileName)}";
                 var backIDCardFileName = $"{Path.GetFileNameWithoutExtension(backIDCard.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(backIDCard.FileName)}";
+
+
                 // Firebase Authentication
                 var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
                 var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
                 // Configure Firebase Storage
                 var cancellationToken = new CancellationTokenSource();
                 var firebaseStorage = new FirebaseStorage(
@@ -135,6 +151,8 @@ namespace PMRBDOdata.Controllers
                         AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
                         ThrowOnCancel = true
                     });
+
+
                 // Upload files to Firebase Storage
                 var uploadTaskPortrait = firebaseStorage
                     .Child("Portrait")
@@ -142,45 +160,53 @@ namespace PMRBDOdata.Controllers
                     .Child(portraitFileName)
                     .PutAsync(portrait.OpenReadStream(), cancellationToken.Token);
                 await uploadTaskPortrait;
+
                 var uploadTaskBankQR = firebaseStorage
                     .Child("BankQR")
                     .Child(accountID.ToString())
                     .Child(bankQRFileName)
                     .PutAsync(bankAccountQR.OpenReadStream(), cancellationToken.Token);
                 await uploadTaskBankQR;
+
                 var uploadTaskFrontIDCard = firebaseStorage
                     .Child("FrontIDCard")
                     .Child(accountID.ToString())
                     .Child(frontIDCardFileName)
                     .PutAsync(frontIDCard.OpenReadStream(), cancellationToken.Token);
                 await uploadTaskFrontIDCard;
+
                 var uploadTaskBackIDCard = firebaseStorage
                     .Child("BackIDCard")
                     .Child(accountID.ToString())
                     .Child(backIDCardFileName)
                     .PutAsync(backIDCard.OpenReadStream(), cancellationToken.Token);
                 await uploadTaskBackIDCard;
+
                 // Retrieve download URLs
                 var downloadUrlPortrait = await firebaseStorage
                     .Child("Portrait")
                     .Child(accountID.ToString())
                     .Child(portraitFileName)
                     .GetDownloadUrlAsync();
+
                 var downloadUrlBankQR = await firebaseStorage
                     .Child("BankQR")
                     .Child(accountID.ToString())
                     .Child(bankQRFileName)
                     .GetDownloadUrlAsync();
+
                 var downloadUrlFrontIDCard = await firebaseStorage
                     .Child("FrontIDCard")
                     .Child(accountID.ToString())
                     .Child(frontIDCardFileName)
                     .GetDownloadUrlAsync();
+
                 var downloadUrlBackIDCard = await firebaseStorage
                     .Child("BackIDCard")
                     .Child(accountID.ToString())
                     .Child(backIDCardFileName)
                     .GetDownloadUrlAsync();
+
                 // Save to database
                 var accountProfileEntity = new AccountProfile
                 {
@@ -194,6 +220,7 @@ namespace PMRBDOdata.Controllers
                     Status = -1
                 };
                 await accountProfileRepository.AddAccountProfile(accountProfileEntity);
+
                 // Return download URLs
                 return Ok(new { portraitUrl = downloadUrlPortrait, bankQRUrl = downloadUrlBankQR, frontIDCardUrl = downloadUrlFrontIDCard, backIDCardUrl = downloadUrlBackIDCard });
             }
