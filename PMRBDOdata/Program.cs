@@ -106,6 +106,7 @@ builder.Services.AddCors(options =>
     //{
     //    builder.WithOrigins("http://localhost:5173").AllowAnyMethod().AllowAnyHeader();
     //});
+
 });
 
 //Session
@@ -136,10 +137,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseODataBatching();
+
 app.UseCors("AllowAll");
 //app.UseCors("AllowSpecificOrigins");
 app.UseRouting();
-
 
 app.UseHttpsRedirection();
 app.Use(async (context, next) =>
