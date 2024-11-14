@@ -29,7 +29,6 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpGet("{id}")]
-
         public async Task<ActionResult<RecipeRate>> GetRecipeRateById([FromODataUri] int recipeId)
         {
             var recipeRate = await recipeRateRepository.GetRecipeRateById(recipeId);
@@ -51,7 +50,7 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task <ActionResult> AddRecipeRate([FromBody] RecipeRate recipeRate)
+        public async Task<ActionResult> AddRecipeRate([FromBody] RecipeRate recipeRate)
         {
             try
             {
