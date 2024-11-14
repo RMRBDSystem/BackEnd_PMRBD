@@ -29,17 +29,16 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<RecipeRate>> GetRecipeRateById([FromODataUri] int recipeid)
+
+        public async Task<ActionResult<RecipeRate>> GetRecipeRateById([FromODataUri] int recipeId)
         {
-            var recipeRate = await recipeRateRepository.GetRecipeRateById(recipeid);
+            var recipeRate = await recipeRateRepository.GetRecipeRateById(recipeId);
             if (recipeRate == null)
             {
                 return NotFound();
             }
             return Ok(recipeRate);
         }
-
-
         [HttpGet("{RecipeId}/{AccountId}")]
         public async Task<ActionResult<RecipeRate>> GetRecipeRateByRecipeIdAccountId([FromODataUri] int recipeId, [FromODataUri] int accountId)
         {
@@ -52,7 +51,7 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddRecipeRate([FromBody] RecipeRate recipeRate)
+        public async Task <ActionResult> AddRecipeRate([FromBody] RecipeRate recipeRate)
         {
             try
             {
@@ -65,7 +64,7 @@ namespace PMRBDOdata.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return BadRequest(ex);
             }
         }
 
