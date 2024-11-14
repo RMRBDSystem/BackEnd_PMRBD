@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models;
 
+[PrimaryKey(nameof(BookId), nameof(CustomerId))]
 public partial class BookRate
 {
     public int RatePoint { get; set; }
