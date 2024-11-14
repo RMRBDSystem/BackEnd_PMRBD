@@ -53,7 +53,7 @@ namespace PMRBDOdata.Controllers
             }
             catch (Exception ex)
             {
-                BadRequest(ex);
+                BadRequest(ex.Message);
             }
         }
 

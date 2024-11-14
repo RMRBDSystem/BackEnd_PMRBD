@@ -29,6 +29,7 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpGet("{id}")]
+
         public async Task<ActionResult<RecipeRate>> GetRecipeRateById([FromODataUri] int recipeId)
         {
             var recipeRate = await recipeRateRepository.GetRecipeRateById(recipeId);
@@ -56,7 +57,7 @@ namespace PMRBDOdata.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    BadRequest(ModelState);
+                    return BadRequest(ModelState);
                 }
                 await recipeRateRepository.AddRecipeRate(recipeRate);
                 return Ok();
@@ -79,10 +80,6 @@ namespace PMRBDOdata.Controllers
             {
                 return NotFound();
             }
-            /*recipeRate.RecipeId = recipeRateToUpdate.RecipeId;
-            recipeRate.AccountId = recipeRateToUpdate.AccountId;*/
-            
-            // Cập nhật chỉ những trường cần thiết
             recipeRateToUpdate.RecipeId = recipeId;
             recipeRateToUpdate.AccountId = accountId;
             await recipeRateRepository.UpdateRecipeRate(recipeRate);

@@ -24,6 +24,15 @@ namespace DataAccess
         {
             var reciperate = await _context.RecipeRates
                 .FirstOrDefaultAsync(c => c.RecipeId == recipeId && c.AccountId == accountId);
+
+            if (reciperate == null) return null;
+            return reciperate;
+        }
+
+        public async Task<RecipeRate> GetRecipeRateByRecipeIdAccountId(int recipeId, int accountId)
+        {
+            var reciperate = await _context.RecipeRates
+                .FirstOrDefaultAsync(c => c.RecipeId == recipeId && c.AccountId == accountId);
             if (reciperate == null) return null;
             return reciperate;
         }
@@ -47,6 +56,7 @@ namespace DataAccess
         public async Task Update(RecipeRate reciperate)
         {
             var existingItem = await GetRecipeRateByRecipeIdAccountId(reciperate.RecipeId,reciperate.AccountId);
+
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(reciperate);
@@ -58,14 +68,5 @@ namespace DataAccess
             await _context.SaveChangesAsync();
         }
 
-        /*public async Task Delete(int id)
-        {
-            var reciperate = await GetRecipeRateById(id);
-            if (reciperate != null)
-            {
-                _context.RecipeRates.Remove(reciperate);
-                await _context.SaveChangesAsync();
-            }
-        }*/
     }
 }

@@ -14,8 +14,6 @@ public partial class Ebook
 
     public string EbookName { get; set; } = null!;
 
-    public string? Author { get; set; }
-
     public string? Description { get; set; }
 
     public decimal? Price { get; set; }
@@ -40,12 +38,12 @@ public partial class Ebook
     public virtual BookCategory? Category { get; set; }
 
     [JsonIgnore]
-    public virtual Account? Censor { get; set; }
+    public virtual AccountDTO? Censor { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     [JsonIgnore]
-    public virtual Account? CreateBy { get; set; }
+    public virtual AccountDTO? CreateBy { get; set; }
 
     public virtual ICollection<EbookTransaction> EbookTransactions { get; set; } = new List<EbookTransaction>();
 }

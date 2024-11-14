@@ -10,7 +10,7 @@ namespace Repository.IRepository
     public interface IPersonalRecipeRepository
     {
         Task<IEnumerable<PersonalRecipe>> GetAllPersonalRecipes();
-        Task<PersonalRecipe> GetPersonalRecipeById(int id);
+        Task<PersonalRecipe> GetPersonalRecipeByCustomerIdAndRecipeId(int CustomerId, int RecipeId);
         Task AddPersonalRecipe(PersonalRecipe perrecipe);
         Task UpdatePersonalRecipe(PersonalRecipe perrecipe);
     }

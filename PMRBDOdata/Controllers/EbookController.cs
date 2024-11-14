@@ -30,6 +30,7 @@ namespace PMRBDOdata.Controllers
         public async Task<ActionResult<IEnumerable<Ebook>>> GetAllEbooks()
         {
             var list = await ebookRepository.GetAllEbooks();
+            
             return Ok(list);
         }
 
@@ -41,6 +42,7 @@ namespace PMRBDOdata.Controllers
             {
                 return NotFound();
             }
+            
             return Ok(ebook);
         }
 
