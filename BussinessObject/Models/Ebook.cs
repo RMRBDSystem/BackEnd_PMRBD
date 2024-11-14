@@ -14,6 +14,8 @@ public partial class Ebook
 
     public string EbookName { get; set; } = null!;
 
+    public string? Author { get; set; }
+
     public string? Description { get; set; }
 
     public decimal? Price { get; set; }

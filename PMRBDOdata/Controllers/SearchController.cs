@@ -16,16 +16,21 @@ namespace PMRBDOdata.Controllers
             _context = context;
         }
 
-        [HttpGet("Recipe/{searchString}")]
-        public async Task<ActionResult<List<Recipe>>> SearchRecipe([FromODataUri] string searchString)
+        [HttpGet("Recipe/{searchString?}")]
+        public async Task<ActionResult<List<Recipe>>> SearchRecipe([FromODataUri] string? searchString = "")
         {
             try
             {
-                var list = await _context.Recipes
-                    .Where(x => x.RecipeName.Contains(searchString)
-                               || x.Description.Contains(searchString)
-                               || x.Ingredient.Contains(searchString))
-                    .ToListAsync();
+                var query = _context.Recipes.AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(searchString))
+                {
+                    query = query.Where(x => x.RecipeName.Contains(searchString)
+                                           || x.Description.Contains(searchString)
+                                           || x.Ingredient.Contains(searchString));
+                }
+
+                var list = await query.ToListAsync();
                 return Ok(list);
             }
             catch (Exception ex)
@@ -35,15 +40,20 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-        [HttpGet("Book/{searchString}")]
-        public async Task<ActionResult<List<Book>>> SearchBook([FromODataUri] string searchString)
+        [HttpGet("Book/{searchString?}")]
+        public async Task<ActionResult<List<Book>>> SearchBook([FromODataUri] string? searchString = "")
         {
             try
             {
-                var list = await _context.Books
-                    .Where(x => x.BookName.Contains(searchString)
-                               || x.Description.Contains(searchString))
-                    .ToListAsync();
+                var query = _context.Books.AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(searchString))
+                {
+                    query = query.Where(x => x.BookName.Contains(searchString)
+                                           || x.Description.Contains(searchString));
+                }
+
+                var list = await query.ToListAsync();
                 return Ok(list);
             }
             catch (Exception ex)
@@ -53,15 +63,20 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-        [HttpGet("Ebook/{searchString}")]
-        public async Task<ActionResult<List<Book>>> SearchEbook([FromODataUri] string searchString)
+        [HttpGet("Ebook/{searchString?}")]
+        public async Task<ActionResult<List<Recipe>>> SearchEbook([FromODataUri] string? searchString = "")
         {
             try
             {
-                var list = await _context.Ebooks
-                    .Where(x => x.EbookName.Contains(searchString)
-                               || x.Description.Contains(searchString))
-                    .ToListAsync();
+                var query = _context.Ebooks.AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(searchString))
+                {
+                    query = query.Where(x => x.EbookName.Contains(searchString)
+                                           || x.Description.Contains(searchString));
+                }
+
+                var list = await query.ToListAsync();
                 return Ok(list);
             }
             catch (Exception ex)
