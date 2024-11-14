@@ -26,7 +26,6 @@ namespace PMRBDOdata.Controllers
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     query = query.Where(x => x.RecipeName.Contains(searchString)
-                                           || x.Description.Contains(searchString)
                                            || x.Ingredient.Contains(searchString));
                 }
 
@@ -50,7 +49,7 @@ namespace PMRBDOdata.Controllers
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     query = query.Where(x => x.BookName.Contains(searchString)
-                                           || x.Description.Contains(searchString));
+                                           || x.Author.Contains(searchString));
                 }
 
                 var list = await query.ToListAsync();
@@ -73,7 +72,7 @@ namespace PMRBDOdata.Controllers
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     query = query.Where(x => x.EbookName.Contains(searchString)
-                                           || x.Description.Contains(searchString));
+                                           || x.Author.Contains(searchString));
                 }
 
                 var list = await query.ToListAsync();
