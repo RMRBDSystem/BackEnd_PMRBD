@@ -27,10 +27,10 @@ namespace PMRBDOdata.Controllers
             return Ok(list);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PersonalRecipe>> GetPersonalRecipeById([FromODataUri] int id)
+        [HttpGet("{CustomerId}/{RecipeId}")]
+        public async Task<ActionResult<PersonalRecipe>> GetPersonalRecipeById([FromODataUri] int CustomerId, [FromODataUri] int RecipeId)
         {
-            var personalRecipe = await personalRecipeRepository.GetPersonalRecipeById(id);
+            var personalRecipe = await personalRecipeRepository.GetPersonalRecipeByCustomerIdAndRecipeId(CustomerId, RecipeId);
             if (personalRecipe == null)
             {
                 return NotFound();
@@ -56,14 +56,14 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<PersonalRecipe>> UpdatePersonalRecipe([FromODataUri] int id, [FromBody] PersonalRecipe personalRecipe)
+        [HttpPut("{CustomerId}/{RecipeId}")]
+        public async Task<ActionResult<PersonalRecipe>> UpdatePersonalRecipe([FromODataUri] int CustomerId, [FromODataUri] int RecipeId, [FromBody] PersonalRecipe personalRecipe)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var personalRecipeToUpdate = await personalRecipeRepository.GetPersonalRecipeById(id);
+            var personalRecipeToUpdate = await personalRecipeRepository.GetPersonalRecipeByCustomerIdAndRecipeId(CustomerId, RecipeId);
             if (personalRecipeToUpdate == null)
             {
                 return NotFound();
