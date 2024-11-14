@@ -98,6 +98,15 @@ namespace PMRBDOdata.Controllers
                 }
                 else if (Type == "Book")
                 {
+                    var imageEntity = new Image
+                    {
+                        RecipeId = null,
+                        BookId = Id,
+                        ImageUrl = downloadUrl,
+                        Status = 1
+
+                    };
+                    await _imageRepository.AddImage(imageEntity);
 
                 }
                 else if (Type == "Ebook")
