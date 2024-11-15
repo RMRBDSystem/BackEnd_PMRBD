@@ -124,9 +124,6 @@ namespace PMRBDOdata.Controllers
                 {
                     return BadRequest("Invalid Type");
                 }
-
-
-
                 // Trả về URL tải ảnh
                 return Ok(downloadUrl);
             }

@@ -3,12 +3,12 @@
     public class TokenValidationMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly string _validToken;
+        private readonly List<string> _validTokens;
 
         public TokenValidationMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
-            _validToken = configuration["TokenSettings:Token"];
+            _validTokens = configuration.GetSection("TokenSettings:Tokens").GetChildren().Select(child => child.Value).ToList();
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -21,7 +21,7 @@
             }
 
             var token = context.Request.Headers["Token"].ToString();
-            if (token != _validToken)
+            if (!_validTokens.Contains(token))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 await context.Response.WriteAsync("Unauthorized Access");

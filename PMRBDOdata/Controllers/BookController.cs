@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repository.IRepository;
 using Repository.Repository;
+using Twilio.TwiML.Fax;
 
 namespace PMRBDOdata.Controllers
 {
@@ -42,7 +43,7 @@ namespace PMRBDOdata.Controllers
         
 
         [HttpPost]
-        public async Task AddBook([FromBody] Book book)
+        public async Task<IActionResult> AddBook([FromBody] Book book)
         {
             try
             {
@@ -51,11 +52,13 @@ namespace PMRBDOdata.Controllers
                     BadRequest(ModelState);
                 }
                 await bookRepository.AddBook(book);
-                //return Created(book);
+
+                var bookid = book.BookId;
+                return CreatedAtAction(nameof(GetBookById), new { id = bookid }, book);
             }
             catch(Exception ex)
             {
-                BadRequest(ex);
+                return BadRequest(ex);
             }
         }
 
