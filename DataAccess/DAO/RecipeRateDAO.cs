@@ -29,14 +29,6 @@ namespace DataAccess
             return reciperate;
         }
 
-        public async Task<RecipeRate> GetRecipeRateByRecipeIdAccountId(int recipeId, int accountId)
-        {
-            var reciperate = await _context.RecipeRates
-                .FirstOrDefaultAsync(c => c.RecipeId == recipeId && c.AccountId == accountId);
-            if (reciperate == null) return null;
-            return reciperate;
-        }
-
         public async Task Add(RecipeRate reciperate)
         {
             try

@@ -75,7 +75,7 @@ namespace PMRBDOdata.Controllers
                                            || x.Author.Contains(searchString));
                 }
 
-                var list = await query.ToListAsync();
+                var list = await query.Where(x => x.Status == 1).ToListAsync();
                 return Ok(list);
             }
             catch (Exception ex)
