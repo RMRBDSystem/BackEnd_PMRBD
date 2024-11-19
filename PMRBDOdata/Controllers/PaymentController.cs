@@ -18,12 +18,16 @@ namespace PMRBDOdata.Controllers
         private readonly PayOS _payOS;
         private readonly IAccountRepository _accountRepository;
         private readonly ICoinTransactionRepository _coinTransactionRepository;
+        private readonly IConfiguration _configuration;
+        private readonly string domain;
 
-        public PaymentController(PayOS payOS)
+        public PaymentController(PayOS payOS, IConfiguration configuration)
         {
             _payOS = payOS;
             _accountRepository = new AccountRepository();
             _coinTransactionRepository = new CoinTransactionRepository();
+            _configuration = configuration;
+            domain = _configuration["FrontEnd:Domain"];
         }
 
         [HttpGet("{AccountID}/{Coin}")]
@@ -40,8 +44,8 @@ namespace PMRBDOdata.Controllers
                 amount: (int)Coin,
                 description: "Nap Coin: " + account.UserName,
                 items: items,
-                returnUrl: "http://localhost:5173/Payment-Success",
-                cancelUrl: "http://localhost:5173/Payment-Failed"
+                returnUrl: domain + "/payment-success",
+                cancelUrl: domain + "/Payment-Failed"
                 );
                 var response = await _payOS.createPaymentLink(paymentLinkRequest);
 
