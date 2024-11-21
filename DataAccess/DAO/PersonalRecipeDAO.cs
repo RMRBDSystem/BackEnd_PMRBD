@@ -15,10 +15,17 @@ namespace DataAccess
         public async Task<PersonalRecipe> GetPersonalRecipeByCustomerIdAndRecipeId(int CustomerId, int RecipId)
         {
             var perrecipe = await _context.PersonalRecipes
-                .Where(c => c.RecipeId == RecipId && c.CustomerId == CustomerId)
+                 .Where(c => c.RecipeId == RecipId && c.CustomerId == CustomerId).Include(c => c.Recipe)
                 .FirstOrDefaultAsync();
             if (perrecipe == null) return null;
             return perrecipe;
+        }
+
+        public async Task<List<PersonalRecipe>> GetPersonalRecipesByCustomerId(int CustomerId)
+        {
+            return await _context.PersonalRecipes
+                .Where(c => c.CustomerId == CustomerId).Include(c => c.Recipe)
+                .ToListAsync();
         }
 
         public async Task Add(PersonalRecipe perrecipe)

@@ -38,6 +38,18 @@ namespace PMRBDOdata.Controllers
             return Ok(image);
         }
 
+        [HttpGet("recipe/{recipeId}")]
+        public async Task<ActionResult<IEnumerable<Image>>> GetImagesByRecipeId([FromRoute] int recipeId)
+        {
+            var images = await imageRepository.GetImagesByRecipeId(recipeId);
+
+            if (images == null || !images.Any())
+            {
+                return NotFound();
+            }
+            return Ok(images); 
+        }
+
         [HttpPost]
         public async Task AddImage([FromBody] Image image)
         {

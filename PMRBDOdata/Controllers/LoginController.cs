@@ -52,10 +52,10 @@ namespace PMRBDOdata.Controllers
                     default:
                         return Unauthorized(new { message = "Invalid role" });
                 }
-                HttpContext.Session.SetString("UserRole", role);
-                HttpContext.Session.SetString("UserName", checkAccount.UserName);
-                HttpContext.Session.SetInt32("UserId", checkAccount.AccountId);
-                return Ok(new { message = $"Logged in as {role}", role, UserId = checkAccount.AccountId });
+                //HttpContext.Session.SetString("UserRole", role);
+                //HttpContext.Session.SetString("UserName", checkAccount.UserName);
+                //HttpContext.Session.SetInt32("UserId", checkAccount.AccountId);
+                return Ok(new { message = $"Logged in as {role}", role, UserId = checkAccount.AccountId, Coin = checkAccount.Coin });
             }
             // Create a new Customer account if not found
             var newCustomer = new Account
@@ -69,10 +69,10 @@ namespace PMRBDOdata.Controllers
             };
             await AccountDAO.Instance.AddAccount(newCustomer);
             int newCustomerId = (await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId)).AccountId;
-            HttpContext.Session.SetString("UserRole", "Customer");
-            HttpContext.Session.SetString("UserName", newCustomer.UserName);
-            HttpContext.Session.SetInt32("UserId", newCustomer.AccountId);
-            return Ok(new { message = "New Customer created and logged in", role = "Customer", UserId = newCustomer.AccountId });
+            //HttpContext.Session.SetString("UserRole", "Customer");
+            //HttpContext.Session.SetString("UserName", newCustomer.UserName);
+            //HttpContext.Session.SetInt32("UserId", newCustomer.AccountId);
+            return Ok(new { message = "New Customer created and logged in", role = "Customer", UserId = newCustomer.AccountId, Coin = newCustomer.Coin });
         }
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
