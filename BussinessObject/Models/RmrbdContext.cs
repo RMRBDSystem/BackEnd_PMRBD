@@ -65,6 +65,8 @@ public partial class RmrbdContext : DbContext
 
     public virtual DbSet<RecipeTag> RecipeTags { get; set; }
 
+    public virtual DbSet<BookOrderDetail> BookOrderDetails { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -181,7 +183,6 @@ public partial class RmrbdContext : DbContext
             entity.ToTable("BookOrder");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.BookId).HasColumnName("BookID");
             entity.Property(e => e.ClientAddressId).HasColumnName("ClientAddressID");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.OrderCode)
@@ -189,12 +190,8 @@ public partial class RmrbdContext : DbContext
                 .HasColumnName("Order_Code");
             entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
-            entity.Property(e => e.Quantity).HasDefaultValueSql("((1))");
             entity.Property(e => e.ShipFee).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 0)");
-
-            entity.HasOne(d => d.Book).WithMany(p => p.BookOrders)
-                .HasForeignKey(d => d.BookId);
 
             entity.HasOne(d => d.ClientAddress).WithMany(p => p.BookOrders)
                 .HasForeignKey(d => d.ClientAddressId);
@@ -553,6 +550,17 @@ public partial class RmrbdContext : DbContext
             entity.HasOne(d => d.Recipe).WithMany(p => p.RecipeTags).HasForeignKey(d => d.RecipeId);
 
             entity.HasOne(d => d.Tag).WithMany(p => p.RecipeTags).HasForeignKey(d => d.TagId);
+        });
+
+        modelBuilder.Entity<BookOrderDetail>(entity => { 
+            entity.HasKey(e => new { e.OrderId, e.BookId });
+
+            entity.ToTable("BookOrderDetail");
+
+            entity.HasOne(d => d.BookOrder).WithMany(p => p.BookOrderDetails).HasForeignKey(d => d.OrderId);
+
+            entity.HasOne(d => d.Book).WithMany(p => p.BookOrderDetails).HasForeignKey(d => d.BookId);
+        
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -14,10 +14,10 @@ namespace BussinessObject.Models
 
         public int TagId { get; set; }
 
-        [JsonIgnore]
+
         public virtual Recipe? Recipe { get; set; }
 
-        [JsonIgnore]
+
         public virtual Tag? Tag { get; set; }
     }
 }

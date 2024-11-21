@@ -18,7 +18,7 @@ public partial class CoinTransaction
 
     public decimal? CoinFluctuations { get; set; }
 
-    public DateTime? Date { get; set; }
+    public DateTime? Date { get; set; } = DateTime.Now;
 
     public int? Status { get; set; }
 

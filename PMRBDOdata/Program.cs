@@ -16,6 +16,7 @@ using System.Text;
 using Repository.IRepository;
 using Repository.Repository;
 using Net.payOS;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(typeof(RmrbdContext));
@@ -47,10 +48,9 @@ PayOS payOS = new PayOS(builder.Configuration["PayOS:ClientID"] ?? throw new Exc
 builder.Services.AddSingleton(payOS);
 
 //
-builder.Services.AddControllersWithViews()
-    .AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
 //Odata Service
 
 builder.Services.AddControllers();
@@ -78,12 +78,14 @@ modelbuilder.EntitySet<BookRate>("BookRates");
 modelbuilder.EntitySet<BookShelf>("BookShelves");
 modelbuilder.EntitySet<PersonalRecipe>("PersonalRecipes");
 modelbuilder.EntitySet<RecipeRate>("RecipeRates");
+modelbuilder.EntitySet<BookOrderDetail>("BookOrderDetails");
 
 modelbuilder.EntityType<RecipeTag>().HasKey(x => new { x.RecipeId, x.TagId });
 modelbuilder.EntityType<BookRate>().HasKey(x => new { x.BookId, x.CustomerId });
 modelbuilder.EntityType<BookShelf>().HasKey(x => new { x.EbookId, x.CustomerId });
 modelbuilder.EntityType<PersonalRecipe>().HasKey(x => new { x.RecipeId, x.CustomerId });
 modelbuilder.EntityType<RecipeRate>().HasKey(x => new { x.RecipeId, x.AccountId });
+modelbuilder.EntityType<BookOrderDetail>().HasKey(x => new { x.OrderId, x.BookId });
 
 
 builder.Services.AddControllers().AddOData(options => options.Select().Filter().OrderBy().SetMaxTop(null).Count().Expand().AddRouteComponents("odata", modelbuilder.GetEdmModel()));
