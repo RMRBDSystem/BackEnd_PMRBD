@@ -24,6 +24,6 @@ public partial class PersonalRecipe
 
     [JsonIgnore]
     public virtual Account? Account { get; set; }
-
-    public virtual Recipe? Recipe { get; set; }
+    [JsonIgnore]
+    public virtual Recipe? Recipe { get; set; } = new Recipe();
 }
