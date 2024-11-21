@@ -12,7 +12,6 @@ namespace Repository.IRepository
         Task<IEnumerable<PersonalRecipe>> GetAllPersonalRecipes();
         Task<PersonalRecipe> GetPersonalRecipeByCustomerIdAndRecipeId(int CustomerId, int RecipeId);
         Task<List<PersonalRecipe>> GetPersonalRecipesByCustomerId(int CustomerId);
-
         Task AddPersonalRecipe(PersonalRecipe perrecipe);
         Task UpdatePersonalRecipe(PersonalRecipe perrecipe);
     }

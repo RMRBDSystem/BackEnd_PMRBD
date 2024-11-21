@@ -33,12 +33,10 @@ namespace PMRBDOdata.Controllers
             try
             {
                 var personalRecipes = await personalRecipeRepository.GetPersonalRecipesByCustomerId(CustomerId);
-
                 if (personalRecipes == null || personalRecipes.Count == 0)
                 {
                     return NotFound(new { Message = "No personal recipes found for the given CustomerId." });
                 }
-
                 return Ok(personalRecipes);
             }
             catch (Exception ex)

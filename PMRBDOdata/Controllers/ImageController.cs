@@ -37,6 +37,7 @@ namespace PMRBDOdata.Controllers
             }
             return Ok(image);
         }
+
         [HttpGet("recipe/{recipeId}")]
         public async Task<ActionResult<IEnumerable<Image>>> GetImagesByRecipeId([FromRoute] int recipeId)
         {
@@ -44,11 +45,11 @@ namespace PMRBDOdata.Controllers
 
             if (images == null || !images.Any())
             {
-                return NotFound(); // Không tìm thấy ảnh cho recipeId
+                return NotFound();
             }
-
-            return Ok(images); // Trả về danh sách ảnh
+            return Ok(images); 
         }
+
         [HttpPost]
         public async Task AddImage([FromBody] Image image)
         {

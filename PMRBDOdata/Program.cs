@@ -23,7 +23,8 @@ builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IEbookRepository, EbookRepository>();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-// Google Authentication Configuration
+// Google Authentication Configurationý
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -44,7 +45,9 @@ PayOS payOS = new PayOS(builder.Configuration["PayOS:ClientID"] ?? throw new Exc
 
 
 builder.Services.AddSingleton(payOS);
+
 //Odata Service
+
 builder.Services.AddControllers();
 
 var modelbuilder = new ODataConventionModelBuilder();
@@ -100,12 +103,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
-
-    //options.AddPolicy("AllowSpecificOrigins",
-    //builder =>
-    //{
-    //    builder.WithOrigins("http://localhost:5173").AllowAnyMethod().AllowAnyHeader();
-    //});
 });
 
 //Session
@@ -136,10 +133,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseODataBatching();
+
 app.UseCors("AllowAll");
 //app.UseCors("AllowSpecificOrigins");
 app.UseRouting();
-
 
 app.UseHttpsRedirection();
 app.Use(async (context, next) =>

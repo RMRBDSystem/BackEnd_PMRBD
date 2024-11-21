@@ -64,7 +64,6 @@ namespace DataAccess
                 throw new Exception("Failed to update comment", ex);
             }
         }
-
         public async Task DeleteComment(int id)
         {
             try
