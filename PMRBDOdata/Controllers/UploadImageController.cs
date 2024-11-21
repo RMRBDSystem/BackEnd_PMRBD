@@ -16,10 +16,10 @@ namespace PMRBDOdata.Controllers
     [ApiController]
     public class UploadImageController : ODataController
     {
-        private static string ApiKey = "AIzaSyCPn2OSvk7rHKjBFwe9Sa_v-aSUZUHxdM4";
-        private static string Bucket = "rmrbdfirebase.appspot.com";
-        private static string AuthEmail = "ngockhanhpham8a@gmail.com";
-        private static string AuthPassword = "khanh30320";
+        private readonly string ApiKey;
+        private readonly string Bucket;
+        private readonly string AuthEmail;
+        private readonly string AuthPassword;
         private readonly IWebHostEnvironment _env;
         private readonly IImageRepository _imageRepository;
 
@@ -28,10 +28,15 @@ namespace PMRBDOdata.Controllers
         private readonly IEbookRepository _ebookRepository;
 
 
-        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository)
+        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository, IConfiguration configuration, IEbookRepository ebookRepository)
         {
             _env = env;
             _imageRepository = imageRepository;
+            _configuration = configuration;
+            ApiKey = _configuration["FirebaseSettings:ApiKey"];
+            Bucket = _configuration["FirebaseSettings:Bucket"];
+            AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
+            AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
         }
 
         [HttpPost("{Type}/{Id}")]
@@ -48,7 +53,6 @@ namespace PMRBDOdata.Controllers
                 var fileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
 
                 // Đăng nhập vào Firebase
-                //var firebaseSettings = _configuration.GetSection("FirebaseSettings").Get<FirebaseSettings>();
                 var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
                 var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail,AuthPassword);
 
@@ -132,14 +136,6 @@ namespace PMRBDOdata.Controllers
                 Console.WriteLine($"Error occurred: {ex.Message}");
                 return BadRequest(ex.Message);
             }
-        }
-
-        public class FirebaseSettings
-        {
-            public string ApiKey { get; set; }
-            public string Bucket { get; set; }
-            public string AuthEmail { get; set; }
-            public string AuthPassword { get; set; }
         }
 
 

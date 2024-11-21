@@ -20,21 +20,25 @@ namespace PMRBDOdata.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly IEbookRepository _ebookRepository;
         private readonly IConfiguration _configuration;
+        private readonly string ApiKey;
+        private readonly string Bucket;
+        private readonly string AuthEmail;
+        private readonly string AuthPassword;
         public UploadPDFController(IWebHostEnvironment env, IEbookRepository ebookRepository, IConfiguration configuration)
         {
             _env = env;
             _ebookRepository = ebookRepository;
             _configuration = configuration;
+            ApiKey = _configuration["FirebaseSettings:ApiKey"];
+            Bucket = _configuration["FirebaseSettings:Bucket"];
+            AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
+            AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
         }
 
 
         [HttpPost]
         public async Task<IActionResult> UploadPDF(IFormFile image, IFormFile document, [FromForm] Ebook ebook)
         {
-            string ApiKey = _configuration["FirebaseSettings:ApiKey"];
-            string Bucket = _configuration["FirebaseSettings:Bucket"];
-            string AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
-            string AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
             try
             {
                 // Kiểm tra null cho các trường
