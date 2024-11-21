@@ -46,8 +46,8 @@ public partial class Recipe
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-    [JsonIgnore]
-    public virtual Account? CreateBy { get; set; }
+    //[JsonIgnore]
+    public virtual Account? CreateBy { get; set; } 
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();
 
@@ -55,6 +55,7 @@ public partial class Recipe
 
     public virtual ICollection<RecipeTransaction> RecipeTransactions { get; set; } = new List<RecipeTransaction>();
 
+    [JsonIgnore]
     public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 
     public virtual ICollection<RecipeTag> RecipeTags { get; set; } = new List<RecipeTag>();

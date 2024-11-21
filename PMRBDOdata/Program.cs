@@ -46,6 +46,11 @@ PayOS payOS = new PayOS(builder.Configuration["PayOS:ClientID"] ?? throw new Exc
 
 builder.Services.AddSingleton(payOS);
 
+//
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 //Odata Service
 
 builder.Services.AddControllers();
