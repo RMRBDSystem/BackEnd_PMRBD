@@ -16,6 +16,7 @@ using System.Text;
 using Repository.IRepository;
 using Repository.Repository;
 using Net.payOS;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(typeof(RmrbdContext));
@@ -47,10 +48,8 @@ PayOS payOS = new PayOS(builder.Configuration["PayOS:ClientID"] ?? throw new Exc
 builder.Services.AddSingleton(payOS);
 
 //
-builder.Services.AddControllersWithViews()
-    .AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 //Odata Service
 
 builder.Services.AddControllers();
