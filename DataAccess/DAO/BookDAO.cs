@@ -26,7 +26,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.Books.FindAsync(id);
+                return await _context.Books.Include(b => b.Images).FirstOrDefaultAsync(b => b.BookId == id);
             }
             catch (Exception ex)
             {

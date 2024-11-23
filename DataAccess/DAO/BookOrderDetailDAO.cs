@@ -15,7 +15,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.BookOrderDetails.ToListAsync();
+                return await _context.BookOrderDetails.Include(x => x.BookOrder).Include(x => x.Book).ThenInclude(x => x.Images).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -27,7 +27,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.BookOrderDetails.Where(x => x.OrderId == id).ToListAsync();
+                return await _context.BookOrderDetails.Where(x => x.OrderId == id).Include(x => x.BookOrder).Include(x => x.Book).ThenInclude(x => x.Images).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -39,7 +39,11 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.BookOrderDetails.FirstOrDefaultAsync(x => x.OrderId == orderid && x.BookId == bookid);
+                return await _context.BookOrderDetails
+     .Include(x => x.BookOrder)
+     .Include(x => x.Book)
+     .ThenInclude(x => x.Images)
+     .FirstOrDefaultAsync(x => x.OrderId == orderid && x.BookId == bookid);
             }
             catch (Exception ex)
             {
