@@ -27,7 +27,6 @@ public partial class Account
 
     public int? AccountStatus { get; set; }
 
-    [JsonIgnore]
     public virtual AccountProfile? AccountProfileAccount { get; set; }
 
     public virtual ICollection<AccountProfile> AccountProfileCensors { get; set; } = new List<AccountProfile>();
@@ -66,7 +65,6 @@ public partial class Account
 
     public virtual ICollection<RecipeTransaction> RecipeTransactions { get; set; } = new List<RecipeTransaction>();
 
-    [JsonIgnore]
     public virtual Role? Role { get; set; }
 
     public virtual ICollection<ServiceFeedback> ServiceFeedbackCustomers { get; set; } = new List<ServiceFeedback>();

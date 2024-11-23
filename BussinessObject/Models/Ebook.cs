@@ -24,7 +24,7 @@ public partial class Ebook
 
     public string? Pdfurl { get; set; } = null!;
 
-    public DateTime? CreateDate { get; set; }
+    public DateTime? CreateDate { get; set; } = DateTime.Now;
 
     public string? ImageUrl { get; set; } = null!;
 

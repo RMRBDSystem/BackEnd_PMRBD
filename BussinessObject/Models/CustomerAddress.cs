@@ -25,8 +25,6 @@ public partial class CustomerAddress
     public int ProvinceCode { get; set; }
 
     public string? AddressDetail { get; set; }
-
-    [JsonIgnore]
     public virtual Account? Account { get; set; }
 
     public virtual ICollection<BookOrder> BookOrders { get; set; } = new List<BookOrder>();

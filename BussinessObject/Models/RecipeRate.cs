@@ -17,9 +17,7 @@ namespace BussinessObject.Models
         public int AccountId { get; set; }
         public int RatePoint { get; set; }
 
-        [JsonIgnore]
         public virtual Recipe? Recipe { get; set; }
-        [JsonIgnore]
         public virtual Account? Account { get; set; }
     }
 }

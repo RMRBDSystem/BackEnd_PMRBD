@@ -20,6 +20,6 @@ public partial class Notification
 
     public int? Status { get; set; }
 
-    [JsonIgnore]
+
     public virtual Account? Account { get; set; }
 }

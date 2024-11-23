@@ -18,15 +18,15 @@ public partial class EbookTransaction
 
     public decimal? CoinFluctuations { get; set; }
 
-    public DateTime? Date { get; set; }
+    public DateTime? Date { get; set; } = DateTime.Now;
 
     public string? Details { get; set; }
 
     public int? Status { get; set; }
 
-    [JsonIgnore]
+
     public virtual Account? Customer { get; set; }
 
-    [JsonIgnore]
+
     public virtual Ebook? Ebook { get; set; }
 }
