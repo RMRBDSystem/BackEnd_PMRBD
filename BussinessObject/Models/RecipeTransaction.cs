@@ -18,15 +18,14 @@ public partial class RecipeTransaction
 
     public decimal? CoinFluctuations { get; set; }
 
-    public DateTime? Date { get; set; }
+    public DateTime? Date { get; set; } = DateTime.Now;
 
     public string? Detail { get; set; }
 
     public int? Status { get; set; }
 
-    [JsonIgnore]
+
     public virtual Account? Customer { get; set; }
 
-    [JsonIgnore]
     public virtual Recipe? Recipe { get; set; }
 }

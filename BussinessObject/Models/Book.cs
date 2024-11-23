@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using BussinessObject.Models;
 
 namespace BusinessObject.Models;
 
@@ -26,7 +27,7 @@ public partial class Book
 
     public int? CensorId { get; set; }
 
-    public DateTime? CreateDate { get; set; }
+    public DateTime? CreateDate { get; set; } = DateTime.Now;
 
     public int? CreateById { get; set; }
 
@@ -50,10 +51,8 @@ public partial class Book
 
     public virtual ICollection<BookRate> BookRates { get; set; } = new List<BookRate>();
 
-    [JsonIgnore]
     public virtual BookCategory? Category { get; set; }
 
-    [JsonIgnore]
     public virtual Account? Censor { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
@@ -63,6 +62,9 @@ public partial class Book
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();
 
-    [JsonIgnore]
+    public virtual ICollection<BookOrderDetail> BookOrderDetails { get; set; } = new List<BookOrderDetail>();
+
     public virtual CustomerAddress? SenderAddress { get; set; }
+
+
 }

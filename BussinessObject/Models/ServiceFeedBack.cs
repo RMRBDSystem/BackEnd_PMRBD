@@ -18,7 +18,7 @@ public partial class ServiceFeedback
 
     public string? ImageUrl { get; set; }
 
-    public DateTime? Date { get; set; }
+    public DateTime? Date { get; set; } = DateTime.Now;
 
     public int? Status { get; set; }
 
@@ -28,9 +28,8 @@ public partial class ServiceFeedback
 
     public int? CustomerId { get; set; }
 
-    [JsonIgnore]
+
     public virtual Account? Customer { get; set; }
 
-    [JsonIgnore]
     public virtual Account? Employee { get; set; }
 }
