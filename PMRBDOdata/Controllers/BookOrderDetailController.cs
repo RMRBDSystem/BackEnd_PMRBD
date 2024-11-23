@@ -28,8 +28,19 @@ namespace PMRBDOdata.Controllers
             return Ok(list);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<BookOrderDetail>> GetBookOrderDetailByOrderId([FromODataUri] int id)
+        [HttpGet("key/{key}")]
+        public async Task<ActionResult<BookOrderDetail>> GetBookOrderDetail([FromODataUri] int key)
+        {
+            var bookOrderDetail = await bookOrderDetailRepository.GetBookOrderDetailById(key);
+            if (bookOrderDetail == null)
+            {
+                return NotFound();
+            }
+            return Ok(bookOrderDetail);
+        }
+
+        [HttpGet("OrderId/{id}")]
+        public async Task<ActionResult<IEnumerable<BookOrderDetail>>> GetBookOrderDetailByOrderId([FromODataUri] int id)
         {
             var bookOrderDetail = await bookOrderDetailRepository.GetBookOrderDetailByOrderId(id);
             if (bookOrderDetail == null)

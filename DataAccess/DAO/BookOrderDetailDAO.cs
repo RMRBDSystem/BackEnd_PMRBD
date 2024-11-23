@@ -23,6 +23,8 @@ namespace DataAccess.DAO
             }
         }
 
+        public async Task<BookOrderDetail?> GetBookOrderDetailById(int id) => await _context.BookOrderDetails.Include(x => x.BookOrder).Include(x => x.Book).ThenInclude(x => x.Images).FirstOrDefaultAsync(x => x.OrderDetailId == id);
+
         public async Task<IEnumerable<BookOrderDetail?>> GetBookOrderDetailByOrderId(int id)
         {
             try

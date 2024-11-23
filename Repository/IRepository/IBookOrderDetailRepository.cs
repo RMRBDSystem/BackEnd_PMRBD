@@ -13,6 +13,7 @@ namespace Repository.IRepository
         Task<IEnumerable<BookOrderDetail>> GetAllBookOrderDetails();
         Task<IEnumerable<BookOrderDetail>> GetBookOrderDetailByOrderId(int OrderId);
         Task<BookOrderDetail> GetBookOrderDetailByOrderIdAndBookId(int OrderId, int Bookid);
+        Task<BookOrderDetail> GetBookOrderDetailById(int Id);
         Task AddBookOrderDetail(BookOrderDetail bookOrderDetail);
         Task UpdateBookOrderDetail(BookOrderDetail bookOrderDetail);
         Task DeleteBookOrderDetail(int OrderId, int BookId);
