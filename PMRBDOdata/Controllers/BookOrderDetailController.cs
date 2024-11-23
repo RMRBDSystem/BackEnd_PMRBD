@@ -68,7 +68,7 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{OrderId}/{BookId}")]
         public async Task<ActionResult<BookOrderDetail>> UpdateBookOrderDetail([FromODataUri] int OrderId, [FromODataUri] int BookId, [FromBody] BookOrderDetail bookorderdetail)
         {
             if (!ModelState.IsValid)
