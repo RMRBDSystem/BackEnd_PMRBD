@@ -91,10 +91,46 @@ namespace PMRBDOdata.Controllers
             {
                 return NotFound();
             }
+            bookorderdetail.OrderDetailId = bookOrderDetailToUpdate.OrderDetailId;
             bookorderdetail.OrderId = bookOrderDetailToUpdate.OrderId;
             bookorderdetail.BookId = bookOrderDetailToUpdate.BookId;
             await bookOrderDetailRepository.UpdateBookOrderDetail(bookorderdetail);
             return Updated(bookorderdetail);
+        }
+
+        [HttpPut("{key}")]
+        public async Task<ActionResult<BookOrderDetail>> UpdateBookOrderDetail([FromODataUri] int key, [FromBody] BookOrderDetail bookorderdetail)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var bookOrderDetailToUpdate = await bookOrderDetailRepository.GetBookOrderDetailById(key);
+            if (bookOrderDetailToUpdate == null)
+            {
+                return NotFound();
+            }
+            bookorderdetail.OrderDetailId = bookOrderDetailToUpdate.OrderDetailId;
+            bookorderdetail.OrderId = bookOrderDetailToUpdate.OrderId;
+            bookorderdetail.BookId = bookOrderDetailToUpdate.BookId;
+            await bookOrderDetailRepository.UpdateBookOrderDetail(bookorderdetail);
+            return Updated(bookorderdetail);
+        }
+
+        [HttpDelete("{key}")]
+        public async Task<IActionResult> DeleteBookOrderDetail([FromODataUri] int key)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var bookOrderDetailToDelete = await bookOrderDetailRepository.GetBookOrderDetailById(key);
+            if (bookOrderDetailToDelete == null)
+            {
+                return NotFound();
+            }
+            await bookOrderDetailRepository.DeleteBookOrderDetail(bookOrderDetailToDelete.OrderId, bookOrderDetailToDelete.BookId);
+            return NoContent();
         }
 
         [HttpDelete("{OrderId}/{BookId}")]
