@@ -34,6 +34,8 @@ public partial class Ebook
 
     public int? CategoryId { get; set; }
 
+    public string? SensorNote { get; set; }
+
     public virtual ICollection<BookShelf> BookShelves { get; set; } = new List<BookShelf>();
 
     [JsonIgnore]
