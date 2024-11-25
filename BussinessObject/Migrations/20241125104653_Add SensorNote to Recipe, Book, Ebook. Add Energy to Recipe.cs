@@ -17,19 +17,19 @@ namespace BussinessObject.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "SensorNote",
+                name: "CensorNote",
                 table: "Recipe",
                 type: "nvarchar(max)",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "SensorNote",
+                name: "CensorNote",
                 table: "EBook",
                 type: "nvarchar(max)",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "SensorNote",
+                name: "CensorNote",
                 table: "Book",
                 type: "nvarchar(max)",
                 nullable: true);
@@ -43,15 +43,15 @@ namespace BussinessObject.Migrations
                 table: "Recipe");
 
             migrationBuilder.DropColumn(
-                name: "SensorNote",
+                name: "CensorNote",
                 table: "Recipe");
 
             migrationBuilder.DropColumn(
-                name: "SensorNote",
+                name: "CensorNote",
                 table: "EBook");
 
             migrationBuilder.DropColumn(
-                name: "SensorNote",
+                name: "CensorNote",
                 table: "Book");
         }
     }
