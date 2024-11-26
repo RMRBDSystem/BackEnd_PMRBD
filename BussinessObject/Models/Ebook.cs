@@ -22,17 +22,19 @@ public partial class Ebook
 
     public int? Status { get; set; }
 
-    public string? Pdfurl { get; set; } = null!;
+    public string? Pdfurl { get; set; }
 
     public DateTime? CreateDate { get; set; } = DateTime.Now;
 
-    public string? ImageUrl { get; set; } = null!;
+    public string? ImageUrl { get; set; }
 
     public int? CreateById { get; set; }
 
     public int? CensorId { get; set; }
 
     public int? CategoryId { get; set; }
+
+    public string? CensorNote { get; set; }
 
     public virtual ICollection<BookShelf> BookShelves { get; set; } = new List<BookShelf>();
 

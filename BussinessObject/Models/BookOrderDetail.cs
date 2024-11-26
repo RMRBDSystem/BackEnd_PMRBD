@@ -3,15 +3,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BussinessObject.Models
 {
-    [PrimaryKey(nameof(OrderId), nameof(BookId))]
     public class BookOrderDetail
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int OrderDetailId { get; set; }
+
         public int OrderId { get; set; }
 
         public int BookId { get; set; }
