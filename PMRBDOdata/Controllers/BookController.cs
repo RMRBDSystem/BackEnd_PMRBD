@@ -38,9 +38,7 @@ namespace PMRBDOdata.Controllers
                 return NotFound();
             }
             return Ok(book);
-        }
-
-        
+        }       
 
         [HttpPost]
         public async Task<IActionResult> AddBook([FromBody] Book book)

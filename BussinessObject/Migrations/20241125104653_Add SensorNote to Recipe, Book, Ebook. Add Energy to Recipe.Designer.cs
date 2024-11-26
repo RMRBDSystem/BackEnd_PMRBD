@@ -4,6 +4,7 @@ using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BussinessObject.Migrations
 {
     [DbContext(typeof(RmrbdContext))]
-    partial class RmrbdContextModelSnapshot : ModelSnapshot
+    [Migration("20241125104653_Add SensorNote to Recipe, Book, Ebook. Add Energy to Recipe")]
+    partial class AddSensorNotetoRecipeBookEbookAddEnergytoRecipe
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -450,9 +453,6 @@ namespace BussinessObject.Migrations
 
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime");
-
-                    b.Property<string>("Detail")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("MoneyFluctuations")
                         .HasColumnType("decimal(18, 0)");

@@ -17,6 +17,7 @@ using Repository.IRepository;
 using Repository.Repository;
 using Net.payOS;
 using System.Text.Json.Serialization;
+using PMRBDOdata.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(typeof(RmrbdContext));
@@ -47,6 +48,7 @@ PayOS payOS = new PayOS(builder.Configuration["PayOS:ClientID"] ?? throw new Exc
 
 builder.Services.AddSingleton(payOS);
 
+builder.Services.Configure<FireBaseSettings>(builder.Configuration.GetSection("FirebaseSettings"));
 //
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

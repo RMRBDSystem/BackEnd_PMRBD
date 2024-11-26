@@ -553,7 +553,7 @@ public partial class RmrbdContext : DbContext
         });
 
         modelBuilder.Entity<BookOrderDetail>(entity => { 
-            entity.HasKey(e => new { e.OrderId, e.BookId });
+            entity.HasKey(e => new { e.OrderDetailId });
 
             entity.ToTable("BookOrderDetail");
 

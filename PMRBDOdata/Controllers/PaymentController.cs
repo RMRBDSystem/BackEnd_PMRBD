@@ -30,27 +30,24 @@ namespace PMRBDOdata.Controllers
             domain = _configuration["FrontEnd:Domain"];
         }
 
-        [HttpGet("{AccountID}/{Coin}")]
-        public async Task<IActionResult> Payment([FromODataUri] int AccountID, [FromODataUri] decimal Coin)
+        [HttpGet("{AccountID}/{Price}")]
+        public async Task<IActionResult> Payment([FromODataUri] int AccountID, [FromODataUri] decimal Price)
         {
             try
             {
                 var account = await _accountRepository.GetAccountById(AccountID);
-                ItemData item = new ItemData("Coin", 1, (int)Coin);
+                ItemData item = new ItemData("Coin", 1, (int)Price);
                 List<ItemData> items = new List<ItemData>();
 
                 var paymentLinkRequest = new PaymentData(
                 orderCode: int.Parse(DateTimeOffset.Now.ToString("ffffff")),
-                amount: (int)Coin,
+                amount: (int)Price,
                 description: "Nap Coin: " + account.UserName,
                 items: items,
                 returnUrl: domain + "/payment-success",
                 cancelUrl: domain + "/Payment-Failed"
                 );
                 var response = await _payOS.createPaymentLink(paymentLinkRequest);
-
-                //Response.Headers.Add("Access-Control-Allow-Origin", "*");
-                //Response.Headers.Append("Location", response.checkoutUrl);
                 return Ok(response.checkoutUrl);
             }
             catch (Exception ex)
@@ -59,8 +56,8 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-        [HttpPost("{AccountID}/{Coin}")]
-        public async Task<IActionResult> PaymentSuccess([FromODataUri] int AccountID, [FromODataUri] decimal Coin)
+        [HttpPost("{AccountID}/{Coin}/{Price}")]
+        public async Task<IActionResult> PaymentSuccess([FromODataUri] int AccountID, [FromODataUri] decimal Coin, [FromODataUri] decimal Price)
         {
             try
             {
@@ -71,8 +68,9 @@ namespace PMRBDOdata.Controllers
                 {
                     CustomerId = account.AccountId,
                     CoinFluctuations = Coin,
-                    MoneyFluctuations = Coin,
+                    MoneyFluctuations = Price,
                     Date = DateTime.Now,
+                    Detail = "Nạp Xu Vào Tài khoảng",
                     Status = 1
                 };           
                 await _accountRepository.UpdateAccount(account);

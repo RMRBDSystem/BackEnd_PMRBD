@@ -4,6 +4,7 @@ using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BussinessObject.Migrations
 {
     [DbContext(typeof(RmrbdContext))]
-    partial class RmrbdContextModelSnapshot : ModelSnapshot
+    [Migration("20241123090504_Add OrderDetailId as Primary key in BookOrderDetail")]
+    partial class AddOrderDetailIdasPrimarykeyinBookOrderDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,9 +198,6 @@ namespace BussinessObject.Migrations
                     b.Property<int?>("SenderAddressId")
                         .HasColumnType("int")
                         .HasColumnName("SenderAddressID");
-
-                    b.Property<string>("SensorNote")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
@@ -451,9 +451,6 @@ namespace BussinessObject.Migrations
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime");
 
-                    b.Property<string>("Detail")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal?>("MoneyFluctuations")
                         .HasColumnType("decimal(18, 0)");
 
@@ -618,9 +615,6 @@ namespace BussinessObject.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(18,2)")
                         .HasDefaultValueSql("((0))");
-
-                    b.Property<string>("SensorNote")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
@@ -803,9 +797,6 @@ namespace BussinessObject.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Energy")
-                        .HasColumnType("int");
-
                     b.Property<string>("Ingredient")
                         .HasColumnType("nvarchar(max)");
 
@@ -826,9 +817,6 @@ namespace BussinessObject.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("SensorNote")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
