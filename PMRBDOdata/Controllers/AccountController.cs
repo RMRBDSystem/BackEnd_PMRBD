@@ -1,9 +1,12 @@
 ﻿using BusinessObject.Models;
+using Firebase.Auth;
+using Firebase.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.Identity.Client;
 using Repository.IRepository;
 using Repository.Repository;
 
@@ -11,8 +14,13 @@ namespace PMRBDOdata.Controllers
 {
     [Route("odata/Account")]
     [ApiController]
+
     public class AccountController : ODataController
     {
+        private static string ApiKey = "AIzaSyCPn2OSvk7rHKjBFwe9Sa_v-aSUZUHxdM4";
+        private static string Bucket = "rmrbdfirebase.appspot.com";
+        private static string AuthEmail = "ngockhanhpham8a@gmail.com";
+        private static string AuthPassword = "khanh30320";
         private readonly IAccountRepository accountRepository;
         public AccountController()
         {
@@ -58,20 +66,83 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Account>> UpdateAccount([FromODataUri] int id, [FromBody] Account account)
+        public async Task<ActionResult> UpdateAccount(
+    [FromODataUri] int id,
+    IFormFile? image,
+    [FromForm] string userName,
+    [FromForm] string googleId,
+    [FromForm] string email,
+    [FromForm] int status,
+    [FromForm] int roleId,
+    [FromForm] decimal coin)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                // Lấy thông tin tài khoản hiện tại từ cơ sở dữ liệu
+                var existingAccount = await accountRepository.GetAccountById(id);
+                if (existingAccount == null)
+                {
+                    return NotFound(new { message = "Account not found" });
+                }
+
+                // Nếu không có ảnh mới được tải lên, giữ nguyên giá trị Avatar hiện tại
+                string avatarUrl = existingAccount.Avatar;
+
+                if (image != null && image.Length > 0)
+                {
+                    // Tạo tên file ảnh mới
+                    var imageFileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
+
+                    // Tải ảnh lên Firebase Storage
+                    var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                    var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
+                    var cancellationToken = new CancellationTokenSource();
+                    var firebaseStorage = new FirebaseStorage(
+                        Bucket,
+                        new FirebaseStorageOptions
+                        {
+                            AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
+                            ThrowOnCancel = true
+                        });
+
+                    var uploadTaskImage = firebaseStorage
+                        .Child("Image Account")
+                        .Child(id.ToString())
+                        .Child(imageFileName)
+                        .PutAsync(image.OpenReadStream(), cancellationToken.Token);
+                    await uploadTaskImage;
+
+                    // Lấy URL của ảnh mới từ Firebase
+                    avatarUrl = await firebaseStorage
+                        .Child("Image Account")
+                        .Child(id.ToString())
+                        .Child(imageFileName)
+                        .GetDownloadUrlAsync();
+                }
+
+                // Cập nhật thông tin tài khoản với Avatar URL mới hoặc giữ nguyên
+                var accountEntity = new Account()
+                {
+                    AccountId = id,
+                    Avatar = avatarUrl,
+                    UserName = userName,
+                    GoogleId = googleId,
+                    Email = email,
+                    AccountStatus = status,
+                    RoleId = roleId,
+                    Coin = coin
+                };
+                await accountRepository.UpdateAccount(accountEntity);
+
+                return Ok(new { avatarURL = avatarUrl });
             }
-            var accountToUpdate = await accountRepository.GetAccountById(id);
-            if (accountToUpdate == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return BadRequest(new { message = "An error occurred while updating the account. Please try again later." });
             }
-            account.AccountId = accountToUpdate.AccountId;
-            await accountRepository.UpdateAccount(account);
-            return Updated(account);
         }
+
     }
 }
