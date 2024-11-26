@@ -41,7 +41,7 @@ public partial class Recipe
 
     public int? TotalTime { get; set; }
 
-    public string? SensorNote { get; set; }
+    public string? CensorNote { get; set; }
 
     public int? Energy { get; set; }
 

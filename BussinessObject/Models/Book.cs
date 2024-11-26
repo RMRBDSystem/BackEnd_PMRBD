@@ -47,7 +47,7 @@ public partial class Book
 
     public int? SenderAddressId { get; set; }
 
-    public string? SensorNote { get; set; }
+    public string? CensorNote { get; set; }
 
     public virtual ICollection<BookOrder> BookOrders { get; set; } = new List<BookOrder>();
 
