@@ -51,7 +51,6 @@ builder.Services.AddSingleton(payOS);
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-);
 //Odata Service
 
 builder.Services.AddControllers();
