@@ -67,7 +67,6 @@ public partial class RmrbdContext : DbContext
 
     public virtual DbSet<BookOrderDetail> BookOrderDetails { get; set; }
 
-    public virtual DbSet<Withdraw> Withdraws { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -562,15 +561,6 @@ public partial class RmrbdContext : DbContext
             entity.HasOne(d => d.BookOrder).WithMany(p => p.BookOrderDetails).HasForeignKey(d => d.OrderId);
 
             entity.HasOne(d => d.Book).WithMany(p => p.BookOrderDetails).HasForeignKey(d => d.BookId);
-        
-        });
-
-        modelBuilder.Entity<Withdraw>(entity => {
-            entity.HasKey(e => e.WithdrawId);
-
-            entity.ToTable("Withdraw");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.Withdraws).HasForeignKey(d => d.AccountId);
         
         });
 

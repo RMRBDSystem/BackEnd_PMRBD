@@ -81,7 +81,6 @@ modelbuilder.EntitySet<BookShelf>("BookShelves");
 modelbuilder.EntitySet<PersonalRecipe>("PersonalRecipes");
 modelbuilder.EntitySet<RecipeRate>("RecipeRates");
 modelbuilder.EntitySet<BookOrderDetail>("BookOrderDetails");
-modelbuilder.EntitySet<Withdraw>("Withdraws");
 
 modelbuilder.EntityType<RecipeTag>().HasKey(x => new { x.RecipeId, x.TagId });
 modelbuilder.EntityType<BookRate>().HasKey(x => new { x.BookId, x.CustomerId });

@@ -75,5 +75,4 @@ public partial class Account
 
     public virtual ICollection<RecipeRate> RecipeRates { get; set; } = new List<RecipeRate>();
 
-    public virtual ICollection<Withdraw> Withdraws { get; set; } = new List<Withdraw>();
 }
