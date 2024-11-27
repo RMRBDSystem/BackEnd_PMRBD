@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace PMRBDOdata.Controllers
 {
@@ -25,8 +26,10 @@ namespace PMRBDOdata.Controllers
 
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
-                    query = query.Where(x => x.RecipeName.Contains(searchString)
-                                           || x.Ingredient.Contains(searchString));
+                    var normalizedSearchString = searchString.Normalize(NormalizationForm.FormD).ToLowerInvariant();
+
+                    query = query.Where(x => x.RecipeName.ToLower().Contains(normalizedSearchString)
+                                           || x.Ingredient.ToLower().Contains(searchString));
                 }
 
                 var list = await query.Where(x => x.Status == 1).Include(x=> x.Images).ToListAsync();
@@ -48,8 +51,10 @@ namespace PMRBDOdata.Controllers
 
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
-                    query = query.Where(x => x.BookName.Contains(searchString)
-                                           || x.Author.Contains(searchString));
+                    var normalizedSearchString = searchString.Normalize(NormalizationForm.FormD).ToLowerInvariant();
+
+                    query = query.Where(x => x.BookName.ToLower().Contains(normalizedSearchString)
+                                           || x.Author.ToLower().Contains(normalizedSearchString));
                 }
 
                 var list = await query.Where(x => x.Status == 1).Include(x => x.Images).ToListAsync();
@@ -71,8 +76,9 @@ namespace PMRBDOdata.Controllers
 
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
-                    query = query.Where(x => x.EbookName.Contains(searchString)
-                                           || x.Author.Contains(searchString));
+                    var normalizedSearchString = searchString.Normalize(NormalizationForm.FormD).ToLowerInvariant();
+                    query = query.Where(x => x.EbookName.ToLower().Contains(normalizedSearchString)
+                                           || x.Author.ToLower().Contains(normalizedSearchString));
                 }
 
                 var list = await query.Where(x => x.Status == 1).ToListAsync();
