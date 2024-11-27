@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repository.IRepository;
+using Repository.Repository;
 
 namespace PMRBDOdata.Controllers
 {
@@ -13,9 +14,9 @@ namespace PMRBDOdata.Controllers
     public class WithdrawController : ODataController
     {
         private readonly IWithdrawRepository _withdrawRepository;
-        public WithdrawController(IWithdrawRepository withdrawRepository)
+        public WithdrawController()
         {
-            _withdrawRepository = withdrawRepository;
+            _withdrawRepository = new WithdrawRepository();
         }
 
         [EnableQuery]
