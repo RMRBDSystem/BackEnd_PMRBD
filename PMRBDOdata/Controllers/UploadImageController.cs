@@ -22,17 +22,17 @@ namespace PMRBDOdata.Controllers
         private readonly string AuthPassword;
         private readonly IWebHostEnvironment _env;
         private readonly IImageRepository _imageRepository;
-
+        private readonly IServiceFeedBackRepository _serviceFeedBackRepository;
         private readonly IConfiguration _configuration;
 
-        private readonly IEbookRepository _ebookRepository;
 
 
-        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository, IConfiguration configuration, IEbookRepository ebookRepository)
+        public UploadImageController(IWebHostEnvironment env, IImageRepository imageRepository, IConfiguration configuration, IServiceFeedBackRepository serviceFeedBackRepository)
         {
             _env = env;
             _imageRepository = imageRepository;
             _configuration = configuration;
+            _serviceFeedBackRepository = serviceFeedBackRepository;
             ApiKey = _configuration["FirebaseSettings:ApiKey"];
             Bucket = _configuration["FirebaseSettings:Bucket"];
             AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
@@ -122,7 +122,17 @@ namespace PMRBDOdata.Controllers
                 }
                 else if (Type == "Service")
                 {
+                    try
+                    {
+                        var serviceFeedBack = await _serviceFeedBackRepository.GetServiceFeedBackById(Id);
 
+                        serviceFeedBack.ImageUrl = downloadUrl;
+
+                        await _serviceFeedBackRepository.UpdateServiceFeedBack(serviceFeedBack);
+                    }catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
                 }
                 else
                 {

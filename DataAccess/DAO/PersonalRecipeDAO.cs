@@ -10,12 +10,12 @@ namespace DataAccess
 {
     public class PersonalRecipeDAO : SingletonBase<PersonalRecipeDAO>
     {
-        public async Task<IEnumerable<PersonalRecipe>> GetAllPersonalRecipes() => await _context.PersonalRecipes.Include(c => c.Recipe).ToListAsync();
+        public async Task<IEnumerable<PersonalRecipe>> GetAllPersonalRecipes() => await _context.PersonalRecipes.Include(c => c.Recipe).AsNoTracking().ToListAsync();
 
         public async Task<PersonalRecipe> GetPersonalRecipeByCustomerIdAndRecipeId(int CustomerId, int RecipId)
         {
             var perrecipe = await _context.PersonalRecipes
-                 .Where(c => c.RecipeId == RecipId && c.CustomerId == CustomerId).Include(c => c.Recipe)
+                 .Where(c => c.RecipeId == RecipId && c.CustomerId == CustomerId).Include(c => c.Recipe).AsNoTracking()
                 .FirstOrDefaultAsync();
             if (perrecipe == null) return null;
             return perrecipe;

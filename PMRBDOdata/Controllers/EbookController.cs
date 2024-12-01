@@ -80,7 +80,7 @@ namespace PMRBDOdata.Controllers
             }
             ebook.EbookId = ebookToUpdate.EbookId;
             await ebookRepository.UpdateEbook(ebook);
-            return Updated(ebook);
+            return Ok();
 
         }
 

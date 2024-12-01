@@ -74,7 +74,7 @@ namespace PMRBDOdata.Controllers
             }
             book.BookId = bookToUpdate.BookId;
             await bookRepository.UpdateBook(book);
-            return Updated(book);
+            return Ok();
         }
     }
 }

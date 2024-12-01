@@ -125,7 +125,7 @@ public partial class RmrbdContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("IDCardNumber");
 
-            entity.HasOne(d => d.Account).WithOne(p => p.AccountProfileAccount)
+            entity.HasOne(d => d.Account).WithOne(p => p.AccountProfile)
                 .HasForeignKey<AccountProfile>(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 

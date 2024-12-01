@@ -27,7 +27,7 @@ public partial class Account
 
     public int? AccountStatus { get; set; }
 
-    public virtual AccountProfile? AccountProfileAccount { get; set; }
+    public virtual AccountProfile? AccountProfile { get; set; }
 
     public virtual ICollection<AccountProfile> AccountProfileCensors { get; set; } = new List<AccountProfile>();
 

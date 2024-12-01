@@ -14,7 +14,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.Ebooks.ToListAsync();
+                return await _context.Ebooks.Include(e => e.CreateBy).Include(e => e.Category).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -26,7 +26,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.Ebooks.FindAsync(id);
+                return await _context.Ebooks.Include(e => e.CreateBy).Include(e => e.Category).AsNoTracking().FirstOrDefaultAsync(e => e.EbookId == id);
             }
             catch (Exception ex)
             {

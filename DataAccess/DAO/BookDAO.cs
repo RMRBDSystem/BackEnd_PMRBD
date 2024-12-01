@@ -14,7 +14,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.Books.Include(b => b.Images).ToListAsync();
+                return await _context.Books.Include(b => b.Images).Include(b => b.CreateBy).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -26,7 +26,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.Books.Include(b => b.Images).FirstOrDefaultAsync(b => b.BookId == id);
+                return await _context.Books.Include(b => b.Images).Include(b => b.CreateBy).AsNoTracking().FirstOrDefaultAsync(b => b.BookId == id);
             }
             catch (Exception ex)
             {

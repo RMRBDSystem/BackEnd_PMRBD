@@ -23,6 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<RmrbdContext>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IEbookRepository, EbookRepository>();
+builder.Services.AddScoped<IServiceFeedBackRepository, ServiceFeedBackRepository>();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 // Google Authentication Configurationý

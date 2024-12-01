@@ -14,7 +14,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.AccountProfiles.ToListAsync();
+                return await _context.AccountProfiles.Include(x => x.Account).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -26,7 +26,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.AccountProfiles.FirstOrDefaultAsync(x => x.AccountId == id);
+                return await _context.AccountProfiles.Include(x => x.Account).FirstOrDefaultAsync(x => x.AccountId == id);
             }
             catch (Exception ex)
             {

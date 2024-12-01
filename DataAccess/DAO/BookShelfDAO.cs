@@ -26,7 +26,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.BookShelves.Where(x => x.CustomerId == id).ToListAsync();
+                return await _context.BookShelves.Where(x => x.CustomerId == id).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
