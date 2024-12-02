@@ -29,7 +29,7 @@ namespace DataAccess
 
         public async Task Update(Recipe recipe)
         {
-            var existingItem = await GetRecipeById(recipe.RecipeId);
+            var existingItem = await _context.Recipes.FirstOrDefaultAsync(x => x.RecipeId == recipe.RecipeId);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(recipe);
@@ -43,7 +43,7 @@ namespace DataAccess
 
         public async Task Delete(int id)
         {
-            var recipe = await GetRecipeById(id);
+            var recipe = await _context.Recipes.FirstOrDefaultAsync(x => x.RecipeId == id);
             if (recipe != null)
             {
                 _context.Recipes.Remove(recipe);

@@ -67,7 +67,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetRecipeTransactionById(recipeTransaction.RecipeTransactionId);
+                var existingItem = await _context.RecipeTransactions.FirstOrDefaultAsync(x => x.RecipeTransactionId == recipeTransaction.RecipeTransactionId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(recipeTransaction);

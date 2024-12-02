@@ -55,7 +55,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetAccountById(account.AccountId);
+                var existingItem = await _context.Accounts.FirstOrDefaultAsync(e => e.AccountId == account.AccountId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(account);

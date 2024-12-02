@@ -66,7 +66,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetCoinTransactionById(coinTransaction.CoinTransactionId);
+                var existingItem = await _context.CoinTransactions.FindAsync(coinTransaction.CoinTransactionId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(coinTransaction);

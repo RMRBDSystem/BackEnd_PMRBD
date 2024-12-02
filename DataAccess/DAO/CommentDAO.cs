@@ -52,7 +52,7 @@ namespace DataAccess
         {
             try
             {
-                var existingItem = await GetCommentById(comment.CommentId);
+                var existingItem = await _context.Comments.FindAsync(comment.CommentId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(comment);
@@ -68,7 +68,7 @@ namespace DataAccess
         {
             try
             {
-                var comment = await GetCommentById(id);
+                var comment = await _context.Comments.FindAsync(id);
                 if (comment != null)
                 {
                     _context.Comments.Remove(comment);

@@ -29,7 +29,7 @@ namespace DataAccess
 
         public async Task Update(Tag tag)
         {
-            var existingItem = await GetTagById(tag.TagId);
+            var existingItem = await _context.Tags.FirstOrDefaultAsync(x => x.TagId == tag.TagId);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(tag);
@@ -43,7 +43,7 @@ namespace DataAccess
 
         public async Task Delete(int id)
         {
-            var tag = await GetTagById(id);
+            var tag = await _context.Tags.FirstOrDefaultAsync(x => x.TagId == id);
             if (tag != null)
             {
                 _context.Tags.Remove(tag);

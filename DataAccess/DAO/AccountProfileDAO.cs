@@ -80,7 +80,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetAccountProfileByAccountId(accountProfile.AccountId);
+                var existingItem = await _context.AccountProfiles.FirstOrDefaultAsync(e => e.AccountId == accountProfile.AccountId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(accountProfile);

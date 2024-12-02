@@ -73,7 +73,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetBookOrderDetailByOrderIdAndBookId(bookorderdetail.OrderId, bookorderdetail.BookId);
+                var existingItem = await _context.BookOrderDetails.FirstOrDefaultAsync(x => x.OrderId == bookorderdetail.OrderId && x.BookId == bookorderdetail.BookId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(bookorderdetail);
@@ -90,7 +90,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var bookOrderDetailToDelete = await GetBookOrderDetailByOrderIdAndBookId(OrderId, BookId);
+                var bookOrderDetailToDelete = await _context.BookOrderDetails.FirstOrDefaultAsync(x => x.OrderId == OrderId && x.BookId == BookId);
 
                 if (bookOrderDetailToDelete != null)
                 {

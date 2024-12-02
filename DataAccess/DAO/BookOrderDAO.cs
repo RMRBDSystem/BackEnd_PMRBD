@@ -54,7 +54,7 @@ namespace DataAccess
         {
             try
             {
-                var existingItem = await GetBookOrderById(bookorder.OrderId);
+                var existingItem = await _context.BookOrders.FindAsync(bookorder.OrderId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(bookorder);

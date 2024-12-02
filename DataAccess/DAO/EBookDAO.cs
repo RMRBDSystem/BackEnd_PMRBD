@@ -54,7 +54,7 @@ namespace DataAccess
         {
             try
             {
-                var existingItem = await GetEbookById(ebook.EbookId);
+                var existingItem = await _context.Ebooks.FirstOrDefaultAsync(e => e.EbookId == ebook.EbookId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(ebook);

@@ -29,7 +29,7 @@ namespace DataAccess
 
         public async Task Update(Image image)
         {
-            var existingItem = await GetImageById(image.ImageId);
+            var existingItem = await _context.Images.FindAsync(image.ImageId);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(image);
@@ -43,7 +43,7 @@ namespace DataAccess
 
         public async Task Delete(int id)
         {
-            var image = await GetImageById(id);
+            var image = await _context.Images.FindAsync(id);
             if (image != null)
             {
                 _context.Images.Remove(image);
