@@ -23,14 +23,47 @@ namespace PMRBDOdata.Controllers
             public string Email { get; set; }
             public string UserName { get; set; }
         }
+        [HttpGet("session")]
+        private IActionResult GetSessionInfo()
+        {
+            // Kiểm tra nếu session đã được thiết lập
+            var userRole = HttpContext.Session.GetString("UserRole");
+            var userName = HttpContext.Session.GetString("UserName");
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var coin = HttpContext.Session.GetString("Coin");
+
+            // Kiểm tra xem session có tồn tại không
+            if (string.IsNullOrEmpty(userRole) || string.IsNullOrEmpty(userName) || userId == null)
+            {
+                return Unauthorized(new { message = "Session not found or expired" });
+            }
+
+            // Trả về thông tin session
+            return Ok(new
+            {
+                UserRole = userRole,
+                UserName = userName,
+                UserId = userId,
+                Coin = coin
+            });
+        }
+
+        private void SetSession(Account account, string role)
+        {
+            HttpContext.Session.SetString("UserRole", role);
+            HttpContext.Session.SetString("UserName", account.UserName);
+            HttpContext.Session.SetInt32("UserId", account.AccountId);
+            HttpContext.Session.SetString("Coin", account.Coin.ToString());
+        }
+
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            // Check GoogleID in Employee table through DAO
+            // Kiểm tra GoogleId trong bảng Employee qua DAO
             var checkAccount = await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId);
             if (checkAccount != null && checkAccount.AccountStatus == 1)
             {
-                // Assign role based on EmployeeTypeId
+                // Gán role dựa trên EmployeeTypeId
                 string role;
                 switch (checkAccount.RoleId)
                 {
@@ -52,12 +85,15 @@ namespace PMRBDOdata.Controllers
                     default:
                         return Unauthorized(new { message = "Invalid role" });
                 }
-                //HttpContext.Session.SetString("UserRole", role);
-                //HttpContext.Session.SetString("UserName", checkAccount.UserName);
-                //HttpContext.Session.SetInt32("UserId", checkAccount.AccountId);
-                return Ok(new { message = $"Logged in as {role}", role, UserId = checkAccount.AccountId, Coin = checkAccount.Coin });
+
+                // Gọi hàm để set session
+                SetSession(checkAccount, role);
+
+                // Trả về thông tin session sau khi đăng nhập
+                return GetSessionInfo();
             }
-            // Create a new Customer account if not found
+
+            // Tạo mới tài khoản Customer nếu không tìm thấy
             var newCustomer = new Account
             {
                 GoogleId = request.GoogleId,
@@ -67,13 +103,17 @@ namespace PMRBDOdata.Controllers
                 RoleId = 1,
                 AccountStatus = 1
             };
+
             await AccountDAO.Instance.AddAccount(newCustomer);
             int newCustomerId = (await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId)).AccountId;
-            //HttpContext.Session.SetString("UserRole", "Customer");
-            //HttpContext.Session.SetString("UserName", newCustomer.UserName);
-            //HttpContext.Session.SetInt32("UserId", newCustomer.AccountId);
-            return Ok(new { message = "New Customer created and logged in", role = "Customer", UserId = newCustomer.AccountId, Coin = newCustomer.Coin });
+
+            // Gọi hàm để set session cho Customer mới
+            SetSession(newCustomer, "Customer");
+
+            // Trả về thông tin session sau khi tạo tài khoản và đăng nhập
+            return GetSessionInfo();
         }
+        
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
