@@ -14,7 +14,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.BookOrders.ToListAsync();
+                return await _context.BookOrders.Include(x => x.BookOrderDetails).ThenInclude(x => x.Book).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -26,7 +26,11 @@ namespace DataAccess
         {
             try
             {
-                return await _context.BookOrders.FindAsync(id);
+                return await _context.BookOrders
+           .Include(x => x.BookOrderDetails)
+           .ThenInclude(x => x.Book)
+           .AsNoTracking()
+           .FirstOrDefaultAsync(x => x.OrderId == id);
             }
             catch (Exception ex)
             {

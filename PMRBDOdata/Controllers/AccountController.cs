@@ -9,6 +9,7 @@ using Repository.Repository;
 using Firebase.Auth;
 using Firebase.Storage;
 using Microsoft.Identity.Client;
+using Microsoft.EntityFrameworkCore;
 
 namespace PMRBDOdata.Controllers
 {
@@ -69,6 +70,7 @@ namespace PMRBDOdata.Controllers
                 BadRequest(ex);
             }
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateAccount(
@@ -139,6 +141,23 @@ namespace PMRBDOdata.Controllers
                 Console.WriteLine($"Error occurred: {ex.Message}");
                 return BadRequest(new { message = "An error occurred while updating the account. Please try again later." });
             }
+        }
+
+        [HttpPut("info/{id}")]
+        public async Task<ActionResult<Account>> UpdateAccount([FromODataUri] int id, [FromBody] Account account)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var accountToUpdate = await accountRepository.GetAccountById(id);
+            if (accountToUpdate == null)
+            {
+                return NotFound();
+            }
+            account.AccountId = accountToUpdate.AccountId;
+            await accountRepository.UpdateAccount(account);
+            return Updated(account);
         }
     }
 }
