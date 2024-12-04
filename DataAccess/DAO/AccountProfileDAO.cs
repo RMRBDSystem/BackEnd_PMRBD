@@ -92,5 +92,23 @@ namespace DataAccess.DAO
                 throw new Exception("Failed to update AccountProfile", ex);
             }
         }
+
+        public async Task DeleteAccountProfile(int id)
+        {
+            try
+            {
+                var AccountProfile = await _context.AccountProfiles.FirstOrDefaultAsync(x => x.AccountId == id);
+                if (AccountProfile != null)
+                {
+                    _context.AccountProfiles.Remove(AccountProfile);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Failed to delete AccountProfile", ex);
+            }
+            
+        }
     }
 }

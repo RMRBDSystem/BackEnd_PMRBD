@@ -15,7 +15,7 @@ namespace DataAccess
         public async Task<Recipe> GetRecipeById(int id)
         {
             var recipe = await _context.Recipes
-                .Where(c => c.RecipeId == id).Include(x => x.RecipeTags).Include(c => c.PersonalRecipes).AsNoTracking()
+                .Where(c => c.RecipeId == id).Include(x => x.RecipeTags).Include(x => x.Images).Include(c => c.PersonalRecipes).AsNoTracking()
                 .FirstOrDefaultAsync();
             if (recipe == null) return null;
             return recipe;

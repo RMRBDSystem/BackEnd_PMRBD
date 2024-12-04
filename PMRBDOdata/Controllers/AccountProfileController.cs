@@ -230,5 +230,16 @@ namespace PMRBDOdata.Controllers
                 return BadRequest(new { message = "An error occurred while uploading the files. Please try again later." });
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAccountProfile([FromODataUri] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            await accountProfileRepository.DeleteAccountProfile(id);
+            return NoContent();
+        }
     }
 }
