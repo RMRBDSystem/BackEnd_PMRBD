@@ -52,20 +52,29 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task AddBookRate([FromBody] BookRate bookRate)
+        public async Task<ActionResult> AddBookRate([FromBody] BookRate bookRate)
         {
             try
             {
+
                 if (!ModelState.IsValid)
                 {
-                    BadRequest(ModelState);
+                    return BadRequest(ModelState);
                 }
-                await bookRateRepository.AddBookRate(bookRate);
+                if (bookRateRepository.GetBookRateByCustomerIdAndBookId(bookRate.CustomerId, bookRate.BookId) != null)
+                {
+                    return BadRequest("Book rate already exists");
+                }
+                else
+                {
+                    await bookRateRepository.AddBookRate(bookRate);
+                    return Ok();
+                }
                 //return Created(bookRate);
             }
             catch (Exception ex)
             {
-                BadRequest(ex);
+                return BadRequest(ex);
             }
         }
 
