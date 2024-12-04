@@ -71,7 +71,7 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Censor/{id}")]
         public async Task<ActionResult<AccountProfile>> UpdateAccountProfile([FromODataUri] int id, [FromBody] AccountProfile accountProfile)
         {
             if (!ModelState.IsValid)
@@ -240,6 +240,139 @@ namespace PMRBDOdata.Controllers
             }
             await accountProfileRepository.DeleteAccountProfile(id);
             return NoContent();
+        }
+
+
+        [HttpPut("{AccountID}")]
+        public async Task<IActionResult> UpdateProfile(
+    IFormFile bankAccountQR,
+    IFormFile portrait,
+    [FromODataUri] int accountID,
+    IFormFile frontIDCard,
+    IFormFile backIDCard,
+    [FromForm] DateTime dateOfBirth,
+    [FromForm] string iDCardNumber)
+        {
+            try
+            {
+                // Check if account profile exists
+                var accountProfile = await accountProfileRepository.GetAccountProfileByAccountId(accountID);
+                if (accountProfile == null)
+                {
+                    return NotFound(new { message = "Account profile not found." });
+                }
+                // Validate required fields
+                if (string.IsNullOrWhiteSpace(iDCardNumber))
+                {
+                    return BadRequest(new { message = "Please provide all required fields." });
+                }
+                // Check for updated files and validate them
+                if (portrait == null && bankAccountQR == null && frontIDCard == null && backIDCard == null)
+                {
+                    return BadRequest(new { message = "Please provide at least one file to update." });
+                }
+                // Generate unique file names if files are provided
+                string portraitFileName = accountProfile.Portrait;
+                string bankQRFileName = accountProfile.BankAccountQR;
+                string frontIDCardFileName = accountProfile.FrontIdcard;
+                string backIDCardFileName = accountProfile.BackIdcard;
+                var cancellationToken = new CancellationTokenSource();
+                var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+                // Configure Firebase Storage
+                var firebaseStorage = new FirebaseStorage(
+                    Bucket,
+                    new FirebaseStorageOptions
+                    {
+                        AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
+                        ThrowOnCancel = true
+                    });
+                // Upload files if provided
+                if (portrait != null && portrait.Length > 0)
+                {
+                    var newPortraitFileName = $"{Path.GetFileNameWithoutExtension(portrait.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(portrait.FileName)}";
+                    var uploadTaskPortrait = firebaseStorage
+                        .Child("Portrait")
+                        .Child(accountID.ToString())
+                        .Child(newPortraitFileName)
+                        .PutAsync(portrait.OpenReadStream(), cancellationToken.Token);
+                    await uploadTaskPortrait;
+                    portraitFileName = await firebaseStorage
+                        .Child("Portrait")
+                        .Child(accountID.ToString())
+                        .Child(newPortraitFileName)
+                        .GetDownloadUrlAsync();
+                }
+                if (bankAccountQR != null && bankAccountQR.Length > 0)
+                {
+                    var newBankQRFileName = $"{Path.GetFileNameWithoutExtension(bankAccountQR.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(bankAccountQR.FileName)}";
+                    var uploadTaskBankQR = firebaseStorage
+                        .Child("BankQR")
+                        .Child(accountID.ToString())
+                        .Child(newBankQRFileName)
+                        .PutAsync(bankAccountQR.OpenReadStream(), cancellationToken.Token);
+                    await uploadTaskBankQR;
+                    bankQRFileName = await firebaseStorage
+                        .Child("BankQR")
+                        .Child(accountID.ToString())
+                        .Child(newBankQRFileName)
+                        .GetDownloadUrlAsync();
+                }
+                if (frontIDCard != null && frontIDCard.Length > 0)
+                {
+                    var newFrontIDCardFileName = $"{Path.GetFileNameWithoutExtension(frontIDCard.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(frontIDCard.FileName)}";
+                    var uploadTaskFrontIDCard = firebaseStorage
+                        .Child("FrontIDCard")
+                        .Child(accountID.ToString())
+                        .Child(newFrontIDCardFileName)
+                        .PutAsync(frontIDCard.OpenReadStream(), cancellationToken.Token);
+                    await uploadTaskFrontIDCard;
+                    frontIDCardFileName = await firebaseStorage
+                        .Child("FrontIDCard")
+                        .Child(accountID.ToString())
+                        .Child(newFrontIDCardFileName)
+                        .GetDownloadUrlAsync();
+                }
+                if (backIDCard != null && backIDCard.Length > 0)
+                {
+                    var newBackIDCardFileName = $"{Path.GetFileNameWithoutExtension(backIDCard.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(backIDCard.FileName)}";
+                    var uploadTaskBackIDCard = firebaseStorage
+                        .Child("BackIDCard")
+                        .Child(accountID.ToString())
+                        .Child(newBackIDCardFileName)
+                        .PutAsync(backIDCard.OpenReadStream(), cancellationToken.Token);
+                    await uploadTaskBackIDCard;
+                    backIDCardFileName = await firebaseStorage
+                        .Child("BackIDCard")
+                        .Child(accountID.ToString())
+                        .Child(newBackIDCardFileName)
+                        .GetDownloadUrlAsync();
+                }
+                // Update the account profile
+                accountProfile.FrontIdcard = frontIDCardFileName;
+                accountProfile.BackIdcard = backIDCardFileName;
+                accountProfile.Portrait = portraitFileName;
+                accountProfile.BankAccountQR = bankQRFileName;
+                accountProfile.IdcardNumber = iDCardNumber;
+                accountProfile.DateOfBirth = dateOfBirth;
+                // Update profile status to under review
+                accountProfile.Status = -1;
+                // Save updated profile to the database
+                await accountProfileRepository.UpdateAccountProfile(accountProfile);
+                // Return the updated download URLs
+                return Ok(new
+                {
+                    portraitUrl = portraitFileName,
+                    bankQRUrl = bankQRFileName,
+                    frontIDCardUrl = frontIDCardFileName,
+                    backIDCardUrl = backIDCardFileName
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return BadRequest(new { message = "An error occurred while updating the profile. Please try again later." });
+            }
         }
     }
 }
