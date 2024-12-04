@@ -32,6 +32,7 @@ namespace PMRBDOdata.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userId = HttpContext.Session.GetInt32("UserId");
             var coin = HttpContext.Session.GetString("Coin");
+
             // Kiểm tra xem session có tồn tại không
             if (string.IsNullOrEmpty(userRole) || string.IsNullOrEmpty(userName) || userId == null)
             {
@@ -58,8 +59,14 @@ namespace PMRBDOdata.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
+            
             // Check GoogleID in Employee table through DAO
             var checkAccount = await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId);
+
+            if (checkAccount != null && checkAccount.AccountStatus == 0)
+            {
+                return Unauthorized(new { message = "Tài khoản của bạn đã bị khóa!" });
+            }
             if (checkAccount != null && checkAccount.AccountStatus == 1)
             {
                 // Assign role based on EmployeeTypeId
