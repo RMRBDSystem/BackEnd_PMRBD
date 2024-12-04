@@ -61,6 +61,10 @@ namespace PMRBDOdata.Controllers
         {
             // Kiểm tra GoogleId trong bảng Employee qua DAO
             var checkAccount = await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId);
+            if(checkAccount != null && checkAccount.AccountStatus == 0)
+            {
+                return Unauthorized(new { message = "Tài khoản của bạn đã bị khóa!" });
+            }
             if (checkAccount != null && checkAccount.AccountStatus == 1)
             {
                 // Gán role dựa trên EmployeeTypeId
