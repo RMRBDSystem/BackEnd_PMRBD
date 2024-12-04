@@ -14,7 +14,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.BookOrders.ToListAsync();
+                return await _context.BookOrders.Include(x => x.BookOrderDetails).ThenInclude(x => x.Book).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -26,7 +26,11 @@ namespace DataAccess
         {
             try
             {
-                return await _context.BookOrders.FindAsync(id);
+                return await _context.BookOrders
+           .Include(x => x.BookOrderDetails)
+           .ThenInclude(x => x.Book)
+           .AsNoTracking()
+           .FirstOrDefaultAsync(x => x.OrderId == id);
             }
             catch (Exception ex)
             {
@@ -54,7 +58,7 @@ namespace DataAccess
         {
             try
             {
-                var existingItem = await GetBookOrderById(bookorder.OrderId);
+                var existingItem = await _context.BookOrders.FindAsync(bookorder.OrderId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(bookorder);

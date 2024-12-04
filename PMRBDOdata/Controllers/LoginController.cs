@@ -23,6 +23,38 @@ namespace PMRBDOdata.Controllers
             public string Email { get; set; }
             public string UserName { get; set; }
         }
+
+        [HttpGet("session")]
+        private IActionResult GetSessionInfo()
+        {
+            // Kiểm tra nếu session đã được thiết lập
+            var userRole = HttpContext.Session.GetString("UserRole");
+            var userName = HttpContext.Session.GetString("UserName");
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var coin = HttpContext.Session.GetString("Coin");
+            // Kiểm tra xem session có tồn tại không
+            if (string.IsNullOrEmpty(userRole) || string.IsNullOrEmpty(userName) || userId == null)
+            {
+                return Unauthorized(new { message = "Session not found or expired" });
+            }
+            // Trả về thông tin session
+            return Ok(new
+            {
+                UserRole = userRole,
+                UserName = userName,
+                UserId = userId,
+                Coin = coin
+            });
+        }
+        private void SetSession(Account account, string role)
+        {
+            HttpContext.Session.SetString("UserRole", role);
+            HttpContext.Session.SetString("UserName", account.UserName);
+            HttpContext.Session.SetInt32("UserId", account.AccountId);
+            HttpContext.Session.SetString("Coin", account.Coin.ToString());
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
@@ -52,10 +84,12 @@ namespace PMRBDOdata.Controllers
                     default:
                         return Unauthorized(new { message = "Invalid role" });
                 }
-                HttpContext.Session.SetString("UserRole", role);
-                HttpContext.Session.SetString("UserName", checkAccount.UserName);
-                HttpContext.Session.SetInt32("UserId", checkAccount.AccountId);
-                return Ok(new { message = $"Logged in as {role}", role, UserId = checkAccount.AccountId });
+                //HttpContext.Session.SetString("UserRole", role);
+                //HttpContext.Session.SetString("UserName", checkAccount.UserName);
+                //HttpContext.Session.SetInt32("UserId", checkAccount.AccountId);
+                SetSession(checkAccount, role);
+                // Trả về thông tin session sau khi đăng nhập
+                return GetSessionInfo();
             }
             // Create a new Customer account if not found
             var newCustomer = new Account
@@ -69,10 +103,11 @@ namespace PMRBDOdata.Controllers
             };
             await AccountDAO.Instance.AddAccount(newCustomer);
             int newCustomerId = (await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId)).AccountId;
-            HttpContext.Session.SetString("UserRole", "Customer");
-            HttpContext.Session.SetString("UserName", newCustomer.UserName);
-            HttpContext.Session.SetInt32("UserId", newCustomer.AccountId);
-            return Ok(new { message = "New Customer created and logged in", role = "Customer", UserId = newCustomer.AccountId });
+            //HttpContext.Session.SetString("UserRole", "Customer");
+            //HttpContext.Session.SetString("UserName", newCustomer.UserName);
+            //HttpContext.Session.SetInt32("UserId", newCustomer.AccountId);
+            SetSession(newCustomer, "Customer");
+            return GetSessionInfo();
         }
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()

@@ -67,56 +67,23 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPut("{ebookId}")]
-        public async Task<IActionResult> UpdateEBook(IFormFile image, [FromForm] Ebook ebook, [FromODataUri] int ebookId)
+        public async Task<IActionResult> UpdateEBook([FromBody] Ebook ebook, [FromODataUri] int ebookId)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var ebookEntity = await ebookRepository.GetEbookById(ebookId);
-                ebook.EbookId = ebookEntity.EbookId;
-
-                if (image != null && image.Length > 0)
-                {
-                    var allowedFileTypes = new[] { "application/pdf", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "image/jpeg", "image/png" };
-                    if (!allowedFileTypes.Contains(image.ContentType))
-                    {
-                        return BadRequest("Invalid file type. Only PDF, PPTX, JPEG, and PNG files are allowed.");
-                    }
-
-                    var firebaseSettings = _configuration.GetSection("FirebaseSettings").Get<FirebaseSettings>();
-                    var authProvider = new FirebaseAuthProvider(new FirebaseConfig(firebaseSettings.ApiKey));
-                    var authLink = await authProvider.SignInWithEmailAndPasswordAsync(firebaseSettings.AuthEmail, firebaseSettings.AuthPassword);
-
-                    var firebaseStorage = new FirebaseStorage(
-                        firebaseSettings.Bucket,
-                        new FirebaseStorageOptions
-                        {
-                            AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
-                            ThrowOnCancel = true
-                        });
-
-                    var imageFileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(image.FileName)}";
-                    await firebaseStorage.Child("EbookImages").Child(ebook.CreateById.ToString()).Child(imageFileName).PutAsync(image.OpenReadStream());
-
-                    var imageUrl = await firebaseStorage.Child("EbookImages").Child(ebook.CreateById.ToString()).Child(imageFileName).GetDownloadUrlAsync();
-                    ebook.ImageUrl = imageUrl;
-                }
-
-                await ebookRepository.UpdateEbook(ebook);
-                return Ok();
+                return BadRequest(ModelState);
             }
-            catch (Exception ex)
+            var ebookToUpdate = await ebookRepository.GetEbookById(ebookId);
+            if (ebookToUpdate == null)
             {
-                Console.WriteLine($"Error: {ex.Message}");
-                return BadRequest("Error");
+                return NotFound();
             }
+            ebook.EbookId = ebookToUpdate.EbookId;
+            await ebookRepository.UpdateEbook(ebook);
+            return Ok();
+
         }
 
-        public class FirebaseSettings
-        {
-            public string ApiKey { get; set; }
-            public string Bucket { get; set; }
-            public string AuthEmail { get; set; }
-            public string AuthPassword { get; set; }
-        }
+
     }
 }

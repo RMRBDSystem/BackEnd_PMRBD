@@ -16,10 +16,9 @@ public partial class BookOrderStatus
 
     public int? Status { get; set; }
 
-    public DateTime? StatusDate { get; set; }
+    public DateTime? StatusDate { get; set; } = DateTime.Now;
 
     public string? Details { get; set; }
 
-    [JsonIgnore]
     public virtual BookOrder? Order { get; set; }
 }

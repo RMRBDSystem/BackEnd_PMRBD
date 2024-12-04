@@ -27,6 +27,25 @@ namespace PMRBDOdata.Controllers
             return Ok(list);
         }
 
+        [HttpGet("{CustomerId}")]
+        public async Task<ActionResult<IEnumerable<PersonalRecipe>>> GetPersonalRecipesByCustomerId([FromODataUri] int CustomerId)
+        {
+            try
+            {
+                var personalRecipes = await personalRecipeRepository.GetPersonalRecipesByCustomerId(CustomerId);
+                if (personalRecipes == null || personalRecipes.Count == 0)
+                {
+                    return NotFound(new { Message = "No personal recipes found for the given CustomerId." });
+                }
+                return Ok(personalRecipes);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if necessary
+                return StatusCode(500, new { Message = "An error occurred while fetching the data.", Error = ex.Message });
+            }
+        }
+
         [HttpGet("{CustomerId}/{RecipeId}")]
         public async Task<ActionResult<PersonalRecipe>> GetPersonalRecipeById([FromODataUri] int CustomerId, [FromODataUri] int RecipeId)
         {

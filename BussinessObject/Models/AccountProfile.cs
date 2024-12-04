@@ -26,11 +26,11 @@ public partial class AccountProfile
 
     public int? CensorId { get; set; }
 
+    public string? CensorNote { get; set; }
+
     public int Status { get; set; } = -1;
 
-    [JsonIgnore]
     public virtual Account? Account { get; set; }
 
-    [JsonIgnore]
     public virtual Account? Censor { get; set; }
 }

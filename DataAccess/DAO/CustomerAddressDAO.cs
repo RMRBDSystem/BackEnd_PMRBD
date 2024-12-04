@@ -56,7 +56,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetCustomerAddressById(customerAddress.AddressId);
+                var existingItem = await _context.CustomerAddresses.FirstOrDefaultAsync(x => x.AddressId == customerAddress.AddressId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(customerAddress);

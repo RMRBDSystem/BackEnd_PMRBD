@@ -22,8 +22,9 @@ public partial class PersonalRecipe
 
     public int? Status { get; set; }
 
-    [JsonIgnore]
+
     public virtual Account? Account { get; set; }
 
+    //[JsonIgnore]
     public virtual Recipe? Recipe { get; set; }
 }

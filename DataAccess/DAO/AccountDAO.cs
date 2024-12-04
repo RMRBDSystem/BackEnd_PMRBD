@@ -14,7 +14,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.Accounts.Include(x => x.Role).ToListAsync();
+                return await _context.Accounts.Include(x => x.Role).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -26,7 +26,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.Accounts.FirstOrDefaultAsync(x => x.AccountId == id);
+                return await _context.Accounts.Include(x => x.Role).Include(x => x.AccountProfile).AsNoTracking().FirstOrDefaultAsync(x => x.AccountId == id);
             }
             catch (Exception ex)
             {
@@ -55,7 +55,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetAccountById(account.AccountId);
+                var existingItem = await _context.Accounts.FirstOrDefaultAsync(e => e.AccountId == account.AccountId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(account);

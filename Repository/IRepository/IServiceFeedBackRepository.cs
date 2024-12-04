@@ -13,5 +13,6 @@ namespace Repository.IRepository
         Task<ServiceFeedback> GetServiceFeedBackById(int id);
         Task AddServiceFeedBack(ServiceFeedback feedBack);
         Task UpdateServiceFeedBack(ServiceFeedback feedBack);
+        Task DeleteServiceFeedBack(int id);
     }
 }

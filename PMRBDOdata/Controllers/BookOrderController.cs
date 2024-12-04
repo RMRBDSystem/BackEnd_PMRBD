@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Repository.IRepository;
 using Repository.Repository;
+using System.Net;
 
 namespace PMRBDOdata.Controllers
 {
@@ -39,7 +40,7 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task AddBookOrder([FromBody] BookOrder bookorder)
+        public async Task<IActionResult> AddBookOrder([FromBody] BookOrder bookorder)
         {
             try
             {
@@ -48,11 +49,13 @@ namespace PMRBDOdata.Controllers
                     BadRequest(ModelState);
                 }
                 await bookOrderRepository.AddBookOrder(bookorder);
-                // return Created(bookorder);
+
+                var bookorderid = bookorder.OrderId;
+                return CreatedAtAction(nameof(GetBookOrderById), new { id = bookorderid }, bookorder);
             }
             catch (Exception ex)
             {
-                BadRequest(ex);
+                return BadRequest(ex);
             }
         }
 

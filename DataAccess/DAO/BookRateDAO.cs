@@ -67,7 +67,7 @@ namespace DataAccess
         {
             try
             {
-                var existingItem = await GetBookRateByCustomerIdAndBookId(bookrate.CustomerId, bookrate.BookId);
+                var existingItem = await _context.BookRates.FirstOrDefaultAsync(x => x.CustomerId == bookrate.CustomerId && x.BookId == bookrate.BookId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(bookrate);

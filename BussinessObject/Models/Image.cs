@@ -20,8 +20,8 @@ public partial class Image
 
     public int? Status { get; set; }
 
-    [JsonIgnore]
+
     public virtual Book? Book { get; set; }
-    [JsonIgnore]
+
     public virtual Recipe? Recipe { get; set; }
 }

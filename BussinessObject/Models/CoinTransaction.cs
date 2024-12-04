@@ -18,10 +18,11 @@ public partial class CoinTransaction
 
     public decimal? CoinFluctuations { get; set; }
 
-    public DateTime? Date { get; set; }
+    public string? Detail { get; set; }
+
+    public DateTime? Date { get; set; } = DateTime.Now;
 
     public int? Status { get; set; }
 
-    [JsonIgnore]
     public virtual Account? Customer { get; set; }
 }

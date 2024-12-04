@@ -29,7 +29,7 @@ namespace DataAccess
 
         public async Task Update(Notification noti)
         {
-            var existingItem = await GetNotificationById(noti.NotificationId);
+            var existingItem = await _context.Notifications.FirstOrDefaultAsync(x => x.NotificationId == noti.NotificationId);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(noti);
@@ -43,7 +43,7 @@ namespace DataAccess
 
         public async Task Delete(int id)
         {
-            var noti = await GetNotificationById(id);
+            var noti = await _context.Notifications.FirstOrDefaultAsync(x => x.NotificationId == id);
             if (noti != null)
             {
                 _context.Notifications.Remove(noti);

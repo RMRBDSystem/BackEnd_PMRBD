@@ -27,6 +27,7 @@ namespace PMRBDOdata.Controllers
             return Ok(list);
         }
 
+        [EnableQuery]
         [HttpGet("{id}")]
         public async Task<ActionResult<Recipe>> GetRecipeById([FromODataUri] int id)
         {

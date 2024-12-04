@@ -56,7 +56,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetRoleById(role.RoleId);
+                var existingItem = await _context.Roles.FirstOrDefaultAsync(x => x.RoleId == role.RoleId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(role);

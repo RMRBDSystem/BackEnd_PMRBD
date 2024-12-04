@@ -38,9 +38,7 @@ namespace PMRBDOdata.Controllers
                 return NotFound();
             }
             return Ok(book);
-        }
-
-        
+        }       
 
         [HttpPost]
         public async Task<IActionResult> AddBook([FromBody] Book book)
@@ -76,7 +74,7 @@ namespace PMRBDOdata.Controllers
             }
             book.BookId = bookToUpdate.BookId;
             await bookRepository.UpdateBook(book);
-            return Updated(book);
+            return Ok();
         }
     }
 }

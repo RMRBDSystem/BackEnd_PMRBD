@@ -10,12 +10,12 @@ namespace DataAccess
 {
     public class RecipeDAO : SingletonBase<RecipeDAO>
     {
-        public async Task<IEnumerable<Recipe>> GetAllRecipes() => await _context.Recipes.Include(x => x.Images).Include(x => x.Accounts).ToListAsync();
+        public async Task<IEnumerable<Recipe>> GetAllRecipes() => await _context.Recipes.Include(x => x.Images).Include(x => x.Accounts).Include(c => c.PersonalRecipes).Include(c => c.CreateBy).Include(x => x.RecipeTags).AsNoTracking().ToListAsync();
 
         public async Task<Recipe> GetRecipeById(int id)
         {
             var recipe = await _context.Recipes
-                .Where(c => c.RecipeId == id)
+                .Where(c => c.RecipeId == id).Include(x => x.RecipeTags).Include(x => x.Images).Include(c => c.PersonalRecipes).AsNoTracking()
                 .FirstOrDefaultAsync();
             if (recipe == null) return null;
             return recipe;
@@ -29,7 +29,7 @@ namespace DataAccess
 
         public async Task Update(Recipe recipe)
         {
-            var existingItem = await GetRecipeById(recipe.RecipeId);
+            var existingItem = await _context.Recipes.FirstOrDefaultAsync(x => x.RecipeId == recipe.RecipeId);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(recipe);
@@ -43,7 +43,7 @@ namespace DataAccess
 
         public async Task Delete(int id)
         {
-            var recipe = await GetRecipeById(id);
+            var recipe = await _context.Recipes.FirstOrDefaultAsync(x => x.RecipeId == id);
             if (recipe != null)
             {
                 _context.Recipes.Remove(recipe);

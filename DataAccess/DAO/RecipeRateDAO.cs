@@ -47,7 +47,7 @@ namespace DataAccess
 
         public async Task Update(RecipeRate reciperate)
         {
-            var existingItem = await GetRecipeRateByRecipeIdAccountId(reciperate.RecipeId,reciperate.AccountId);
+            var existingItem = await _context.RecipeRates.FirstOrDefaultAsync(c => c.RecipeId == reciperate.RecipeId && c.AccountId == reciperate.AccountId);
 
             if (existingItem != null)
             {

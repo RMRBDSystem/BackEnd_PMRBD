@@ -29,7 +29,7 @@ namespace DataAccess.DAO
 
         public async Task Update(ServiceFeedback feedBack)
         {
-            var existingItem = await GetServiceFeedBackById(feedBack.FeedBackId);
+            var existingItem = await _context.ServiceFeedbacks.FirstOrDefaultAsync(x => x.FeedBackId == feedBack.FeedBackId);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(feedBack);
@@ -43,7 +43,7 @@ namespace DataAccess.DAO
 
         public async Task Delete(int id)
         {
-            var ServiceFeedBack = await GetServiceFeedBackById(id);
+            var ServiceFeedBack = await _context.ServiceFeedbacks.FirstOrDefaultAsync(x => x.FeedBackId == id);
             if (ServiceFeedBack != null)
             {
                 _context.ServiceFeedbacks.Remove(ServiceFeedBack);

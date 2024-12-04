@@ -109,6 +109,9 @@ namespace BussinessObject.Migrations
                         .HasColumnType("int")
                         .HasColumnName("CensorID");
 
+                    b.Property<string>("CensorNote")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("date");
 
@@ -161,6 +164,9 @@ namespace BussinessObject.Migrations
                     b.Property<int?>("CensorId")
                         .HasColumnType("int")
                         .HasColumnName("CensorID");
+
+                    b.Property<string>("CensorNote")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CreateById")
                         .HasColumnType("int")
@@ -255,8 +261,7 @@ namespace BussinessObject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
                     b.Property<int?>("BookId")
-                        .HasColumnType("int")
-                        .HasColumnName("BookID");
+                        .HasColumnType("int");
 
                     b.Property<int?>("ClientAddressId")
                         .HasColumnType("int")
@@ -282,11 +287,6 @@ namespace BussinessObject.Migrations
 
                     b.Property<int?>("PurchaseMethod")
                         .HasColumnType("int");
-
-                    b.Property<int?>("Quantity")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValueSql("((1))");
 
                     b.Property<decimal?>("ShipFee")
                         .HasColumnType("decimal(18, 0)");
@@ -454,6 +454,9 @@ namespace BussinessObject.Migrations
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("Detail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal?>("MoneyFluctuations")
                         .HasColumnType("decimal(18, 0)");
 
@@ -590,6 +593,9 @@ namespace BussinessObject.Migrations
                     b.Property<int?>("CensorId")
                         .HasColumnType("int")
                         .HasColumnName("CensorID");
+
+                    b.Property<string>("CensorNote")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CreateById")
                         .HasColumnType("int")
@@ -790,6 +796,9 @@ namespace BussinessObject.Migrations
                         .HasColumnType("int")
                         .HasColumnName("CensorID");
 
+                    b.Property<string>("CensorNote")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("CreateById")
                         .HasColumnType("int")
                         .HasColumnName("CreateByID");
@@ -799,6 +808,9 @@ namespace BussinessObject.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Energy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Ingredient")
                         .HasColumnType("nvarchar(max)");
@@ -979,6 +991,41 @@ namespace BussinessObject.Migrations
                     b.ToTable("Tag", (string)null);
                 });
 
+            modelBuilder.Entity("BussinessObject.Models.BookOrderDetail", b =>
+                {
+                    b.Property<int>("OrderDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("OrderDetailId");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("BookOrderDetail", (string)null);
+                });
+
             modelBuilder.Entity("BussinessObject.Models.RecipeRate", b =>
                 {
                     b.Property<int>("RecipeId")
@@ -1041,7 +1088,7 @@ namespace BussinessObject.Migrations
             modelBuilder.Entity("BusinessObject.Models.AccountProfile", b =>
                 {
                     b.HasOne("BusinessObject.Models.Account", "Account")
-                        .WithOne("AccountProfileAccount")
+                        .WithOne("AccountProfile")
                         .HasForeignKey("BusinessObject.Models.AccountProfile", "AccountId")
                         .IsRequired();
 
@@ -1083,7 +1130,7 @@ namespace BussinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.BookOrder", b =>
                 {
-                    b.HasOne("BusinessObject.Models.Book", "Book")
+                    b.HasOne("BusinessObject.Models.Book", null)
                         .WithMany("BookOrders")
                         .HasForeignKey("BookId");
 
@@ -1094,8 +1141,6 @@ namespace BussinessObject.Migrations
                     b.HasOne("BusinessObject.Models.Account", "Customer")
                         .WithMany("BookOrders")
                         .HasForeignKey("CustomerId");
-
-                    b.Navigation("Book");
 
                     b.Navigation("ClientAddress");
 
@@ -1333,6 +1378,25 @@ namespace BussinessObject.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("BussinessObject.Models.BookOrderDetail", b =>
+                {
+                    b.HasOne("BusinessObject.Models.Book", "Book")
+                        .WithMany("BookOrderDetails")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BusinessObject.Models.BookOrder", "BookOrder")
+                        .WithMany("BookOrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("BookOrder");
+                });
+
             modelBuilder.Entity("BussinessObject.Models.RecipeRate", b =>
                 {
                     b.HasOne("BusinessObject.Models.Account", "Account")
@@ -1373,7 +1437,7 @@ namespace BussinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Account", b =>
                 {
-                    b.Navigation("AccountProfileAccount");
+                    b.Navigation("AccountProfile");
 
                     b.Navigation("AccountProfileCensors");
 
@@ -1420,6 +1484,8 @@ namespace BussinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Book", b =>
                 {
+                    b.Navigation("BookOrderDetails");
+
                     b.Navigation("BookOrders");
 
                     b.Navigation("BookRates");
@@ -1438,6 +1504,8 @@ namespace BussinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.BookOrder", b =>
                 {
+                    b.Navigation("BookOrderDetails");
+
                     b.Navigation("BookOrderStatuses");
 
                     b.Navigation("BookTransactions");

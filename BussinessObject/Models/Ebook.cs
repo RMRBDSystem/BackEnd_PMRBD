@@ -22,11 +22,11 @@ public partial class Ebook
 
     public int? Status { get; set; }
 
-    public string? Pdfurl { get; set; } = null!;
+    public string? Pdfurl { get; set; }
 
-    public DateTime? CreateDate { get; set; }
+    public DateTime? CreateDate { get; set; } = DateTime.Now;
 
-    public string? ImageUrl { get; set; } = null!;
+    public string? ImageUrl { get; set; }
 
     public int? CreateById { get; set; }
 
@@ -34,17 +34,15 @@ public partial class Ebook
 
     public int? CategoryId { get; set; }
 
+    public string? CensorNote { get; set; }
+
     public virtual ICollection<BookShelf> BookShelves { get; set; } = new List<BookShelf>();
 
-    [JsonIgnore]
     public virtual BookCategory? Category { get; set; }
 
-    [JsonIgnore]
     public virtual Account? Censor { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-
-    [JsonIgnore]
     public virtual Account? CreateBy { get; set; }
 
     public virtual ICollection<EbookTransaction> EbookTransactions { get; set; } = new List<EbookTransaction>();

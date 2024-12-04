@@ -67,7 +67,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetBookTransactionById(bookTransaction.BookTransactionId);
+                var existingItem = await _context.BookTransactions.FindAsync(bookTransaction.BookTransactionId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(bookTransaction);

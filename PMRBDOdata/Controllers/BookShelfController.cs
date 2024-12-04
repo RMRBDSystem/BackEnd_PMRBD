@@ -27,7 +27,6 @@ namespace PMRBDOdata.Controllers
             return Ok(list);
         }
 
-        [EnableQuery]
         [HttpGet("{id}")]
         public async Task<ActionResult<BookShelf>> GetAllBookShelvesByCustomerId([FromODataUri] int id)
         {
@@ -39,7 +38,7 @@ namespace PMRBDOdata.Controllers
             return Ok(bookShelf);
         }
 
-        [EnableQuery]
+
         [HttpGet("{EBookId}/{CustomerId}")]
         public async Task<ActionResult<BookShelf>> GetBookShelfByEBookIdAndCustomerId([FromODataUri] int EbookId,[FromODataUri] int CustomerId, [FromODataUri] int BookId)
         {

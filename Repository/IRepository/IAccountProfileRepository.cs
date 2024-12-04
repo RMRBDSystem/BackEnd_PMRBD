@@ -13,5 +13,6 @@ namespace Repository.IRepository
         Task<AccountProfile> GetAccountProfileByAccountId(int id);
         Task AddAccountProfile(AccountProfile accountProfile);
         Task UpdateAccountProfile(AccountProfile accountProfile);
+        Task DeleteAccountProfile(int id);
     }
 }
