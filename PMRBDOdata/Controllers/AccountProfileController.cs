@@ -9,9 +9,12 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OData.Edm;
+using MimeKit;
 using Repository.IRepository;
 using Repository.Repository;
+using MailKit.Net.Smtp;
 using static System.Net.Mime.MediaTypeNames;
+using MailKit.Security;
 
 namespace PMRBDOdata.Controllers
 {
@@ -32,7 +35,38 @@ namespace PMRBDOdata.Controllers
             accountProfileRepository = new AccountProfileRepository();
             _configuration = configuration;
         }
+        private async Task SendEmailAsync(string toEmail, string subject, string body)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("RMRBDSystem", "ngockhanhpham8a@gmail.com"));
+            message.To.Add(new MailboxAddress("", toEmail));
+            message.Subject = subject;
 
+            message.Body = new TextPart("plain")
+            {
+                Text = body
+            };
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    // Kết nối đến Gmail SMTP server với bảo mật TLS
+                    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+
+                    // Sử dụng mật khẩu ứng dụng thay vì mật khẩu chính
+                    await client.AuthenticateAsync("ngockhanhpham8a@gmail.com", "iukm cdoc qkwx wmqu"); 
+
+                    await client.SendAsync(message); // Gửi email
+                    await client.DisconnectAsync(true); // Ngắt kết nối sau khi gửi
+                }
+                catch (Exception ex)
+                {
+                    // Xử lý lỗi nếu có
+                    Console.WriteLine("Error sending email: " + ex.Message);
+                }
+            }
+        }
 
         [HttpGet]
         [EnableQuery]
@@ -85,6 +119,28 @@ namespace PMRBDOdata.Controllers
             }
             accountProfile.AccountId = accountProfileToUpdate.AccountId;
             await accountProfileRepository.UpdateAccountProfile(accountProfile);
+            if (accountProfile.Status == 0)
+            {
+                var userEmail = accountProfileToUpdate.Account.Email;
+                var subject = "Yêu cầu gửi lại thông tin tài khoản";
+                var body = $"Chào {accountProfileToUpdate.Account.UserName},\n\nHồ sơ của bạn đã bị từ chối vì chưa đầy đủ hoặc không hợp lệ. Vui lòng kiểm tra và gửi lại form.";
+
+                // Gửi email thông báo
+                await SendEmailAsync(userEmail, subject, body);
+
+                return BadRequest("Hồ sơ bị từ chối. Vui lòng kiểm tra và gửi lại.");
+            }
+
+            if (accountProfile.Status == 1)
+            {
+                var userEmail = accountProfileToUpdate.Account.Email;
+                var subject = "Thông báo thay đổi trạng thái tài khoản";
+                var body = $"Chào {accountProfileToUpdate.Account.UserName},\n\nTrạng thái tài khoản của bạn đã được thay đổi thành công!";
+
+                // Gửi email thông báo
+                await SendEmailAsync(userEmail, subject, body);
+            }
+
             return Updated(accountProfile);
         }
 
