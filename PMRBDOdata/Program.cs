@@ -160,7 +160,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 app.UseMiddleware<TokenValidationMiddleware>();
-app.UseStaticFiles();
+//app.UseStaticFiles();
 
 app.MapControllers();
 
