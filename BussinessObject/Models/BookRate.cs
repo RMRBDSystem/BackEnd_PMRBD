@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 namespace BusinessObject.Models;
+
 [PrimaryKey(nameof(BookId), nameof(CustomerId))]
 public partial class BookRate
 {

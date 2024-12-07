@@ -24,6 +24,5 @@ public partial class CoinTransaction
 
     public int? Status { get; set; }
 
-    [JsonIgnore]
     public virtual Account? Customer { get; set; }
 }

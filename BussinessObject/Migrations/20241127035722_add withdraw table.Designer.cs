@@ -4,6 +4,7 @@ using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BussinessObject.Migrations
 {
     [DbContext(typeof(RmrbdContext))]
-    partial class RmrbdContextModelSnapshot : ModelSnapshot
+    [Migration("20241127035722_add withdraw table")]
+    partial class addwithdrawtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,9 +111,6 @@ namespace BussinessObject.Migrations
                     b.Property<int?>("CensorId")
                         .HasColumnType("int")
                         .HasColumnName("CensorID");
-
-                    b.Property<string>("CensorNote")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("date");
@@ -1061,6 +1061,33 @@ namespace BussinessObject.Migrations
                     b.ToTable("RecipeTag", (string)null);
                 });
 
+            modelBuilder.Entity("BussinessObject.Models.Withdraw", b =>
+                {
+                    b.Property<int>("WithdrawId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WithdrawId"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Coin")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Money")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("WithdrawId");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Withdraw", (string)null);
+                });
+
             modelBuilder.Entity("AccountRecipe", b =>
                 {
                     b.HasOne("BusinessObject.Models.Account", null)
@@ -1088,7 +1115,7 @@ namespace BussinessObject.Migrations
             modelBuilder.Entity("BusinessObject.Models.AccountProfile", b =>
                 {
                     b.HasOne("BusinessObject.Models.Account", "Account")
-                        .WithOne("AccountProfile")
+                        .WithOne("AccountProfileAccount")
                         .HasForeignKey("BusinessObject.Models.AccountProfile", "AccountId")
                         .IsRequired();
 
@@ -1435,9 +1462,20 @@ namespace BussinessObject.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("BussinessObject.Models.Withdraw", b =>
+                {
+                    b.HasOne("BusinessObject.Models.Account", "Account")
+                        .WithMany("Withdraws")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("BusinessObject.Models.Account", b =>
                 {
-                    b.Navigation("AccountProfile");
+                    b.Navigation("AccountProfileAccount");
 
                     b.Navigation("AccountProfileCensors");
 
@@ -1480,6 +1518,8 @@ namespace BussinessObject.Migrations
                     b.Navigation("ServiceFeedbackCustomers");
 
                     b.Navigation("ServiceFeedbackEmployees");
+
+                    b.Navigation("Withdraws");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Book", b =>

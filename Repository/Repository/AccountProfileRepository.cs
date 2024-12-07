@@ -15,5 +15,6 @@ namespace Repository.Repository
         public async Task<AccountProfile> GetAccountProfileByAccountId(int accountId) => await AccountProfileDAO.Instance.GetAccountProfileByAccountId(accountId);
         public async Task UpdateAccountProfile(AccountProfile accountProfile) => await AccountProfileDAO.Instance.UpdateAccountProfile(accountProfile);
         public async Task AddAccountProfile(AccountProfile accountProfile) => await AccountProfileDAO.Instance.AddAccountProfile(accountProfile);
+        public async Task DeleteAccountProfile(int accountId) => await AccountProfileDAO.Instance.DeleteAccountProfile(accountId);
     }
 }

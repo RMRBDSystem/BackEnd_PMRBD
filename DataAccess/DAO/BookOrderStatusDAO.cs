@@ -68,7 +68,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetBookOrderStatusById(bookOrderStatus.BookOrderStatusId);
+                var existingItem = await _context.BookOrderStatuses.FirstOrDefaultAsync(x => x.BookOrderStatusId == bookOrderStatus.BookOrderStatusId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(bookOrderStatus);

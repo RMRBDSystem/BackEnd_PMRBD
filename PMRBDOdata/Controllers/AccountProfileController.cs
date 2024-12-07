@@ -71,7 +71,7 @@ namespace PMRBDOdata.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Censor/{id}")]
         public async Task<ActionResult<AccountProfile>> UpdateAccountProfile([FromODataUri] int id, [FromBody] AccountProfile accountProfile)
         {
             if (!ModelState.IsValid)
@@ -232,6 +232,19 @@ namespace PMRBDOdata.Controllers
         }
 
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAccountProfile([FromODataUri] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            await accountProfileRepository.DeleteAccountProfile(id);
+            return NoContent();
+        }
+
+
+
         [HttpPut("{AccountID}")]
         public async Task<IActionResult> UpdateProfile(
     IFormFile bankAccountQR,
@@ -250,6 +263,7 @@ namespace PMRBDOdata.Controllers
                 {
                     return NotFound(new { message = "Account profile not found." });
                 }
+
 
                 // Validate required fields
                 if (string.IsNullOrWhiteSpace(iDCardNumber))
@@ -357,7 +371,6 @@ namespace PMRBDOdata.Controllers
 
                 // Update profile status to under review
                 accountProfile.Status = -1;
-
                 // Save updated profile to the database
                 await accountProfileRepository.UpdateAccountProfile(accountProfile);
 

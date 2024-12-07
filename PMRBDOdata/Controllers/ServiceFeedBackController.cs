@@ -39,20 +39,22 @@ namespace PMRBDOdata.Controllers
         }
 
         [HttpPost]
-        public async Task AddServiceFeedback([FromBody] ServiceFeedback serviceFeedBack)
+        public async Task<ActionResult> AddServiceFeedback([FromBody] ServiceFeedback serviceFeedBack)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    BadRequest(ModelState);
+                    return BadRequest(ModelState);
                 }
                 await serviceFeedBackRepository.AddServiceFeedBack(serviceFeedBack);
+                var serviceFeedBackid = serviceFeedBack.FeedBackId;
+                return CreatedAtAction(nameof(GetServiceFeedbackById), new { id = serviceFeedBackid }, serviceFeedBack);
                 //return Created(serviceFeedBack);
             }
             catch (Exception ex)
             {
-                BadRequest(ex);
+                return BadRequest(ex);
             }
         }
 
@@ -71,6 +73,26 @@ namespace PMRBDOdata.Controllers
             serviceFeedBack.FeedBackId = serviceFeedBackToUpdate.FeedBackId;
             await serviceFeedBackRepository.UpdateServiceFeedBack(serviceFeedBack);
             return Updated(serviceFeedBack);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task DeleteServiceFeedback([FromODataUri] int id)
+        {
+            try
+            {
+                var serviceFeedBack = await serviceFeedBackRepository.GetServiceFeedBackById(id);
+                if (serviceFeedBack == null)
+                {
+                    NotFound();
+                }
+
+                await serviceFeedBackRepository.DeleteServiceFeedBack(id);
+                Ok();
+            }catch (Exception ex)
+            {
+                BadRequest(ex);
+            }
+            
         }
     }
 }

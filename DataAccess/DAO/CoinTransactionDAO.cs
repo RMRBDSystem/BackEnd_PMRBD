@@ -14,7 +14,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.CoinTransactions.ToListAsync();
+                return await _context.CoinTransactions.Include(x => x.Customer).ThenInclude(x => x.AccountProfile).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -26,7 +26,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.CoinTransactions.Where(x => x.CustomerId == id).ToListAsync();
+                return await _context.CoinTransactions.Include(x => x.Customer).ThenInclude(x => x.AccountProfile).AsNoTracking().Where(x => x.CustomerId == id).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -38,7 +38,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.CoinTransactions.FindAsync(id);
+                return await _context.CoinTransactions.Include(x => x.Customer).ThenInclude(x => x.AccountProfile).AsNoTracking().FirstOrDefaultAsync(x => x.CoinTransactionId == id);
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetCoinTransactionById(coinTransaction.CoinTransactionId);
+                var existingItem = await _context.CoinTransactions.FindAsync(coinTransaction.CoinTransactionId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(coinTransaction);

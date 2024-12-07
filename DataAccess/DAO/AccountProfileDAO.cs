@@ -14,7 +14,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.AccountProfiles.ToListAsync();
+                return await _context.AccountProfiles.Include(x => x.Account).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -26,7 +26,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.AccountProfiles.FirstOrDefaultAsync(x => x.AccountId == id);
+                return await _context.AccountProfiles.Include(x => x.Account).FirstOrDefaultAsync(x => x.AccountId == id);
             }
             catch (Exception ex)
             {
@@ -80,7 +80,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetAccountProfileByAccountId(accountProfile.AccountId);
+                var existingItem = await _context.AccountProfiles.FirstOrDefaultAsync(e => e.AccountId == accountProfile.AccountId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(accountProfile);
@@ -91,6 +91,24 @@ namespace DataAccess.DAO
             {
                 throw new Exception("Failed to update AccountProfile", ex);
             }
+        }
+
+        public async Task DeleteAccountProfile(int id)
+        {
+            try
+            {
+                var AccountProfile = await _context.AccountProfiles.FirstOrDefaultAsync(x => x.AccountId == id);
+                if (AccountProfile != null)
+                {
+                    _context.AccountProfiles.Remove(AccountProfile);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Failed to delete AccountProfile", ex);
+            }
+            
         }
     }
 }

@@ -14,7 +14,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.Books.Include(b => b.Images).ToListAsync();
+                return await _context.Books.Include(b => b.Images).Include(b => b.CreateBy).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -26,7 +26,9 @@ namespace DataAccess
         {
             try
             {
-                return await _context.Books.Include(b => b.Images).FirstOrDefaultAsync(b => b.BookId == id);
+                return await _context.Books
+                    .Include(b => b.Images).Include(b => b.CreateBy).AsNoTracking()
+                    .FirstOrDefaultAsync(b => b.BookId == id);
             }
             catch (Exception ex)
             {
@@ -54,11 +56,15 @@ namespace DataAccess
         {
             try
             {
-                var existingItem = await GetBookById(book.BookId);
+                var existingItem = await _context.Books.FirstOrDefaultAsync(b => b.BookId == book.BookId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(book);
                     await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    throw new Exception("Book not found");
                 }
             }
             catch (Exception ex)

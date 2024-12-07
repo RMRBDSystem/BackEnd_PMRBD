@@ -38,15 +38,11 @@ public partial class Ebook
 
     public virtual ICollection<BookShelf> BookShelves { get; set; } = new List<BookShelf>();
 
-    [JsonIgnore]
     public virtual BookCategory? Category { get; set; }
 
-    [JsonIgnore]
     public virtual Account? Censor { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-
-    [JsonIgnore]
     public virtual Account? CreateBy { get; set; }
 
     public virtual ICollection<EbookTransaction> EbookTransactions { get; set; } = new List<EbookTransaction>();

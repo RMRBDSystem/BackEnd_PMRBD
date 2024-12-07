@@ -64,7 +64,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var recipeTag = await GetRecipeTagByRecipeIdAndTagId(RecipeId, TagId);
+                var recipeTag = await _context.RecipeTags.FirstOrDefaultAsync(x => x.RecipeId == RecipeId && x.TagId == TagId);
                 if (recipeTag != null)
                 {
                     _context.RecipeTags.Remove(recipeTag);

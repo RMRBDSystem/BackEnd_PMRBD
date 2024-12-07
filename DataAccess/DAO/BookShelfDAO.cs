@@ -26,7 +26,7 @@ namespace DataAccess
         {
             try
             {
-                return await _context.BookShelves.Where(x => x.CustomerId == id).ToListAsync();
+                return await _context.BookShelves.Where(x => x.CustomerId == id).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ namespace DataAccess
         {
             try
             {
-                var existingItem = await GetBookShelfByEBookIdAndCustomerId(bookshelf.EbookId, bookshelf.CustomerId);
+                var existingItem = await _context.BookShelves.FirstOrDefaultAsync(x => x.EbookId == bookshelf.EbookId && x.CustomerId == bookshelf.CustomerId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(bookshelf);

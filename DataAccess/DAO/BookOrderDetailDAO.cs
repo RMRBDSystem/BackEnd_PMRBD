@@ -15,7 +15,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                return await _context.BookOrderDetails.Include(x => x.BookOrder).Include(x => x.Book).ThenInclude(x => x.Images).ToListAsync();
+                return await _context.BookOrderDetails.Include(x => x.BookOrder).Include(x => x.Book).ThenInclude(x => x.Images).AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -23,7 +23,7 @@ namespace DataAccess.DAO
             }
         }
 
-        public async Task<BookOrderDetail?> GetBookOrderDetailById(int id) => await _context.BookOrderDetails.Include(x => x.BookOrder).Include(x => x.Book).ThenInclude(x => x.Images).FirstOrDefaultAsync(x => x.OrderDetailId == id);
+        public async Task<BookOrderDetail?> GetBookOrderDetailById(int id) => await _context.BookOrderDetails.Include(x => x.BookOrder).Include(x => x.Book).ThenInclude(x => x.Images).AsNoTracking().FirstOrDefaultAsync(x => x.OrderDetailId == id);
 
         public async Task<IEnumerable<BookOrderDetail?>> GetBookOrderDetailByOrderId(int id)
         {
@@ -73,7 +73,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var existingItem = await GetBookOrderDetailByOrderIdAndBookId(bookorderdetail.OrderId, bookorderdetail.BookId);
+                var existingItem = await _context.BookOrderDetails.FirstOrDefaultAsync(x => x.OrderId == bookorderdetail.OrderId && x.BookId == bookorderdetail.BookId);
                 if (existingItem != null)
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(bookorderdetail);
@@ -90,7 +90,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var bookOrderDetailToDelete = await GetBookOrderDetailByOrderIdAndBookId(OrderId, BookId);
+                var bookOrderDetailToDelete = await _context.BookOrderDetails.FirstOrDefaultAsync(x => x.OrderId == OrderId && x.BookId == BookId);
 
                 if (bookOrderDetailToDelete != null)
                 {

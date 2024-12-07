@@ -26,6 +26,8 @@ public partial class AccountProfile
 
     public int? CensorId { get; set; }
 
+    public string? CensorNote { get; set; }
+
     public int Status { get; set; } = -1;
 
     public virtual Account? Account { get; set; }

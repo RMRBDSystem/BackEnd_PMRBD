@@ -16,5 +16,6 @@ namespace Repository.Repository
         public async Task<ServiceFeedback> GetServiceFeedBackById(int id) => await ServiceFeedBackDAO.Instance.GetServiceFeedBackById(id);
         public async Task AddServiceFeedBack(ServiceFeedback ServiceFeedBack) => await ServiceFeedBackDAO.Instance.Add(ServiceFeedBack);
         public async Task UpdateServiceFeedBack(ServiceFeedback ServiceFeedBack) => await ServiceFeedBackDAO.Instance.Update(ServiceFeedBack);
+        public async Task DeleteServiceFeedBack(int id) => await ServiceFeedBackDAO.Instance.Delete(id);
     }
 }

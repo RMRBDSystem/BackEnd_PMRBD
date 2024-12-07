@@ -23,6 +23,7 @@ namespace PMRBDOdata.Controllers
             public string Email { get; set; }
             public string UserName { get; set; }
         }
+
         [HttpGet("session")]
         private IActionResult GetSessionInfo()
         {
@@ -56,12 +57,17 @@ namespace PMRBDOdata.Controllers
             HttpContext.Session.SetString("Coin", account.Coin.ToString());
         }
 
+
+
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            // Kiểm tra GoogleId trong bảng Employee qua DAO
+            
+            // Check GoogleID in Employee table through DAO
             var checkAccount = await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId);
-            if(checkAccount != null && checkAccount.AccountStatus == 0)
+
+            if (checkAccount != null && checkAccount.AccountStatus == 0)
+
             {
                 return Unauthorized(new { message = "Tài khoản của bạn đã bị khóa!" });
             }
@@ -90,8 +96,10 @@ namespace PMRBDOdata.Controllers
                         return Unauthorized(new { message = "Invalid role" });
                 }
 
+
                 // Gọi hàm để set session
                 SetSession(checkAccount, role);
+
 
                 // Trả về thông tin session sau khi đăng nhập
                 return GetSessionInfo();
@@ -111,10 +119,12 @@ namespace PMRBDOdata.Controllers
             await AccountDAO.Instance.AddAccount(newCustomer);
             int newCustomerId = (await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId)).AccountId;
 
+
             // Gọi hàm để set session cho Customer mới
             SetSession(newCustomer, "Customer");
 
             // Trả về thông tin session sau khi tạo tài khoản và đăng nhập
+
             return GetSessionInfo();
         }
         
