@@ -231,6 +231,7 @@ namespace PMRBDOdata.Controllers
             }
         }
 
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAccountProfile([FromODataUri] int id)
         {
@@ -241,6 +242,7 @@ namespace PMRBDOdata.Controllers
             await accountProfileRepository.DeleteAccountProfile(id);
             return NoContent();
         }
+
 
 
         [HttpPut("{AccountID}")]
@@ -261,24 +263,30 @@ namespace PMRBDOdata.Controllers
                 {
                     return NotFound(new { message = "Account profile not found." });
                 }
+
+
                 // Validate required fields
                 if (string.IsNullOrWhiteSpace(iDCardNumber))
                 {
                     return BadRequest(new { message = "Please provide all required fields." });
                 }
+
                 // Check for updated files and validate them
                 if (portrait == null && bankAccountQR == null && frontIDCard == null && backIDCard == null)
                 {
                     return BadRequest(new { message = "Please provide at least one file to update." });
                 }
+
                 // Generate unique file names if files are provided
                 string portraitFileName = accountProfile.Portrait;
                 string bankQRFileName = accountProfile.BankAccountQR;
                 string frontIDCardFileName = accountProfile.FrontIdcard;
                 string backIDCardFileName = accountProfile.BackIdcard;
+
                 var cancellationToken = new CancellationTokenSource();
                 var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
                 var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
                 // Configure Firebase Storage
                 var firebaseStorage = new FirebaseStorage(
                     Bucket,
@@ -287,6 +295,7 @@ namespace PMRBDOdata.Controllers
                         AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
                         ThrowOnCancel = true
                     });
+
                 // Upload files if provided
                 if (portrait != null && portrait.Length > 0)
                 {
@@ -303,6 +312,7 @@ namespace PMRBDOdata.Controllers
                         .Child(newPortraitFileName)
                         .GetDownloadUrlAsync();
                 }
+
                 if (bankAccountQR != null && bankAccountQR.Length > 0)
                 {
                     var newBankQRFileName = $"{Path.GetFileNameWithoutExtension(bankAccountQR.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(bankAccountQR.FileName)}";
@@ -318,6 +328,7 @@ namespace PMRBDOdata.Controllers
                         .Child(newBankQRFileName)
                         .GetDownloadUrlAsync();
                 }
+
                 if (frontIDCard != null && frontIDCard.Length > 0)
                 {
                     var newFrontIDCardFileName = $"{Path.GetFileNameWithoutExtension(frontIDCard.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(frontIDCard.FileName)}";
@@ -333,6 +344,7 @@ namespace PMRBDOdata.Controllers
                         .Child(newFrontIDCardFileName)
                         .GetDownloadUrlAsync();
                 }
+
                 if (backIDCard != null && backIDCard.Length > 0)
                 {
                     var newBackIDCardFileName = $"{Path.GetFileNameWithoutExtension(backIDCard.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(backIDCard.FileName)}";
@@ -348,6 +360,7 @@ namespace PMRBDOdata.Controllers
                         .Child(newBackIDCardFileName)
                         .GetDownloadUrlAsync();
                 }
+
                 // Update the account profile
                 accountProfile.FrontIdcard = frontIDCardFileName;
                 accountProfile.BackIdcard = backIDCardFileName;
@@ -355,10 +368,12 @@ namespace PMRBDOdata.Controllers
                 accountProfile.BankAccountQR = bankQRFileName;
                 accountProfile.IdcardNumber = iDCardNumber;
                 accountProfile.DateOfBirth = dateOfBirth;
+
                 // Update profile status to under review
                 accountProfile.Status = -1;
                 // Save updated profile to the database
                 await accountProfileRepository.UpdateAccountProfile(accountProfile);
+
                 // Return the updated download URLs
                 return Ok(new
                 {
@@ -374,5 +389,6 @@ namespace PMRBDOdata.Controllers
                 return BadRequest(new { message = "An error occurred while updating the profile. Please try again later." });
             }
         }
+
     }
 }

@@ -38,6 +38,7 @@ namespace PMRBDOdata.Controllers
             {
                 return Unauthorized(new { message = "Session not found or expired" });
             }
+
             // Trả về thông tin session
             return Ok(new
             {
@@ -47,6 +48,7 @@ namespace PMRBDOdata.Controllers
                 Coin = coin
             });
         }
+
         private void SetSession(Account account, string role)
         {
             HttpContext.Session.SetString("UserRole", role);
@@ -54,6 +56,7 @@ namespace PMRBDOdata.Controllers
             HttpContext.Session.SetInt32("UserId", account.AccountId);
             HttpContext.Session.SetString("Coin", account.Coin.ToString());
         }
+
 
 
         [HttpPost]
@@ -64,12 +67,13 @@ namespace PMRBDOdata.Controllers
             var checkAccount = await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId);
 
             if (checkAccount != null && checkAccount.AccountStatus == 0)
+
             {
                 return Unauthorized(new { message = "Tài khoản của bạn đã bị khóa!" });
             }
             if (checkAccount != null && checkAccount.AccountStatus == 1)
             {
-                // Assign role based on EmployeeTypeId
+                // Gán role dựa trên EmployeeTypeId
                 string role;
                 switch (checkAccount.RoleId)
                 {
@@ -91,14 +95,17 @@ namespace PMRBDOdata.Controllers
                     default:
                         return Unauthorized(new { message = "Invalid role" });
                 }
-                //HttpContext.Session.SetString("UserRole", role);
-                //HttpContext.Session.SetString("UserName", checkAccount.UserName);
-                //HttpContext.Session.SetInt32("UserId", checkAccount.AccountId);
+
+
+                // Gọi hàm để set session
                 SetSession(checkAccount, role);
+
+
                 // Trả về thông tin session sau khi đăng nhập
                 return GetSessionInfo();
             }
-            // Create a new Customer account if not found
+
+            // Tạo mới tài khoản Customer nếu không tìm thấy
             var newCustomer = new Account
             {
                 GoogleId = request.GoogleId,
@@ -108,14 +115,19 @@ namespace PMRBDOdata.Controllers
                 RoleId = 1,
                 AccountStatus = 1
             };
+
             await AccountDAO.Instance.AddAccount(newCustomer);
             int newCustomerId = (await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId)).AccountId;
-            //HttpContext.Session.SetString("UserRole", "Customer");
-            //HttpContext.Session.SetString("UserName", newCustomer.UserName);
-            //HttpContext.Session.SetInt32("UserId", newCustomer.AccountId);
+
+
+            // Gọi hàm để set session cho Customer mới
             SetSession(newCustomer, "Customer");
+
+            // Trả về thông tin session sau khi tạo tài khoản và đăng nhập
+
             return GetSessionInfo();
         }
+        
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
