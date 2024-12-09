@@ -1,15 +1,10 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Text;
 using BusinessObject.Models;
-using DataAccess;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using DataAccess.DAO;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Microsoft.IdentityModel.Tokens;
-using DataAccess.DAO;
 
 namespace PMRBDOdata.Controllers
 {
@@ -62,16 +57,10 @@ namespace PMRBDOdata.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            
+
             // Check GoogleID in Employee table through DAO
             var checkAccount = await AccountDAO.Instance.GetAccountByGoogleId(request.GoogleId);
-
-            if (checkAccount != null && checkAccount.AccountStatus == 0)
-
-            {
-                return Unauthorized(new { message = "Tài khoản của bạn đã bị khóa!" });
-            }
-            if (checkAccount != null && checkAccount.AccountStatus == 1)
+            if (checkAccount != null)
             {
                 // Gán role dựa trên EmployeeTypeId
                 string role;
@@ -127,7 +116,7 @@ namespace PMRBDOdata.Controllers
 
             return GetSessionInfo();
         }
-        
+
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
