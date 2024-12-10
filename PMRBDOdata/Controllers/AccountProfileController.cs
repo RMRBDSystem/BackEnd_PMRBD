@@ -17,10 +17,10 @@ namespace PMRBDOdata.Controllers
     [ApiController]
     public class AccountProfileController : ODataController
     {
-        private static string ApiKey = "AIzaSyCPn2OSvk7rHKjBFwe9Sa_v-aSUZUHxdM4";
-        private static string Bucket = "rmrbdfirebase.appspot.com";
-        private static string AuthEmail = "ngockhanhpham8a@gmail.com";
-        private static string AuthPassword = "khanh30320";
+        private readonly string ApiKey;
+        private readonly string Bucket;
+        private readonly string AuthEmail;
+        private readonly string AuthPassword;
 
         private readonly IAccountProfileRepository accountProfileRepository;
         private readonly IConfiguration _configuration;
@@ -29,6 +29,10 @@ namespace PMRBDOdata.Controllers
         {
             accountProfileRepository = new AccountProfileRepository();
             _configuration = configuration;
+            ApiKey = _configuration["FirebaseSettings:ApiKey"];
+            Bucket = _configuration["FirebaseSettings:Bucket"];
+            AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
+            AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
         }
         private async Task SendEmailAsync(string toEmail, string subject, string body)
         {
