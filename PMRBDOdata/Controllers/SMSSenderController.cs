@@ -23,8 +23,8 @@ namespace PMRBDOdata.Controllers
         {
             _cache = memoryCache;
             _httpClient = httpClientFactory.CreateClient();
-            _apiKey = configuration["Mocean:ApiKey"]; // Lấy API Key từ appsettings.json
-            _apiSecret = configuration["Mocean:ApiSecret"]; // Lấy API Secret từ appsettings.json
+            _apiKey = configuration["Mocean:ApiKey"]; 
+            _apiSecret = configuration["Mocean:ApiSecret"]; 
         }
 
         [HttpPost("send")]
@@ -32,10 +32,10 @@ namespace PMRBDOdata.Controllers
         {
             try
             {
-                // Tạo mã OTP ngẫu nhiên 6 chữ số
+                
                 var otpCode = new Random().Next(100000, 999999).ToString();
 
-                // Lưu OTP vào cache với thời gian hết hạn là 5 phút
+
                 _cache.Set(request.PhoneNumber, otpCode, TimeSpan.FromMinutes(5));
 
                 var url = $"https://rest.moceanapi.com/rest/2/sms";
@@ -70,24 +70,24 @@ namespace PMRBDOdata.Controllers
         [HttpPost("verify")]
         public IActionResult VerifyOtp([FromBody] OtpVerificationRequest request)
         {
-            // Kiểm tra OTP từ cache
+
             if (_cache.TryGetValue(request.PhoneNumber, out string cachedOtp))
             {
                 if (cachedOtp == request.OtpCode)
                 {
-                    // OTP hợp lệ
-                    _cache.Remove(request.PhoneNumber); // Xóa OTP sau khi xác thực thành công
+
+                    _cache.Remove(request.PhoneNumber);
                     return Ok(new { message = "OTP hợp lệ!" });
                 }
                 else
                 {
-                    // OTP không hợp lệ
+
                     return BadRequest(new { message = "OTP không đúng." });
                 }
             }
             else
             {
-                // OTP đã hết hạn hoặc không tồn tại
+
                 return BadRequest(new { message = "OTP đã hết hạn hoặc không tồn tại." });
             }
         }
@@ -95,13 +95,13 @@ namespace PMRBDOdata.Controllers
 
     public class OtpRequest
     {
-        public string PhoneNumber { get; set; } // Số điện thoại người nhận
+        public string PhoneNumber { get; set; } 
     }
 
     public class OtpVerificationRequest
     {
-        public string PhoneNumber { get; set; } // Số điện thoại người nhận
-        public string OtpCode { get; set; }     // Mã OTP cần xác thực
+        public string PhoneNumber { get; set; } 
+        public string OtpCode { get; set; }     
     }
 
 }
