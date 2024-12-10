@@ -13,7 +13,6 @@ using Firebase.Auth;
 using Firebase.Storage;
 using Microsoft.Identity.Client;
 using Microsoft.EntityFrameworkCore;
-
 namespace PMRBDOdata.Controllers
 {
     [Route("odata/Account")]
@@ -38,7 +37,7 @@ namespace PMRBDOdata.Controllers
             AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
         }
 
-
+        
         [HttpGet]
         [EnableQuery]
         public async Task<ActionResult<IEnumerable<Account>>> GetAllAccounts()
@@ -148,7 +147,6 @@ namespace PMRBDOdata.Controllers
                 return BadRequest(new { message = "An error occurred while updating the account. Please try again later." });
             }
         }
-
         [HttpPut("info/{id}")]
         public async Task<ActionResult<Account>> UpdateAccount([FromODataUri] int id, [FromBody] Account account)
         {
