@@ -56,21 +56,13 @@ namespace PMRBDOdata.Controllers
         {
             try
             {
-
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
-                }
-                if (bookRateRepository.GetBookRateByCustomerIdAndBookId(bookRate.CustomerId, bookRate.BookId) != null)
-                {
-                    return BadRequest("Book rate already exists");
-                }
-                else
-                {
-                    await bookRateRepository.AddBookRate(bookRate);
-                    return Ok();
-                }
-                //return Created(bookRate);
+                }                
+                await bookRateRepository.AddBookRate(bookRate);
+                return Ok();
+
             }
             catch (Exception ex)
             {
