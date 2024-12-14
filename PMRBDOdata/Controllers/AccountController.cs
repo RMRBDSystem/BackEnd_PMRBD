@@ -1,22 +1,26 @@
 ﻿using BusinessObject.Models;
+using Firebase.Auth;
+using Firebase.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.Identity.Client;
 using Repository.IRepository;
 using Repository.Repository;
 using Firebase.Auth;
 using Firebase.Storage;
 using Microsoft.Identity.Client;
 using Microsoft.EntityFrameworkCore;
-
 namespace PMRBDOdata.Controllers
 {
     [Route("odata/Account")]
     [ApiController]
+
     public class AccountController : ODataController
     {
+
         private readonly IAccountRepository accountRepository;
         private readonly IConfiguration _configuration;
         private readonly string ApiKey;
@@ -33,7 +37,7 @@ namespace PMRBDOdata.Controllers
             AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
         }
 
-
+        
         [HttpGet]
         [EnableQuery]
         public async Task<ActionResult<IEnumerable<Account>>> GetAllAccounts()
@@ -82,6 +86,7 @@ namespace PMRBDOdata.Controllers
     [FromForm] int status,
     [FromForm] int roleId,
     [FromForm] decimal coin)
+
         {
             try
             {
@@ -142,7 +147,6 @@ namespace PMRBDOdata.Controllers
                 return BadRequest(new { message = "An error occurred while updating the account. Please try again later." });
             }
         }
-
         [HttpPut("info/{id}")]
         public async Task<ActionResult<Account>> UpdateAccount([FromODataUri] int id, [FromBody] Account account)
         {
@@ -159,5 +163,7 @@ namespace PMRBDOdata.Controllers
             await accountRepository.UpdateAccount(account);
             return Updated(account);
         }
+
+
     }
 }

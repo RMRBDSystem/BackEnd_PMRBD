@@ -1,17 +1,15 @@
-﻿using System.Net.Sockets;
-using BusinessObject.Models;
+﻿using BusinessObject.Models;
 using Firebase.Auth;
 using Firebase.Storage;
-using Microsoft.AspNetCore.Http;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OData.Edm;
+using MimeKit;
 using Repository.IRepository;
 using Repository.Repository;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PMRBDOdata.Controllers
 {
@@ -19,10 +17,10 @@ namespace PMRBDOdata.Controllers
     [ApiController]
     public class AccountProfileController : ODataController
     {
-        private static string ApiKey = "AIzaSyCPn2OSvk7rHKjBFwe9Sa_v-aSUZUHxdM4";
-        private static string Bucket = "rmrbdfirebase.appspot.com";
-        private static string AuthEmail = "ngockhanhpham8a@gmail.com";
-        private static string AuthPassword = "khanh30320";
+        private readonly string ApiKey;
+        private readonly string Bucket;
+        private readonly string AuthEmail;
+        private readonly string AuthPassword;
 
         private readonly IAccountProfileRepository accountProfileRepository;
         private readonly IConfiguration _configuration;
@@ -31,8 +29,43 @@ namespace PMRBDOdata.Controllers
         {
             accountProfileRepository = new AccountProfileRepository();
             _configuration = configuration;
+            ApiKey = _configuration["FirebaseSettings:ApiKey"];
+            Bucket = _configuration["FirebaseSettings:Bucket"];
+            AuthEmail = _configuration["FirebaseSettings:AuthEmail"];
+            AuthPassword = _configuration["FirebaseSettings:AuthPassword"];
         }
+        private async Task SendEmailAsync(string toEmail, string subject, string body)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("RMRBDSystem", "ngockhanhpham8a@gmail.com"));
+            message.To.Add(new MailboxAddress("", toEmail));
+            message.Subject = subject;
 
+            message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = body
+            };
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    // Kết nối đến Gmail SMTP server với bảo mật TLS
+                    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+
+                    // Sử dụng mật khẩu ứng dụng
+                    await client.AuthenticateAsync("ngockhanhpham8a@gmail.com", "iukm cdoc qkwx wmqu");
+
+                    await client.SendAsync(message); // Gửi email
+                    await client.DisconnectAsync(true); // Ngắt kết nối sau khi gửi
+                }
+                catch (Exception ex)
+                {
+                    // Xử lý lỗi nếu có
+                    Console.WriteLine("Error sending email: " + ex.Message);
+                }
+            }
+        }
 
         [HttpGet]
         [EnableQuery]
@@ -85,6 +118,52 @@ namespace PMRBDOdata.Controllers
             }
             accountProfile.AccountId = accountProfileToUpdate.AccountId;
             await accountProfileRepository.UpdateAccountProfile(accountProfile);
+
+            var loginUrl = "https://localhost:5173/login";
+            if (accountProfile.Status == 0)
+            {
+                var userEmail = accountProfileToUpdate.Account.Email;
+                var subject = "Yêu cầu bổ sung thông tin tài khoản";
+                var body = $@"
+                <html>
+                    <body>
+                        <p>Chào <strong>{accountProfileToUpdate.Account.UserName}</strong>,</p>
+                        <br>
+                        <p>Cảm ơn bạn đã đăng ký tài khoản trên hệ thống của chúng tôi. Tuy nhiên, hồ sơ của bạn chưa được duyệt vì một số thông tin còn thiếu hoặc không hợp lệ.</p>
+                        <p>Để đảm bảo tài khoản được kích hoạt thành công, vui lòng kiểm tra lại thông tin và gửi lại biểu mẫu đăng ký của bạn.</p>
+                        <p>Nếu cần hỗ trợ thêm, bạn có thể liên hệ với chúng tôi qua email <a href='mailto:RMRBDSystem@gmail.com'>RMRBDSystem@gmail.com</a> hoặc số hotline <strong>1800-123-456</strong>.</p>
+                        <br>
+                        <p>Trân trọng,<br>
+                        Đội ngũ Hỗ trợ Khách hàng.</p>
+                    </body>
+                </html>";
+                // Gửi email thông báo
+                await SendEmailAsync(userEmail, subject, body);
+            }
+
+            if (accountProfile.Status == 1)
+            {
+                var userEmail = accountProfileToUpdate.Account.Email;
+                var subject = "Chúc mừng! Tài khoản của bạn đã được duyệt";
+                var body = $@"
+                <html>
+                  <body>
+                      <p>Chào <strong>{accountProfileToUpdate.Account.UserName}</strong>,</p>
+                      <br>
+                      <p>Chúc mừng! Tài khoản của bạn trên hệ thống của chúng tôi đã được duyệt thành công. Bạn có thể bắt đầu sử dụng tất cả các tính năng mà chúng tôi cung cấp.</p>
+                      <p>Hãy đăng nhập và khám phá ngay tại: <a href='{loginUrl}'>Đăng nhập ngay</a>.</p>
+                      <p>Nếu bạn gặp bất kỳ vấn đề nào trong quá trình sử dụng, vui lòng liên hệ với đội ngũ hỗ trợ của chúng tôi.</p>
+                      <p>Cảm ơn bạn đã tin tưởng sử dụng dịch vụ của chúng tôi!</p>
+                      <br>
+                      <p>Trân trọng,<br>
+                      Đội ngũ Hỗ trợ Khách hàng.</p>
+                  </body>
+                </html>";
+
+                // Gửi email thông báo
+                await SendEmailAsync(userEmail, subject, body);
+            }
+
             return Updated(accountProfile);
         }
 
@@ -231,6 +310,7 @@ namespace PMRBDOdata.Controllers
             }
         }
 
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAccountProfile([FromODataUri] int id)
         {
@@ -241,6 +321,7 @@ namespace PMRBDOdata.Controllers
             await accountProfileRepository.DeleteAccountProfile(id);
             return NoContent();
         }
+
 
 
         [HttpPut("{AccountID}")]
@@ -261,24 +342,30 @@ namespace PMRBDOdata.Controllers
                 {
                     return NotFound(new { message = "Account profile not found." });
                 }
+
+
                 // Validate required fields
                 if (string.IsNullOrWhiteSpace(iDCardNumber))
                 {
                     return BadRequest(new { message = "Please provide all required fields." });
                 }
+
                 // Check for updated files and validate them
                 if (portrait == null && bankAccountQR == null && frontIDCard == null && backIDCard == null)
                 {
                     return BadRequest(new { message = "Please provide at least one file to update." });
                 }
+
                 // Generate unique file names if files are provided
                 string portraitFileName = accountProfile.Portrait;
                 string bankQRFileName = accountProfile.BankAccountQR;
                 string frontIDCardFileName = accountProfile.FrontIdcard;
                 string backIDCardFileName = accountProfile.BackIdcard;
+
                 var cancellationToken = new CancellationTokenSource();
                 var authProvider = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
                 var authLink = await authProvider.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
                 // Configure Firebase Storage
                 var firebaseStorage = new FirebaseStorage(
                     Bucket,
@@ -287,6 +374,7 @@ namespace PMRBDOdata.Controllers
                         AuthTokenAsyncFactory = () => Task.FromResult(authLink.FirebaseToken),
                         ThrowOnCancel = true
                     });
+
                 // Upload files if provided
                 if (portrait != null && portrait.Length > 0)
                 {
@@ -303,6 +391,7 @@ namespace PMRBDOdata.Controllers
                         .Child(newPortraitFileName)
                         .GetDownloadUrlAsync();
                 }
+
                 if (bankAccountQR != null && bankAccountQR.Length > 0)
                 {
                     var newBankQRFileName = $"{Path.GetFileNameWithoutExtension(bankAccountQR.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(bankAccountQR.FileName)}";
@@ -318,6 +407,7 @@ namespace PMRBDOdata.Controllers
                         .Child(newBankQRFileName)
                         .GetDownloadUrlAsync();
                 }
+
                 if (frontIDCard != null && frontIDCard.Length > 0)
                 {
                     var newFrontIDCardFileName = $"{Path.GetFileNameWithoutExtension(frontIDCard.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(frontIDCard.FileName)}";
@@ -333,6 +423,7 @@ namespace PMRBDOdata.Controllers
                         .Child(newFrontIDCardFileName)
                         .GetDownloadUrlAsync();
                 }
+
                 if (backIDCard != null && backIDCard.Length > 0)
                 {
                     var newBackIDCardFileName = $"{Path.GetFileNameWithoutExtension(backIDCard.FileName)}_{DateTime.Now.Ticks}{Path.GetExtension(backIDCard.FileName)}";
@@ -348,6 +439,7 @@ namespace PMRBDOdata.Controllers
                         .Child(newBackIDCardFileName)
                         .GetDownloadUrlAsync();
                 }
+
                 // Update the account profile
                 accountProfile.FrontIdcard = frontIDCardFileName;
                 accountProfile.BackIdcard = backIDCardFileName;
@@ -355,10 +447,12 @@ namespace PMRBDOdata.Controllers
                 accountProfile.BankAccountQR = bankQRFileName;
                 accountProfile.IdcardNumber = iDCardNumber;
                 accountProfile.DateOfBirth = dateOfBirth;
+
                 // Update profile status to under review
                 accountProfile.Status = -1;
                 // Save updated profile to the database
                 await accountProfileRepository.UpdateAccountProfile(accountProfile);
+
                 // Return the updated download URLs
                 return Ok(new
                 {
@@ -374,5 +468,6 @@ namespace PMRBDOdata.Controllers
                 return BadRequest(new { message = "An error occurred while updating the profile. Please try again later." });
             }
         }
+
     }
 }
