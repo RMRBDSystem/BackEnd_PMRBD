@@ -62,7 +62,6 @@ namespace PMRBDOdata.Controllers
                 }                
                 await bookRateRepository.AddBookRate(bookRate);
                 return Ok();
-
             }
             catch (Exception ex)
             {

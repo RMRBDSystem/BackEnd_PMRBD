@@ -22,17 +22,9 @@ namespace PMRBDOdata.Controllers
         {
             try
             {
-                var query = _context.Recipes.AsQueryable();
+                var query = _context.Recipes.Where(x => x.Status == 1 && x.RecipeName.Contains(searchString) || x.Ingredient.Contains(searchString)).Include(x => x.Images);
 
-                if (!string.IsNullOrWhiteSpace(searchString))
-                {
-                    var normalizedSearchString = searchString.Normalize(NormalizationForm.FormD).ToLowerInvariant();
-
-                    query = query.Where(x => x.RecipeName.ToLower().Contains(normalizedSearchString)
-                                           || x.Ingredient.ToLower().Contains(searchString));
-                }
-
-                var list = await query.Where(x => x.Status == 1).Include(x=> x.Images).ToListAsync();
+                var list = query.ToList();
                 return Ok(list);
             }
             catch (Exception ex)
@@ -47,17 +39,9 @@ namespace PMRBDOdata.Controllers
         {
             try
             {
-                var query = _context.Books.AsQueryable();
+                var query = _context.Books.Where(x => x.Status == 1 && x.BookName.Contains(searchString) || x.Author.Contains(searchString)).Include(x => x.Images);
 
-                if (!string.IsNullOrWhiteSpace(searchString))
-                {
-                    var normalizedSearchString = searchString.Normalize(NormalizationForm.FormD).ToLowerInvariant();
-
-                    query = query.Where(x => x.BookName.ToLower().Contains(normalizedSearchString)
-                                           || x.Author.ToLower().Contains(normalizedSearchString));
-                }
-
-                var list = await query.Where(x => x.Status == 1).Include(x => x.Images).ToListAsync();
+                var list = await query.ToListAsync();
                 return Ok(list);
             }
             catch (Exception ex)
@@ -72,16 +56,9 @@ namespace PMRBDOdata.Controllers
         {
             try
             {
-                var query = _context.Ebooks.AsQueryable();
+                var query = _context.Ebooks.Where(x => x.Status == 1 && x.EbookName.Contains(searchString) || x.Author.Contains(searchString));
 
-                if (!string.IsNullOrWhiteSpace(searchString))
-                {
-                    var normalizedSearchString = searchString.Normalize(NormalizationForm.FormD).ToLowerInvariant();
-                    query = query.Where(x => x.EbookName.ToLower().Contains(normalizedSearchString)
-                                           || x.Author.ToLower().Contains(normalizedSearchString));
-                }
-
-                var list = await query.Where(x => x.Status == 1).ToListAsync();
+                var list = await query.ToListAsync();
                 return Ok(list);
             }
             catch (Exception ex)
