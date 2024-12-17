@@ -115,7 +115,7 @@ namespace PMRBDOdata.Controllers
             accountProfile.AccountId = accountProfileToUpdate.AccountId;
             await accountProfileRepository.UpdateAccountProfile(accountProfile);
 
-            var loginUrl = "https://localhost:5173/login";
+            var loginUrl = "https://fe-rmrbd.vercel.app/login";
             if (accountProfile.Status == 0)
             {
                 var userEmail = accountProfileToUpdate.Account.Email;
@@ -127,7 +127,7 @@ namespace PMRBDOdata.Controllers
                         <br>
                         <p>Cảm ơn bạn đã đăng ký tài khoản trên hệ thống của chúng tôi. Tuy nhiên, hồ sơ của bạn chưa được duyệt vì một số thông tin còn thiếu hoặc không hợp lệ.</p>
                         <p>Để đảm bảo tài khoản được kích hoạt thành công, vui lòng kiểm tra lại thông tin và gửi lại biểu mẫu đăng ký của bạn.</p>
-                        <p>Nếu cần hỗ trợ thêm, bạn có thể liên hệ với chúng tôi qua email <a href='mailto:RMRBDSystem@gmail.com'>RMRBDSystem@gmail.com</a> hoặc số hotline <strong>1800-123-456</strong>.</p>
+                        <p>Nếu cần hỗ trợ thêm, bạn có thể liên hệ với chúng tôi qua email <a href='mailto:RMRBDSystem@gmail.com'>ngockhanhpham8a@gmail.com</a> hoặc số hotline <strong>1800-123-456</strong>.</p>
                         <br>
                         <p>Trân trọng,<br>
                         Đội ngũ Hỗ trợ Khách hàng.</p>
@@ -155,6 +155,31 @@ namespace PMRBDOdata.Controllers
                       Đội ngũ Hỗ trợ Khách hàng.</p>
                   </body>
                 </html>";
+
+                // Gửi email thông báo
+                await SendEmailAsync(userEmail, subject, body);
+            }
+
+            if (accountProfile.Status == 2)
+            {
+                var userEmail = accountProfileToUpdate.Account.Email;
+                var subject = "Yêu cầu cập nhật lại thông tin thanh toán thành công";
+                var body = $@"
+                 <html>
+                   <body>
+                       <p>Chào <strong>{accountProfileToUpdate.Account.UserName}</strong>,</p>
+                       <br>
+                       <p>Yêu cầu cập nhật thông tin thanh toán của bạn đã được xử lý thành công.</p>
+                       <p>Vui lòng đăng nhập vào hệ thống để kiểm tra và đảm bảo rằng các thông tin thanh toán của bạn đã chính xác:</p>
+                       <p><a href='{loginUrl}'>Đăng nhập ngay</a></p>
+                       <br>
+                       <p>Nếu bạn có bất kỳ câu hỏi hoặc cần hỗ trợ thêm, vui lòng liên hệ với đội ngũ hỗ trợ khách hàng của chúng tôi.</p>
+                       <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
+                       <br>
+                       <p>Trân trọng,<br>
+                       Đội ngũ Hỗ trợ Khách hàng.</p>
+                   </body>
+                 </html>";
 
                 // Gửi email thông báo
                 await SendEmailAsync(userEmail, subject, body);
