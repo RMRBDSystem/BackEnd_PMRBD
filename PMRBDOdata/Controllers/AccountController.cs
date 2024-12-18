@@ -20,6 +20,7 @@ namespace PMRBDOdata.Controllers
 
     public class AccountController : ODataController
     {
+
         private readonly IAccountRepository accountRepository;
         private readonly IConfiguration _configuration;
         private readonly string ApiKey;
@@ -162,6 +163,7 @@ namespace PMRBDOdata.Controllers
             await accountRepository.UpdateAccount(account);
             return Updated(account);
         }
+
 
     }
 }

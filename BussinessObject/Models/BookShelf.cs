@@ -18,7 +18,6 @@ public partial class BookShelf
 
     public int? Status { get; set; }
 
-
     public virtual Account? Customer { get; set; }
 
 
