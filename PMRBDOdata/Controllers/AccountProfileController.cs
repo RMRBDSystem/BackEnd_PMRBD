@@ -146,7 +146,7 @@ namespace PMRBDOdata.Controllers
                   <body>
                       <p>Chào <strong>{accountProfileToUpdate.Account.UserName}</strong>,</p>
                       <br>
-                      <p>Chúc mừng! Tài khoản của bạn trên hệ thống của chúng tôi đã được duyệt thành công. Bạn có thể bắt đầu sử dụng tất cả các tính năng mà chúng tôi cung cấp.</p>
+                      <p>Chúng tôi xin thông báo rằng thông tin tài khoản của bạn đã được cập nhật thành công trên hệ thống của chúng tôi.</p>
                       <p>Hãy đăng nhập và khám phá ngay tại: <a href='{loginUrl}'>Đăng nhập ngay</a>.</p>
                       <p>Nếu bạn gặp bất kỳ vấn đề nào trong quá trình sử dụng, vui lòng liên hệ với đội ngũ hỗ trợ của chúng tôi qua email <a href='mailto:RMRBDSystem@gmail.com'>ngockhanhpham8a@gmail.com</a> hoặc qua phần livechat.</p>
                       <p>Cảm ơn bạn đã tin tưởng sử dụng dịch vụ của chúng tôi!</p>
