@@ -119,7 +119,7 @@ namespace PMRBDOdata.Controllers
             if (accountProfile.Status == 0)
             {
                 var userEmail = accountProfileToUpdate.Account.Email;
-                var subject = "Yêu cầu bổ sung thông tin tài khoản";
+                var subject = "[RMRBDSystem]Yêu cầu bổ sung thông tin tài khoản";
                 var body = $@"
                 <html>
                     <body>
@@ -140,7 +140,7 @@ namespace PMRBDOdata.Controllers
             if (accountProfile.Status == 1)
             {
                 var userEmail = accountProfileToUpdate.Account.Email;
-                var subject = "Chúc mừng! Tài khoản của bạn đã được duyệt";
+                var subject = "[RMRBDSystem]Chúc mừng! Tài khoản của bạn đã được duyệt";
                 var body = $@"
                 <html>
                   <body>
@@ -148,7 +148,7 @@ namespace PMRBDOdata.Controllers
                       <br>
                       <p>Chúc mừng! Tài khoản của bạn trên hệ thống của chúng tôi đã được duyệt thành công. Bạn có thể bắt đầu sử dụng tất cả các tính năng mà chúng tôi cung cấp.</p>
                       <p>Hãy đăng nhập và khám phá ngay tại: <a href='{loginUrl}'>Đăng nhập ngay</a>.</p>
-                      <p>Nếu bạn gặp bất kỳ vấn đề nào trong quá trình sử dụng, vui lòng liên hệ với đội ngũ hỗ trợ của chúng tôi.</p>
+                      <p>Nếu bạn gặp bất kỳ vấn đề nào trong quá trình sử dụng, vui lòng liên hệ với đội ngũ hỗ trợ của chúng tôi qua email <a href='mailto:RMRBDSystem@gmail.com'>ngockhanhpham8a@gmail.com</a> hoặc qua phần livechat.</p>
                       <p>Cảm ơn bạn đã tin tưởng sử dụng dịch vụ của chúng tôi!</p>
                       <br>
                       <p>Trân trọng,<br>
@@ -163,7 +163,7 @@ namespace PMRBDOdata.Controllers
             if (accountProfile.Status == 2)
             {
                 var userEmail = accountProfileToUpdate.Account.Email;
-                var subject = "Yêu cầu cập nhật lại thông tin thanh toán thành công";
+                var subject = "[RMRBDSystem]Yêu cầu cập nhật lại thông tin thanh toán thành công";
                 var body = $@"
                  <html>
                    <body>
