@@ -70,7 +70,7 @@ namespace PMRBDOdata.Controllers
                     CoinFluctuations = Coin,
                     MoneyFluctuations = Price,
                     Date = DateTime.Now,
-                    Detail = "Nạp Xu Vào Tài khoảng",
+                    Detail = "Nạp Xu Vào Tài khoản",
                     Status = 1
                 };           
                 await _accountRepository.UpdateAccount(account);
