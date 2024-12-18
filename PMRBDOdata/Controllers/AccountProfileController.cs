@@ -50,18 +50,15 @@ namespace PMRBDOdata.Controllers
             {
                 try
                 {
-                    // Kết nối đến Gmail SMTP server với bảo mật TLS
-                    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
 
-                    // Sử dụng mật khẩu ứng dụng
+                    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
                     await client.AuthenticateAsync("ngockhanhpham8a@gmail.com", "iukm cdoc qkwx wmqu");
 
-                    await client.SendAsync(message); // Gửi email
-                    await client.DisconnectAsync(true); // Ngắt kết nối sau khi gửi
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
                 }
                 catch (Exception ex)
                 {
-                    // Xử lý lỗi nếu có
                     Console.WriteLine("Error sending email: " + ex.Message);
                 }
             }
@@ -123,7 +120,7 @@ namespace PMRBDOdata.Controllers
             if (accountProfile.Status == 0)
             {
                 var userEmail = accountProfileToUpdate.Account.Email;
-                var subject = "[RMRBDSystem]Yêu cầu bổ sung thông tin tài khoản";
+                var subject = "[RMRBDSystem] Yêu cầu bổ sung thông tin tài khoản";
                 var body = $@"
                 <html>
                     <body>
@@ -144,7 +141,7 @@ namespace PMRBDOdata.Controllers
             if (accountProfile.Status == 1)
             {
                 var userEmail = accountProfileToUpdate.Account.Email;
-                var subject = "[RMRBDSystem]Chúc mừng! Tài khoản của bạn đã được duyệt";
+                var subject = "[RMRBDSystem] Chúc mừng! Tài khoản của bạn đã được duyệt";
                 var body = $@"
                 <html>
                   <body>
@@ -167,7 +164,7 @@ namespace PMRBDOdata.Controllers
             if (accountProfile.Status == 2)
             {
                 var userEmail = accountProfileToUpdate.Account.Email;
-                var subject = "[RMRBDSystem]Yêu cầu cập nhật lại thông tin thanh toán thành công";
+                var subject = "[RMRBDSystem] Yêu cầu cập nhật lại thông tin thanh toán thành công";
                 var body = $@"
                  <html>
                    <body>
